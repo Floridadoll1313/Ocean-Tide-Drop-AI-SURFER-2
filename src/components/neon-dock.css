@@ -1,0 +1,56 @@
+.neon-dock {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 28px;
+
+  background: rgba(10, 15, 25, 0.55);
+  backdrop-filter: blur(18px);
+  padding: 14px 28px;
+  border-radius: 20px;
+
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow:
+    0 0 25px rgba(0, 255, 255, 0.15),
+    0 0 60px rgba(0, 120, 255, 0.1);
+
+  z-index: 999;
+}
+
+.dock-item {
+  color: #dffaff;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1rem;
+
+  padding: 8px 14px;
+  border-radius: 10px;
+
+  transition:
+    color 0.3s ease,
+    background 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.dock-item:hover {
+  color: white;
+  transform: translateY(-3px);
+  background: rgba(0, 255, 255, 0.15);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+/* Active page highlight */
+.dock-item.active {
+  color: white;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 255, 0.4),
+    rgba(0, 120, 255, 0.4)
+  );
+  box-shadow:
+    0 0 20px rgba(0, 255, 255, 0.4),
+    0 0 40px rgba(0, 120, 255, 0.2);
+}
