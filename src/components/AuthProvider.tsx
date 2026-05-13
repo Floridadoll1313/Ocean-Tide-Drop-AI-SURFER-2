@@ -5,8 +5,15 @@ import React, {
   useState,
   ReactNode,
 } from "react";
-import { User } from "@supabase/supabase-js";
-import { supabase } from "../lib/supabaseClient";
+import { 
+  User, 
+  onAuthStateChanged, 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  signOut 
+} from "firebase/auth";
+import { auth, db } from "../utils/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 /* -------------------------------------------------------
    TYPES
@@ -30,63 +37,86 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   /* -------------------------------------------------------
+     SYNC PROFILE
+  ------------------------------------------------------- */
+  const syncUserProfile = async (currentUser: User) => {
+    try {
+      const userRef = doc(db, 'users', currentUser.uid);
+      const userPublicRef = doc(db, 'users_public', currentUser.uid);
+      
+      const userSnap = await getDoc(userRef);
+      
+      if (!userSnap.exists()) {
+        const isAdminEmail = currentUser.email === "shannon@oceantidedrop.com" || currentUser.email === "oceantidedrop@gmail.com";
+        
+        // Initial setup for new member
+        await setDoc(userRef, {
+          uid: currentUser.uid,
+          email: currentUser.email,
+          displayName: currentUser.displayName || 'Neural Entity',
+          photoURL: currentUser.photoURL || '',
+          role: isAdminEmail ? 'admin' : 'user',
+          subscriptionStatus: 'none',
+          bio: '',
+          location: ''
+        });
+        
+        await setDoc(userPublicRef, {
+          uid: currentUser.uid,
+          displayName: currentUser.displayName || 'Neural Entity',
+          photoURL: currentUser.photoURL || '',
+          bio: '',
+          location: ''
+        });
+      }
+    } catch (error) {
+      console.error("User Profile Sync Error:", error);
+    }
+  };
+
+  /* -------------------------------------------------------
      INITIAL SESSION + LISTENER
   ------------------------------------------------------- */
   useEffect(() => {
-    if (!supabase) {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+      if (currentUser) {
+        await syncUserProfile(currentUser);
+      }
       setLoading(false);
-      return;
-    }
-
-    const getSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      setUser(session?.user ?? null);
-      setLoading(false);
-    };
-
-    getSession();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
     });
 
-    return () => subscription.unsubscribe();
+    return () => unsubscribe();
   }, []);
 
   /* -------------------------------------------------------
      LOGIN (Google OAuth)
   ------------------------------------------------------- */
   const login = async () => {
-    if (!supabase) {
-      console.error("Supabase not initialized. Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.");
-      return;
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Firebase Login Error:", error);
     }
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin + "/members",
-      },
-    });
   };
 
   /* -------------------------------------------------------
      LOGOUT
   ------------------------------------------------------- */
   const logout = async () => {
-    if (!supabase) return;
-    await supabase.auth.signOut();
-    setUser(null);
+    try {
+      await signOut(auth);
+      setUser(null);
+    } catch (error) {
+      console.error("Firebase Logout Error:", error);
+    }
   };
 
   /* -------------------------------------------------------
      ROLE FLAGS
   ------------------------------------------------------- */
-  const isAdmin = user?.email === "shannon@oceantidedrop.com";
+  const isAdmin = user?.email === "shannon@oceantidedrop.com" || user?.email === "oceantidedrop@gmail.com";
   const isMember = !!user;
 
   /* -------------------------------------------------------

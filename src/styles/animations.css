@@ -1,0 +1,8 @@
+@keyframes waterline {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-waterline {
+  animation: waterline 3s linear infinite;
+}
