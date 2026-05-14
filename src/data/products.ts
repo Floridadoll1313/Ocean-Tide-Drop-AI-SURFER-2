@@ -34,7 +34,7 @@ export const products: Product[] = [
     slug: "breakline",
     price: "$197",
     alt: "Breakline Surf Tier",
-    image: "https://images.unsplash.com/photo-1516108317508-691873a47042?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
     narrative:
       "A multi‑page experience with deeper automations and a tuned content engine that moves with your brand.",
     features: [
@@ -52,7 +52,7 @@ export const products: Product[] = [
     slug: "hatteras-island",
     price: "$297",
     alt: "Hatteras Island Surf Tier",
-    image: "https://images.unsplash.com/photo-1459749411177-042180ce673c?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
     narrative:
       "High‑touch creative systems, evolving brand identity, and ongoing cinematic refinement.",
     features: [

@@ -21,9 +21,9 @@ export default function NeonDock() {
           to={link.path} 
           className={({ isActive }) => `dock-item group ${isActive ? 'active' : ''}`}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row items-center gap-1 md:gap-2">
             <link.icon className="w-5 h-5" />
-            <span className="hidden md:inline">{link.label}</span>
+            <span className="text-[9px] md:text-sm md:inline uppercase tracking-widest">{link.label}</span>
           </div>
         </NavLink>
       ))}

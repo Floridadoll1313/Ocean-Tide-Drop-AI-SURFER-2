@@ -2,9 +2,14 @@ import React from 'react';
 
 export default function Lore() {
   return (
-    <div className="pt-24 pb-12 w-full text-left">
-      <h1 className="font-display text-5xl font-black uppercase tracking-tighter mb-6">Lore</h1>
-      <p className="text-white/50 text-sm leading-relaxed">The history of the Outer Banks.</p>
-    </div>
+    <main className="min-h-screen bg-black text-white pt-28 pb-24 px-6">
+      <div className="max-w-3xl mx-auto space-y-6">
+        <h1 className="text-4xl font-black tracking-tight">Lore</h1>
+        <p className="text-slate-400">
+          This is where the myth lives: Sailor, Stormy, Sky Marlin, Hatteras
+          currents, and the founders who ride them.
+        </p>
+      </div>
+    </main>
   );
 }

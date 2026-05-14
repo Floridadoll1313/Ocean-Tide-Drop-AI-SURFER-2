@@ -4,7 +4,7 @@ import { createBrowserRouter } from "react-router-dom";
 /* PUBLIC PAGES */
 import Home from "./pages/home/Home";
 import Services from "./pages/services/Services";
-import Members from "./pages/members/Members";
+import { Members } from "./pages/members/Members";
 import JoinCollective from "./pages/membership/MembershipIndex";
 import Lore from "./pages/lore/Lore";
 import Marketplace from "./pages/marketplace/Marketplace";
