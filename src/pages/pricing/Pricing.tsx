@@ -1,110 +1,97 @@
 import React from "react";
-import { ProductCard } from "../../components/ProductCard"; // named export
-import { motion } from "motion/react";
-import "./pricing.css";
+import { Link } from "react-router-dom";
 
-const Pricing: React.FC = () => {
+const tiers = [
+  {
+    name: "Dawn Patrol",
+    slug: "dawn-patrol",
+    price: "$97",
+    desc: "Your cinematic entry point. Clean landing, AI‑assisted content, and your first automated workflows.",
+    features: [
+      "Cinematic landing page",
+      "AI‑assisted content engine",
+      "Starter automations",
+      "Brand color tuning",
+    ],
+    color: "text-slate-300",
+  },
+  {
+    name: "Breakline",
+    slug: "breakline",
+    price: "$197",
+    desc: "A multi‑page experience with deeper automations and a tuned content engine that moves with your brand.",
+    features: [
+      "Multi‑page site",
+      "Advanced automations",
+      "Content engine tuning",
+      "Brand story expansion",
+    ],
+    color: "text-neon-cyan",
+    popular: true,
+  },
+  {
+    name: "Hatteras Island",
+    slug: "hatteras-island",
+    price: "$297",
+    desc: "High‑touch creative systems, evolving brand identity, and ongoing cinematic refinement.",
+    features: [
+      "Ongoing creative direction",
+      "Cinematic brand evolution",
+      "AI content pipelines",
+      "Monthly experiments",
+    ],
+    color: "text-pink-500",
+  },
+  {
+    name: "Cape Point",
+    slug: "cape-point",
+    price: "$497",
+    desc: "Full‑stack automation, AI‑driven content pipelines, and mythic brand architecture built for scale.",
+    features: [
+      "Full automation suite",
+      "AI‑driven content pipelines",
+      "Mythic brand architecture",
+      "Founder‑first creative systems",
+    ],
+    color: "text-yellow-300",
+  },
+];
+
+export default function Pricing() {
   return (
-    <div className="min-h-screen bg-black text-white px-6 py-20 relative overflow-hidden">
-      {/* NEON OCEAN AURA */}
-      <motion.div
-        className="absolute inset-0 opacity-40 blur-[140px] pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle at 50% 20%, rgba(0,255,255,0.35), transparent 70%)",
-        }}
-        animate={{ scale: [1, 1.2, 1] }}
-        transition={{ duration: 10, repeat: Infinity }}
-      />
+    <div className="min-h-screen bg-black text-white py-24 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-black to-black"></div>
+        <div className="relative max-w-7xl mx-auto z-10 w-full text-center">
+            <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 text-[#00eaff] drop-shadow-[0_0_20px_#00eaff]">Pricing</h1>
+            <p className="text-slate-400 mb-16 max-w-2xl mx-auto">Choose your wave. From initial drops to full-scale cinematic AI automation.</p>
 
-      {/* HERO */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        className="text-center mb-20 relative z-10"
-      >
-        <h1 className="pricing-title text-neon-cyan drop-shadow-[0_0_20px_rgba(0,255,255,0.4)]">
-          Choose Your Tier
-        </h1>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+                {tiers.map((tier) => (
+                    <div key={tier.slug} className={`glass-card p-8 rounded-3xl relative overflow-hidden flex flex-col ${tier.popular ? 'border-[#00eaff]/50 shadow-[0_0_30px_rgba(0,255,255,0.1)]' : 'border-white/10'}`}>
+                        {tier.popular && (
+                            <div className="absolute top-0 right-0 bg-[#00eaff] text-black text-[10px] font-bold uppercase tracking-widest py-1 px-4 rounded-bl-xl">Best Value</div>
+                        )}
+                        <h3 className={`text-2xl font-black italic uppercase ${tier.color} mb-2`}>{tier.name}</h3>
+                        <div className="text-4xl font-bold mb-4">{tier.price}<span className="text-sm font-normal text-slate-500">/mo</span></div>
+                        <p className="text-sm text-slate-400 mb-8">{tier.desc}</p>
+                        
+                        <div className="flex-1">
+                            <ul className="space-y-3 mb-8">
+                                {tier.features.map((feature, i) => (
+                                    <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
+                                        <span className="text-[#00eaff] mt-0.5">✦</span> {feature}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
 
-        <p className="pricing-subtitle uppercase tracking-[0.3em] text-xs">
-          Calibrate Your Neural Surf Engine
-        </p>
-      </motion.div>
-
-      {/* GRID WITH STAGGERED ANIMATION */}
-      <motion.div
-        className="pricing-grid max-w-6xl mx-auto relative z-10"
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: {},
-          visible: { transition: { staggerChildren: 0.25 } },
-        }}
-      >
-        {/* DAWN PATROL */}
-        <motion.div
-          variants={{
-            hidden: { opacity: 0, y: 40 },
-            visible: { opacity: 1, y: 0 },
-          }}
-        >
-          <ProductCard
-            title="Dawn Patrol"
-            description="Your cinematic entry point. Clean landing, AI‑assisted content, and your first automated workflows."
-            slug="dawn-patrol"
-            image="/images/dawn-patrol.jpg"
-          />
-        </motion.div>
-
-        {/* BREAKLINE */}
-        <motion.div
-          variants={{
-            hidden: { opacity: 0, y: 40 },
-            visible: { opacity: 1, y: 0 },
-          }}
-        >
-          <ProductCard
-            title="Breakline"
-            description="A multi‑page experience with deeper automations and a tuned content engine that moves with your brand."
-            slug="breakline"
-            image="/images/breakline.jpg"
-          />
-        </motion.div>
-
-        {/* HATTERAS ISLAND */}
-        <motion.div
-          variants={{
-            hidden: { opacity: 0, y: 40 },
-            visible: { opacity: 1, y: 0 },
-          }}
-        >
-          <ProductCard
-            title="Hatteras Island"
-            description="High‑touch creative systems, evolving brand identity, and ongoing cinematic refinement."
-            slug="hatteras-island"
-            image="/images/hatteras.jpg"
-          />
-        </motion.div>
-
-        {/* CAPE POINT */}
-        <motion.div
-          variants={{
-            hidden: { opacity: 0, y: 40 },
-            visible: { opacity: 1, y: 0 },
-          }}
-        >
-          <ProductCard
-            title="Cape Point"
-            description="Full‑stack automation, AI‑driven content pipelines, and mythic brand architecture built for scale."
-            slug="cape-point"
-            image="/images/cape-point.jpg"
-          />
-        </motion.div>
-      </motion.div>
+                        <Link to={`/pricing/${tier.slug}`} className="w-full text-center block py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors uppercase tracking-widest text-xs font-bold">
+                            Select Tier
+                        </Link>
+                    </div>
+                ))}
+            </div>
+        </div>
     </div>
-  );
-};
-
-export default Pricing;
+  )
+}
