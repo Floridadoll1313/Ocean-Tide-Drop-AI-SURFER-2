@@ -2,13 +2,9 @@ import express, { Request, Response } from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import Stripe from "stripe";
-import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 
 dotenv.config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 /**
  * Handle Stripe Webhook Events
@@ -214,7 +210,7 @@ async function startServer() {
     
     const excludedRoutes = ["/assets", "/favicon.ico", "/robots.txt"];
     
-    app.get("*", (req, res, next) => {
+    app.get("*all", (req, res, next) => {
       // Exclude asset and strictly static routes from returning the SPA index.html
       if (excludedRoutes.some(route => req.path.startsWith(route) || req.path === route)) {
         return next();
