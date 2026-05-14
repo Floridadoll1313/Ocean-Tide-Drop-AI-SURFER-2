@@ -1,9 +1,0 @@
-@reference "../styles/index.css";
-
-.logo-glow {
-  @apply drop-shadow-[0_0_15px_rgba(6,182,212,0.4)];
-}
-
-.logo-spin {
-  @apply transition-transform duration-700 hover:rotate-[360deg];
-}
