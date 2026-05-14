@@ -9,8 +9,7 @@ import {
   Zap, 
   Loader2, 
   Trash2, 
-  Globe, 
-  ExternalLink 
+  Globe
 } from 'lucide-react';
 import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { useAuth } from '../../components/AuthProvider';
@@ -24,7 +23,7 @@ interface Message {
   sources?: { title: string; uri: string }[];
 }
 
-export default function AIStudio() {
+export const AISurfer = () => {
   const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -44,7 +43,7 @@ export default function AIStudio() {
 
   const getAI = () => {
     // Note: In production, call an API route instead of exposing your key on the client
-    const key = import.meta.env.VITE_GEMINI_API_KEY || ''; 
+    const key = import.meta.env.VITE_GEMINI_API_KEY; 
     if (!key) throw new Error('Neural key not found. Please configure in environment variables.');
     return new GoogleGenAI({ apiKey: key });
   };
@@ -199,7 +198,7 @@ export default function AIStudio() {
                 }`}>
                   <div className="prose prose-invert prose-sm max-w-none">
                     <ReactMarkdown>
-                       {msg.content}
+                      {msg.content}
                     </ReactMarkdown>
                   </div>
                 </div>
@@ -249,5 +248,4 @@ export default function AIStudio() {
       </div>
     </div>
   );
-}
-
+};

@@ -36,6 +36,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [userProfile, setUserProfile] = useState<any>(null);
+
   /* -------------------------------------------------------
      SYNC PROFILE
   ------------------------------------------------------- */
@@ -49,8 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!userSnap.exists()) {
         const isAdminEmail = currentUser.email === "shannon@oceantidedrop.com" || currentUser.email === "oceantidedrop@gmail.com";
         
-        // Initial setup for new member
-        await setDoc(userRef, {
+        const newProfile = {
           uid: currentUser.uid,
           email: currentUser.email,
           displayName: currentUser.displayName || 'Neural Entity',
@@ -59,7 +60,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           subscriptionStatus: 'none',
           bio: '',
           location: ''
-        });
+        };
+        // Initial setup for new member
+        await setDoc(userRef, newProfile);
         
         await setDoc(userPublicRef, {
           uid: currentUser.uid,
@@ -68,6 +71,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           bio: '',
           location: ''
         });
+        
+        setUserProfile(newProfile);
+      } else {
+        setUserProfile(userSnap.data());
       }
     } catch (error) {
       console.error("User Profile Sync Error:", error);
@@ -82,6 +89,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(currentUser);
       if (currentUser) {
         await syncUserProfile(currentUser);
+      } else {
+        setUserProfile(null);
       }
       setLoading(false);
     });
@@ -116,8 +125,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   /* -------------------------------------------------------
      ROLE FLAGS
   ------------------------------------------------------- */
-  const isAdmin = user?.email === "shannon@oceantidedrop.com" || user?.email === "oceantidedrop@gmail.com";
-  const isMember = !!user;
+  const isAdmin = userProfile?.role === 'admin' || user?.email === "shannon@oceantidedrop.com" || user?.email === "oceantidedrop@gmail.com";
+  const isMember = !!user && (userProfile?.subscriptionStatus === 'active' || isAdmin);
 
   /* -------------------------------------------------------
      CONTEXT VALUE
