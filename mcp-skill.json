@@ -1,0 +1,13 @@
+{
+  "name": "ocean-tide-drop-ai-surfer",
+  "version": "1.0.0",
+  "description": "Cinematic surf-mythic MCP skill pack for the Ocean Tide Drop AI Surfer Console.",
+  "author": "Ocean Tide Drop",
+  "tools": [
+    "generateBranding",
+    "createLore",
+    "summonWaveCopy",
+    "saveToSupabase",
+    "createStripeCheckout"
+  ]
+}

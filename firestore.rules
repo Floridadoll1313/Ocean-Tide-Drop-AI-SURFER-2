@@ -1,0 +1,133 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - uid: string (required) - The unique ID of the user
+    //   - displayName: string (optional) - The display name
+    //   - email: string (required) - The email address
+    //   - photoURL: string (optional) - Profile photo URL
+    //   - role: string (required) - 'user' or 'admin'
+    //
+    // Collection: chat_messages
+    // Document ID: {messageId}
+    // Fields:
+    //   - user_id: string (required) - Sender UID
+    //   - username: string (required) - Sender username
+    //   - content: string (required) - Message text (max 500 chars)
+    //   - created_at: timestamp (required) - Server timestamp
+    //
+    // Collection: memorial_stories
+    // Document ID: {storyId}
+    // Fields:
+    //   - name: string (required) - Contributor name
+    //   - content: string (required) - Story text (max 2000 chars)
+    //   - created_at: timestamp (required) - Server timestamp
+    //
+    // Collection: user_progress
+    // Document ID: {userId}
+    // Fields:
+    //   - completedQuests: string[] (required) - List of completed module IDs
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "oceantidedrop@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'role']) &&
+             data.uid is string && data.uid == request.auth.uid &&
+             data.email is string && data.email.size() > 5 &&
+             data.role in ['user', 'admin'] &&
+             (!('bio' in data) || (data.bio is string && data.bio.size() <= 500)) &&
+             (!('location' in data) || (data.location is string && data.location.size() <= 100));
+    }
+
+    function isValidChatMessage(data) {
+      return data.keys().hasAll(['user_id', 'username', 'content', 'created_at']) &&
+             data.user_id == request.auth.uid &&
+             data.username is string && data.username.size() > 0 &&
+             data.content is string && data.content.size() > 0 && data.content.size() <= 500 &&
+             data.created_at == request.time;
+    }
+
+    function isValidMemorialStory(data) {
+      return data.keys().hasAll(['name', 'content', 'created_at']) &&
+             data.name is string && data.name.size() > 0 &&
+             data.content is string && data.content.size() > 0 && data.content.size() <= 2000 &&
+             data.created_at == request.time;
+    }
+
+    function isValidPublicUser(data) {
+      return data.keys().hasAll(['uid', 'displayName']) &&
+             data.uid == request.auth.uid &&
+             data.displayName is string && data.displayName.size() > 0 &&
+             (!('photoURL' in data) || data.photoURL is string) &&
+             (!('bio' in data) || (data.bio is string && data.bio.size() <= 500)) &&
+             (!('location' in data) || (data.location is string && data.location.size() <= 100));
+    }
+
+    function isValidUserProgress(data) {
+      return data.keys().hasAll(['completedQuests']) &&
+             data.completedQuests is list &&
+             data.completedQuests.size() <= 100; // Realistic limit
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      // Users can only read their own full profile.
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && isValidUser(request.resource.data) && 
+                      (request.resource.data.role == 'user' || isAdmin());
+      allow update: if isOwner(userId) && isValidUser(request.resource.data) && 
+                      request.resource.data.role == resource.data.role; // Cannot change own role
+    }
+
+    match /users_public/{userId} {
+      // Public profiles are readable by everyone to support the directory and landing page.
+      allow read: if true;
+      allow create, update: if isOwner(userId) && isValidPublicUser(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /chat_messages/{messageId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidChatMessage(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    match /memorial_stories/{storyId} {
+      allow read: if true; // Publicly readable
+      allow create: if isAuthenticated() && isValidMemorialStory(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    match /user_progress/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create, update: if isOwner(userId) && isValidUserProgress(request.resource.data);
+    }
+  }
+}

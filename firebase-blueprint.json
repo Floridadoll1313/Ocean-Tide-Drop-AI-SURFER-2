@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the digital collective",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique ID of the user" },
+        "displayName": { "type": "string", "description": "The display name of the user" },
+        "email": { "type": "string", "format": "email", "description": "The email address of the user" },
+        "photoURL": { "type": "string", "format": "uri", "description": "The profile photo URL of the user" },
+        "bio": { "type": "string", "description": "A short biography of the user" },
+        "location": { "type": "string", "description": "The geographic location of the user" },
+        "role": { "type": "string", "enum": ["user", "admin"], "description": "The role of the user" },
+        "subscriptionStatus": { "type": "string", "enum": ["none", "active", "canceled"], "description": "Membership status" }
+      },
+      "required": ["uid", "email"]
+    },
+    "ChatMessage": {
+      "title": "Chat Message",
+      "description": "A message sent in the member chat",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string", "description": "The UID of the sender" },
+        "username": { "type": "string", "description": "The username of the sender" },
+        "content": { "type": "string", "description": "The content of the message" },
+        "created_at": { "type": "string", "format": "date-time", "description": "When the message was sent" }
+      },
+      "required": ["user_id", "username", "content", "created_at"]
+    },
+    "MemorialStory": {
+      "title": "Memorial Story",
+      "description": "A story or memory shared in the sanctuary",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the person sharing" },
+        "content": { "type": "string", "description": "The content of the story" },
+        "created_at": { "type": "string", "format": "date-time", "description": "When the story was shared" }
+      },
+      "required": ["name", "content", "created_at"]
+    },
+    "PublicUser": {
+      "title": "Public User",
+      "description": "Publicly visible user profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique ID of the user" },
+        "displayName": { "type": "string", "description": "The display name of the user" },
+        "photoURL": { "type": "string", "format": "uri", "description": "The profile photo URL of the user" },
+        "bio": { "type": "string", "description": "A short biography of the user" },
+        "location": { "type": "string", "description": "The geographic location of the user" }
+      },
+      "required": ["uid", "displayName"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/users_public/{userId}": {
+      "schema": "PublicUser",
+      "description": "Public user profiles (no PII)"
+    },
+    "/chat_messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Public member chat messages"
+    },
+    "/memorial_stories/{storyId}": {
+      "schema": "MemorialStory",
+      "description": "Public memorial stories"
+    }
+  }
+}

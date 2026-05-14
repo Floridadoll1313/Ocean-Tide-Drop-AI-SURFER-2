@@ -1,9 +1,88 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* APP LAYOUT */
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-container {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.card {
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+/* 🌊 Neon Ocean Global Background */
+html, body {
+  background: radial-gradient(circle at 50% 20%, #003344, #000a0f 70%);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* 🌊 Scrollbar Glow */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00eaff;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #00141c;
+}
+
+/* 🌊 Fade-In Animation */
+.fade-in {
+  animation: fadeIn 1.2s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* 🌊 Navbar Glow */
+.navbar-glow {
+  box-shadow: 0 0 25px #00eaff55;
+}
 
 @layer utilities {
   .glass-card {
-    @apply bg-white/5 border border-white/10 backdrop-blur-xl;
+    background-color: color-mix(in srgb, white 5%, transparent);
+    border: 1px solid color-mix(in srgb, white 10%, transparent);
+    backdrop-filter: blur(24px);
+  }
+  .shadow-neon {
+    box-shadow: 
+      0 0 20px rgba(0, 200, 255, 0.6),
+      0 0 40px rgba(0, 150, 255, 0.4);
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.8s ease forwards;
   }
 }
