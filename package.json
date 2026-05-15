@@ -3,13 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-
     "deploy": "wrangler deploy",
     "dev": "wrangler dev"
-  }
-  ...
-}
-  
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
     "@tailwindcss/typography": "^0.5.19",
