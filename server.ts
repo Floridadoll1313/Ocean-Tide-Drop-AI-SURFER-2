@@ -152,14 +152,17 @@ async function startServer() {
   // API Route to create checkout session
   app.post("/api/create-checkout-session", async (req, res) => {
     if (!stripe) {
-      return res.status(500).json({ error: "Stripe not configured" });
+      return res.status(500).json({ error: "Stripe not configured. Please add STRIPE_SECRET_KEY to .env" });
     }
 
-    const { userId, email } = req.body;
-    const priceId = process.env.VITE_STRIPE_PRICE_ID;
+    const { userId, email, tierId } = req.body;
+    
+    // Look up price ID dynamically based on tier, with a fallback
+    const priceEnvKey = `STRIPE_PRICE_ID_${tierId?.replace(/-/g, '_')?.toUpperCase()}`;
+    const priceId = process.env[priceEnvKey] || process.env.VITE_STRIPE_PRICE_ID;
 
     if (!priceId) {
-      return res.status(500).json({ error: "Price ID not configured" });
+      return res.status(500).json({ error: `Stripe Price ID not configured. Please add ${priceEnvKey} or VITE_STRIPE_PRICE_ID to .env` });
     }
 
     try {
@@ -172,8 +175,8 @@ async function startServer() {
           },
         ],
         mode: "subscription",
-        success_url: `${process.env.VITE_BASE_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.VITE_BASE_URL}/join`,
+        success_url: `${process.env.VITE_BASE_URL || 'http://localhost:3000'}/profile?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.VITE_BASE_URL || 'http://localhost:3000'}/pricing/${tierId}`,
         customer_email: email,
         client_reference_id: userId,
       });
@@ -210,7 +213,7 @@ async function startServer() {
     
     const excludedRoutes = ["/assets", "/favicon.ico", "/robots.txt"];
     
-    app.get("*all", (req, res, next) => {
+    app.get(/.*/, (req, res, next) => {
       // Exclude asset and strictly static routes from returning the SPA index.html
       if (excludedRoutes.some(route => req.path.startsWith(route) || req.path === route)) {
         return next();

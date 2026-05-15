@@ -9,6 +9,7 @@ import PricingDetail from './pages/pricing/PricingDetail';
 import Members from './pages/members/Members';
 import Lore from './pages/lore/Lore';
 import Mcp from './pages/mcp/Mcp';
+import Profile from './pages/profile/Profile';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/members" element={<Members />} />
           <Route path="/lore" element={<Lore />} />
           <Route path="/mcp" element={<Mcp />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </Router>
     </AuthProvider>

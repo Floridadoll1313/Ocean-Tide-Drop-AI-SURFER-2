@@ -1,33 +1,11 @@
 import React from "react";
+import PageWrapper from "../../components/PageWrapper";
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#00111a] via-[#002b3d] to-[#00070a] text-white overflow-hidden">
-      {/* NAVBAR */}
-      <header className="w-full fixed top-0 left-0 z-50 backdrop-blur-xl bg-white/5 border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img
-              src="/logo.png"
-              alt="Logo"
-              className="h-10 w-10 drop-shadow-[0_0_12px_#00eaff]"
-            />
-            <span className="text-xl font-semibold tracking-wide">
-              Ocean Tide Drop
-            </span>
-          </div>
-
-          <nav className="hidden md:flex gap-8 text-sm">
-            <a className="hover:text-[#00eaff] transition-all" href="/">Home</a>
-            <a className="hover:text-[#00eaff] transition-all" href="/services">Services</a>
-            <a className="hover:text-[#00eaff] transition-all" href="/members">Members</a>
-            <a className="hover:text-[#00eaff] transition-all" href="/contact">Contact</a>
-          </nav>
-        </div>
-      </header>
-
+    <PageWrapper>
       {/* CONTACT SECTION */}
-      <section className="pt-40 pb-32 relative flex flex-col items-center justify-center min-h-[80vh]">
+      <section className="relative flex flex-col items-center justify-center">
         {/* Glow Effects */}
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00eaff]/10 blur-[150px] rounded-full pointer-events-none"></div>
@@ -59,11 +37,6 @@ export default function Contact() {
           </div>
         </div>
       </section>
-
-      {/* FOOTER */}
-      <footer className="py-12 text-center text-white/60 text-sm relative z-10">
-        © {new Date().getFullYear()} Ocean Tide Drop AI Surfer — All Rights Reserved.
-      </footer>
-    </div>
+    </PageWrapper>
   );
 }

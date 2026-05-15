@@ -1,6 +1,7 @@
 import React from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import PageWrapper from "../../components/PageWrapper";
 
 const markdownContent = `---
 name: supabase-postgres-best-practices
@@ -1894,11 +1895,11 @@ Reference: [RLS Performance](https://supabase.com/docs/guides/database/postgres/
 
 export default function Mcp() {
   return (
-    <div className="min-h-screen bg-black text-white p-8 overflow-y-auto w-full">
-      <div className="max-w-4xl mx-auto prose prose-invert prose-headings:font-display prose-a:text-blue-400 hover:prose-a:text-blue-300">
+    <PageWrapper>
+      <div className="max-w-4xl mx-auto prose prose-invert prose-headings:font-display prose-a:text-blue-400 hover:prose-a:text-blue-300 text-left">
         <Markdown remarkPlugins={[remarkGfm]}>{markdownContent}</Markdown>
       </div>
-    </div>
+    </PageWrapper>
   );
 }
 
