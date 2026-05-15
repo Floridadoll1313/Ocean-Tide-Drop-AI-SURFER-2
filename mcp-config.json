@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "ocean-tide-drop-ai-surfer": {
-      "type": "http",
-      "url": "https://api.oceantidedrop.com/mcp"
-    }
-  }
-}

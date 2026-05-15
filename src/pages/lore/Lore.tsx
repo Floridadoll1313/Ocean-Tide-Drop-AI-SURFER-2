@@ -4,9 +4,9 @@ import PageWrapper from '../../components/PageWrapper';
 
 export default function Lore() {
   return (
-    <PageWrapper>
-      <div className="max-w-3xl mx-auto space-y-6 text-left">
-        <h1 className="text-4xl font-black tracking-tight text-[#00eaff] drop-shadow-[0_0_15px_#00eaff]">Lore</h1>
+    <PageWrapper maxWidth="max-w-7xl" showHero={false}>
+      <div className="w-full space-y-6 text-left py-10">
+        <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 text-[#00eaff] drop-shadow-[0_0_20px_#00eaff]">Lore</h1>
         <p className="text-slate-400">
           This is where the myth lives: Sailor, Stormy, Sky Marlin, Hatteras
           currents, and the founders who ride them.
