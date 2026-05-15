@@ -1,5 +1,7 @@
 # wrangler.toml
-name = 'stripe-sync'
+name = 'Ocean-Tide-Drop-AI-SURFER-2'
+run_worker_first = ["/api/*"]
+
 
 
 [vars]
