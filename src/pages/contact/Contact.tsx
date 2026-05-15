@@ -3,9 +3,9 @@ import PageWrapper from "../../components/PageWrapper";
 
 export default function Contact() {
   return (
-    <PageWrapper>
+    <PageWrapper maxWidth="max-w-7xl" showHero={false}>
       {/* CONTACT SECTION */}
-      <section className="relative flex flex-col items-center justify-center">
+      <section className="relative flex flex-col items-center justify-center py-10">
         {/* Glow Effects */}
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00eaff]/10 blur-[150px] rounded-full pointer-events-none"></div>

@@ -51,6 +51,21 @@
         "location": { "type": "string", "description": "The geographic location of the user" }
       },
       "required": ["uid", "displayName"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "A record of a payment made by a user",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The UID of the user who made the payment" },
+        "amount": { "type": "number", "description": "The amount paid in cents" },
+        "currency": { "type": "string", "description": "The currency of the payment" },
+        "status": { "type": "string", "description": "The status of the payment (e.g., succeeded, pending)" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the payment was created" },
+        "stripeSessionId": { "type": "string", "description": "The Stripe session ID for reference" },
+        "tierId": { "type": "string", "description": "The ID of the subscription tier purchased" }
+      },
+      "required": ["userId", "amount", "currency", "status", "createdAt"]
     }
   },
   "firestore": {
@@ -69,6 +84,10 @@
     "/memorial_stories/{storyId}": {
       "schema": "MemorialStory",
       "description": "Public memorial stories"
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "User payment records"
     }
   }
 }

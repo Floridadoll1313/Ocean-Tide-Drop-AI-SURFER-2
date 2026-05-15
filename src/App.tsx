@@ -10,6 +10,12 @@ import Members from './pages/members/Members';
 import Lore from './pages/lore/Lore';
 import Mcp from './pages/mcp/Mcp';
 import Profile from './pages/profile/Profile';
+import ToolInterface from './pages/members/ToolInterface';
+import Gallery from './pages/gallery/Gallery';
+import Forecast from './pages/forecast/Forecast';
+import Diary from './pages/diary/Diary';
+import Shop from './pages/shop/Shop';
+import Memorial from './pages/memorial/Memorial';
 
 function App() {
   return (
@@ -22,7 +28,13 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/pricing/:slug" element={<PricingDetail />} />
           <Route path="/members" element={<Members />} />
+          <Route path="/members/tool/:toolId" element={<ToolInterface />} />
           <Route path="/lore" element={<Lore />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/forecast" element={<Forecast />} />
+          <Route path="/diary" element={<Diary />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/memorial" element={<Memorial />} />
           <Route path="/mcp" element={<Mcp />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>

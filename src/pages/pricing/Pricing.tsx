@@ -60,8 +60,8 @@ const tiers = [
 
 export default function Pricing() {
   return (
-    <PageWrapper>
-      <div className="relative z-10 w-full text-center">
+    <PageWrapper maxWidth="max-w-7xl" showHero={false}>
+      <div className="relative z-10 w-full text-center py-10">
         <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 text-[#00eaff] drop-shadow-[0_0_20px_#00eaff]">Pricing</h1>
         <p className="text-slate-400 mb-16 max-w-2xl mx-auto">Choose your wave. From initial drops to full-scale cinematic AI automation.</p>
 

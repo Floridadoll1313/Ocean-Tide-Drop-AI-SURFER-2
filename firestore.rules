@@ -93,6 +93,15 @@ service cloud.firestore {
              data.completedQuests.size() <= 100; // Realistic limit
     }
 
+    function isValidPayment(data) {
+      return data.keys().hasAll(['userId', 'amount', 'currency', 'status', 'createdAt']) &&
+             data.userId == request.auth.uid &&
+             data.amount is number &&
+             data.currency is string &&
+             data.status is string &&
+             data.createdAt == request.time;
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -128,6 +137,13 @@ service cloud.firestore {
     match /user_progress/{userId} {
       allow read: if isOwner(userId) || isAdmin();
       allow create, update: if isOwner(userId) && isValidUserProgress(request.resource.data);
+    }
+
+    match /payments/{paymentId} {
+      // Users can only read their own payments.
+      allow read, list: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      // Admins can manage all payments.
+      allow write: if isAdmin();
     }
   }
 }

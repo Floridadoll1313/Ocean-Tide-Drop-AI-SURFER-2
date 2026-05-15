@@ -1,0 +1,26 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="surfGradient" x1="100" y1="10" x2="100" y2="190" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00eaff" />
+      <stop offset="100%" stop-color="#0066ff" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Wave abstraction -->
+  <path d="M20 150C50 120 80 180 110 150C140 120 170 180 200 150" stroke="#00eaff" stroke-width="4" stroke-linecap="round" filter="url(#glow)" />
+  <path d="M0 170C30 140 60 200 90 170C120 140 150 200 180 170" stroke="#0066ff" stroke-width="4" stroke-linecap="round" opacity="0.5" />
+  
+  <!-- Surfboard shape -->
+  <path d="M100 10C85 50 75 90 75 130C75 160 85 180 100 180C115 180 125 160 125 130C125 90 115 50 100 10Z" fill="url(#surfGradient)" stroke="white" stroke-width="2" filter="url(#glow)" />
+  
+  <!-- Sun/Core -->
+  <circle cx="100" cy="110" r="25" fill="#ff5E00" filter="url(#glow)" />
+  <circle cx="100" cy="110" r="15" fill="#ffcc00" />
+  
+  <!-- Accent lines on board -->
+  <path d="M100 30V160" stroke="white" stroke-width="1" stroke-dasharray="4 4" opacity="0.3" />
+</svg>

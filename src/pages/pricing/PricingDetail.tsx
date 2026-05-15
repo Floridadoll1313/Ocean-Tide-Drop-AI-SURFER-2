@@ -80,7 +80,7 @@ export default function PricingDetail() {
   };
 
   return (
-    <PageWrapper>
+    <PageWrapper maxWidth="max-w-7xl" showHero={false}>
       <div className="relative flex items-center justify-center py-10 w-full min-h-[60vh]">
         {/* BACKGROUND */}
         <div className="absolute inset-0 opacity-40 blur-[120px]" style={{ background: "radial-gradient(circle at 50% 50%, rgba(0,255,255,0.2), transparent 60%)" }} />
