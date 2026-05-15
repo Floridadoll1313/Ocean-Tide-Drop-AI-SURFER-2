@@ -1,5 +1,5 @@
 # wrangler.toml
-name = 'Ocean-Tide-Drop-AI-SURFER-2'
+name = 'aisurfer2'
 run_worker_first = ["/api/*"]
 
 
