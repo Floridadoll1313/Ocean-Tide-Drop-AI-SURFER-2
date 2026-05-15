@@ -1,11 +1,9 @@
 {
-  "name": "ai-surfer-2",
-  "private": true,
-  "version": "0.0.0",
+  "name": "ocean-tide-drop-ai-surfer-2",
+  "version": "1.0.0",
   "type": "module",
-
-  ...
   "scripts": {
+
     "deploy": "wrangler deploy",
     "dev": "wrangler dev"
   }
