@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PageWrapper from "../../components/PageWrapper";
-import { Sparkles, Loader2, Send, CheckCircle2 } from "lucide-react";
+import { Sparkles, Loader2, Send, CheckCircle2, MapPin, Mail, Phone } from "lucide-react";
 
 export default function Contact() {
   const [inquiry, setInquiry] = useState("");

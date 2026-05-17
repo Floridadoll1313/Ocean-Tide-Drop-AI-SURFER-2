@@ -5,7 +5,7 @@ import { db } from "../../lib/firebase";
 import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp, Timestamp } from "firebase/firestore";
 import PageWrapper from "../../components/PageWrapper";
 import Chat from "../../components/Chat";
-import { Loader2, Zap, Rocket, Terminal, BarChart3, Users, Globe, Cpu, Activity, LayoutDashboard, Settings, Bell, Sparkles, DollarSign } from "lucide-react";
+import { Loader2, Zap, Rocket, Terminal, BarChart3, Users, Globe, Cpu, Activity, LayoutDashboard, Settings, Bell, Sparkles, DollarSign, Calendar } from "lucide-react";
 
 interface ToolWork {
   id: string;
@@ -20,6 +20,44 @@ export default function Members() {
   const navigate = useNavigate();
   const [launchingTool, setLaunchingTool] = useState<string | null>(null);
   const [recentWork, setRecentWork] = useState<ToolWork[]>([]);
+  
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const handleAIGenerate = async () => {
+    if (!aiPrompt) return;
+    setAiLoading(true);
+    setAiResponse("");
+    try {
+      const systemInstruction = "You are an integrated AI assistant inside the Ocean Tide Drop AI Surfer platform. Reply assuming the persona of 'AI Surfer Interface': confident, professional, and slightly futuristic.";
+      const res = await fetch("/api/ai/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: aiPrompt, systemInstruction })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Generation failed");
+      }
+      setAiResponse(data.result);
+      
+      // Also log this as a transmission!
+      if (user) {
+        addDoc(collection(db, "users", user.uid, "work"), {
+          userId: user.uid,
+          toolName: "AI Core Terminal",
+          action: "Transmit Prompt",
+          result: "Received optimal response sequence.",
+          timestamp: serverTimestamp()
+        }).catch(err => console.error("Error saving work:", err));
+      }
+    } catch (err: any) {
+      setAiResponse(`[ERROR]: ${err.message}`);
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const userTier = userData?.tier || 'none';
 
@@ -162,13 +200,16 @@ export default function Members() {
               <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest leading-loose">Access the high-frequency roadmap to architecting your business revenue streams.</p>
            </div>
            
-           <div className="bg-white/5 border border-white/10 p-10 rounded-sm hover:border-purple-500/50 transition-all cursor-pointer group relative accent-glow-purple">
+           <div 
+             onClick={() => navigate('/members/sync')}
+             className="bg-white/5 border border-white/10 p-10 rounded-sm hover:border-[#00eaff]/50 transition-all cursor-pointer group relative accent-glow-cyan"
+           >
               <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-all">
-                 <Sparkles className="w-12 h-12 text-white" />
+                 <Calendar className="w-12 h-12 text-white" />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-400 block mb-4">AI Core Status</span>
-              <h3 className="text-2xl font-black uppercase tracking-tighter text-white mb-4">Growth <span className="text-soul-gradient italic font-serif lowercase">Resonance.</span></h3>
-              <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest leading-loose">Real-time analysis of your digital presence and scale potential.</p>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#00eaff] block mb-4">Neural Workspace</span>
+              <h3 className="text-2xl font-black uppercase tracking-tighter text-white mb-4">Neural <span className="text-soul-gradient italic font-serif lowercase">Sync.</span></h3>
+              <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest leading-loose">Synchronize your Google Calendar and Tasks for unified strategic management.</p>
            </div>
 
            <div 
@@ -259,6 +300,33 @@ export default function Members() {
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="pt-8 border-t border-white/5">
+               <h2 className="text-2xl font-black uppercase tracking-tighter text-white mb-8">AI Core Terminal</h2>
+               <div className="bg-black border border-white/10 p-6 rounded-sm mb-12">
+                 <textarea 
+                   className="w-full bg-white/5 border border-white/10 p-4 text-sm text-white focus:outline-none focus:border-[#00eaff]/50 transition-colors resize-none rounded-sm mb-4"
+                   rows={4}
+                   placeholder="Enter your prompt here..."
+                   value={aiPrompt}
+                   onChange={(e) => setAiPrompt(e.target.value)}
+                 />
+                 <button 
+                   onClick={handleAIGenerate}
+                   disabled={aiLoading || !aiPrompt}
+                   className="w-full bg-[#00eaff]/10 text-[#00eaff] border border-[#00eaff]/20 px-6 py-3 text-xs font-black uppercase tracking-widest hover:bg-[#00eaff]/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                 >
+                   {aiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Terminal className="w-4 h-4" />}
+                   {aiLoading ? "Processing..." : "Transmit to AI"}
+                 </button>
+                 
+                 {aiResponse && (
+                   <div className="mt-6 p-4 bg-white/5 border border-white/10 rounded-sm text-sm text-zinc-300 whitespace-pre-wrap font-mono leading-relaxed">
+                     {aiResponse}
+                   </div>
+                 )}
+               </div>
             </div>
 
             <div className="pt-8 border-t border-white/5">
