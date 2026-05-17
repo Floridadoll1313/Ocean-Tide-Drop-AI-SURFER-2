@@ -9,6 +9,7 @@ interface UserData {
   displayName?: string;
   role?: string;
   subscriptionStatus?: 'none' | 'active' | 'canceled';
+  tier?: 'basic' | 'premium' | 'enterprise';
   photoURL?: string;
 }
 
@@ -37,6 +38,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let unsubscribeFirestore: (() => void) | undefined;
 
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+      if (unsubscribeFirestore) {
+        unsubscribeFirestore();
+        unsubscribeFirestore = undefined;
+      }
       setUser(currentUser);
       
       if (currentUser) {

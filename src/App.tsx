@@ -11,7 +11,9 @@ import Lore from './pages/lore/Lore';
 import Mcp from './pages/mcp/Mcp';
 import Profile from './pages/profile/Profile';
 import ToolInterface from './pages/members/ToolInterface';
+import Monetization from './pages/members/Monetization';
 import Gallery from './pages/gallery/Gallery';
+import Founders from './pages/founders/Founders';
 import Forecast from './pages/forecast/Forecast';
 import Diary from './pages/diary/Diary';
 import Shop from './pages/shop/Shop';
@@ -28,8 +30,10 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/pricing/:slug" element={<PricingDetail />} />
           <Route path="/members" element={<Members />} />
+          <Route path="/members/monetization" element={<Monetization />} />
           <Route path="/members/tool/:toolId" element={<ToolInterface />} />
           <Route path="/lore" element={<Lore />} />
+          <Route path="/founders" element={<Founders />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/forecast" element={<Forecast />} />
           <Route path="/diary" element={<Diary />} />

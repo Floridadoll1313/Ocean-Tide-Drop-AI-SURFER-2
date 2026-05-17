@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PageWrapper from "../../components/PageWrapper";
 import { motion } from "motion/react";
 import { 
@@ -8,12 +8,9 @@ import {
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  Cell
+  ResponsiveContainer
 } from 'recharts';
-import { Waves, TrendingUp, Info, Zap, Wind } from "lucide-react";
+import { Waves, TrendingUp, Info, Zap, Wind, Loader2, Sparkles } from "lucide-react";
 
 const FORECAST_DATA = [
   { time: '06:00', intensity: 45, frequency: 12 },
@@ -33,6 +30,29 @@ const TRENDS = [
 ];
 
 export default function Forecast() {
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
+
+  const handleSynthesize = async () => {
+    setIsAnalyzing(true);
+    try {
+      const response = await fetch("/api/ai/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          prompt: "Analyze the current creative trends: Cinematic Raw (85%), Mythic Noir (72%), Analog Flux (58%), Hyper Surreal (92%). Frequency peak at 15:00. Intense neural swell monitoring active. Provide a punchy, agency-style strategic forecast.",
+          systemInstruction: "You are the AI Surfer Forecast Analyst. Provide high-frequency marketing and aesthetic predictions. Be bold, strategic, and use agency jargon naturally."
+        }),
+      });
+      const data = await response.json();
+      setAiAnalysis(data.result);
+    } catch (err) {
+      console.error("Analysis Error:", err);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   return (
     <PageWrapper maxWidth="max-w-7xl" showHero={false}>
       <div className="w-full px-6 py-10">
@@ -53,22 +73,36 @@ export default function Forecast() {
           {/* Main Chart Area */}
           <div className="lg:col-span-2 space-y-10">
             <div className="glass-card p-10 rounded-[3rem] border border-white/10 bg-white/5">
-              <div className="flex items-center justify-between mb-10">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-6">
                 <div>
                   <h2 className="text-2xl font-black italic uppercase text-white tracking-tighter">Frequency Amplitude</h2>
                   <p className="text-[10px] uppercase text-white/40 tracking-widest">24-Hour Predictive Neural Mapping</p>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase text-[#00eaff]">
-                    <div className="w-2 h-2 rounded-full bg-[#00eaff]" />
-                    Intensity
-                  </div>
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase text-[#ff5E00]">
-                    <div className="w-2 h-2 rounded-full bg-[#ff5E00]" />
-                    Frequency
-                  </div>
-                </div>
+                <button 
+                  onClick={handleSynthesize}
+                  disabled={isAnalyzing}
+                  className="bg-white text-black px-6 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-[#00eaff] transition-colors flex items-center gap-3 disabled:opacity-50"
+                >
+                  {isAnalyzing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                  {isAnalyzing ? "Synthesizing..." : "Synthesize AI Forecast"}
+                </button>
               </div>
+
+              {aiAnalysis && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-10 p-8 border border-[#00eaff]/30 bg-[#00eaff]/5 rounded-3xl relative overflow-hidden"
+                >
+                  <div className="absolute top-4 right-4 opacity-20">
+                    <Sparkles className="w-12 h-12 text-[#00eaff]" />
+                  </div>
+                  <h3 className="text-[#00eaff] text-[10px] font-black uppercase tracking-[0.3em] mb-4">Neural Analysis Response</h3>
+                  <div className="prose prose-invert max-w-none text-zinc-300 text-xs font-medium leading-relaxed whitespace-pre-wrap">
+                    {aiAnalysis}
+                  </div>
+                </motion.div>
+              )}
 
               <div className="h-[400px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
