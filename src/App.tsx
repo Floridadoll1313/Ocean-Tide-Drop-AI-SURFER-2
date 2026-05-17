@@ -12,6 +12,7 @@ import Mcp from './pages/mcp/Mcp';
 import Profile from './pages/profile/Profile';
 import ToolInterface from './pages/members/ToolInterface';
 import Monetization from './pages/members/Monetization';
+import Workspace from './pages/members/Workspace';
 import Gallery from './pages/gallery/Gallery';
 import Founders from './pages/founders/Founders';
 import Forecast from './pages/forecast/Forecast';
@@ -31,6 +32,7 @@ function App() {
           <Route path="/pricing/:slug" element={<PricingDetail />} />
           <Route path="/members" element={<Members />} />
           <Route path="/members/monetization" element={<Monetization />} />
+          <Route path="/members/sync" element={<Workspace />} />
           <Route path="/members/tool/:toolId" element={<ToolInterface />} />
           <Route path="/lore" element={<Lore />} />
           <Route path="/founders" element={<Founders />} />

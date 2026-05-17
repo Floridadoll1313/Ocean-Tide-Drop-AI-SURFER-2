@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Menu, X, LogOut, User as UserIcon, Globe, MapPin, Mail, Phone, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users } from "lucide-react";
+import { Menu, X, LogOut, User as UserIcon, Globe, MapPin, Mail, Phone, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar } from "lucide-react";
 
 import mainHeroImage from "../assets/images/regenerated_image_1778855299759.png";
 
@@ -68,6 +68,10 @@ export default function PageWrapper({
                   <Link to="/members" className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity px-4 py-2 bg-white/5 border border-white/10 rounded-sm group">
                     <LayoutDashboard className="w-3.5 h-3.5 text-cyan-400 group-hover:rotate-12 transition-transform" />
                     <span>Dashboard</span>
+                  </Link>
+                  <Link to="/members/sync" className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity px-4 py-2 bg-white/5 border border-white/10 rounded-sm group ml-2">
+                    <Calendar className="w-3.5 h-3.5 text-emerald-400 group-hover:rotate-12 transition-transform" />
+                    <span>Neural Sync</span>
                   </Link>
                   <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity ml-2">
                     {user.photoURL ? (
@@ -139,7 +143,11 @@ export default function PageWrapper({
           <div className="mt-8 pt-8 border-t border-white/10 w-full max-w-xs flex flex-col gap-4">
             {user ? (
               <>
-                <Link onClick={toggleMenu} to="/profile" className="flex items-center justify-center gap-3 text-white">
+                <Link onClick={toggleMenu} to="/members/sync" className="flex items-center justify-center gap-3 text-white">
+                  <Calendar className="w-6 h-6 text-emerald-400" />
+                  <span className="font-bold">Neural Sync</span>
+                </Link>
+                <Link onClick={toggleMenu} to="/profile" className="flex items-center justify-center gap-3 text-white text-sm opacity-60">
                   {user.photoURL && <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full border border-white" />}
                   <span className="font-bold">{user.displayName || "View Profile"}</span>
                 </Link>

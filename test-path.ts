@@ -1,0 +1,1 @@
+import express from 'express'; try { express().get('*all', (req, res) => {}); console.log('success *all'); } catch (e) { console.error('ERROR *all:', e.message); } try { express().get('/*all', (req, res) => {}); console.log('success /*all'); } catch (e) { console.error('ERROR /*all:', e.message); }
