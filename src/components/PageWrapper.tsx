@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Menu, X, LogOut, User as UserIcon, Globe, MapPin, Mail, Phone } from "lucide-react";
+import { Menu, X, LogOut, User as UserIcon, Globe, MapPin, Mail, Phone, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users } from "lucide-react";
 
 import mainHeroImage from "../assets/images/regenerated_image_1778855299759.png";
 
@@ -25,43 +25,62 @@ export default function PageWrapper({
       <header className="w-full fixed top-0 left-0 z-50 backdrop-blur-xl bg-black/40 border-b border-white/10 navbar-glow">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 relative z-[60]">
-            <img
-              src={mainHeroImage}
-              alt="Logo"
-              className="h-10 w-10 drop-shadow-[0_0_12px_#00eaff] object-contain"
-            />
-            <span className="text-xl font-black italic tracking-tighter uppercase">
-              Ocean Tide <span className="text-[#00eaff]">Drop</span>
+            <div className="w-12 h-12 flex items-center justify-center rounded-sm">
+              <img src="/logo.png" alt="Ocean Tide Drop AI Surfer Logo" className="w-full h-full object-contain" />
+            </div>
+            <span className="text-xl font-black tracking-tighter uppercase text-white">
+              Ocean Tide Drop <span className="text-soul-gradient italic font-serif lowercase">AI Surfer</span>
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex gap-4 lg:gap-6 text-[10px] font-black uppercase tracking-[0.2em] items-center">
-            <Link className="hover:text-[#00eaff] transition-all whitespace-nowrap" to="/">Home</Link>
-            <Link className="hover:text-[#00eaff] transition-all whitespace-nowrap" to="/gallery">Gallery</Link>
-            <Link className="hover:text-[#00eaff] transition-all whitespace-nowrap" to="/forecast">Forecast</Link>
-            <Link className="hover:text-[#00eaff] transition-all whitespace-nowrap" to="/shop">Shop</Link>
-            <Link className="hover:text-[#00eaff] transition-all whitespace-nowrap" to="/diary">Diary</Link>
-            <Link className="hover:text-[#00eaff] transition-all whitespace-nowrap" to="/memorial">Memorial</Link>
-            <Link className="hover:text-[#00eaff] transition-all whitespace-nowrap text-[#00eaff]" to="/members">Members</Link>
+          <nav className="hidden md:flex gap-8 text-[11px] font-bold uppercase tracking-[0.15em] items-center text-zinc-400">
+            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/">
+              <HomeIcon className="w-3.5 h-3.5 text-yellow-500 group-hover:scale-110 transition-transform" />
+              <span>Home</span>
+            </Link>
+            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/gallery">
+              <Briefcase className="w-3.5 h-3.5 text-blue-500 group-hover:scale-110 transition-transform" />
+              <span>Work</span>
+            </Link>
+            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/services">
+              <Layers className="w-3.5 h-3.5 text-purple-500 group-hover:scale-110 transition-transform" />
+              <span>Services</span>
+            </Link>
+            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/founders">
+              <Users className="w-3.5 h-3.5 text-emerald-500 group-hover:scale-110 transition-transform" />
+              <span>Founders</span>
+            </Link>
+            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/memorial">
+              <Anchor className="w-3.5 h-3.5 text-orange-500 group-hover:scale-110 transition-transform" />
+              <span>Bull's Memorial</span>
+            </Link>
+            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/contact">
+              <MessageSquare className="w-3.5 h-3.5 text-green-500 group-hover:scale-110 transition-transform" />
+              <span>Contact</span>
+            </Link>
             
-            <div className="pl-4 border-l border-white/20 flex items-center gap-4">
+            <div className="pl-6 border-l border-white/10 flex items-center gap-6">
               {loading ? (
-                <div className="w-6 h-6 rounded-full border-2 border-[#00eaff] border-t-transparent animate-spin"></div>
+                <div className="w-4 h-4 rounded-full border border-white/20 border-t-white animate-spin"></div>
               ) : user ? (
                 <div className="flex items-center gap-3">
-                  <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                  <Link to="/members" className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity px-4 py-2 bg-white/5 border border-white/10 rounded-sm group">
+                    <LayoutDashboard className="w-3.5 h-3.5 text-cyan-400 group-hover:rotate-12 transition-transform" />
+                    <span>Dashboard</span>
+                  </Link>
+                  <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity ml-2">
                     {user.photoURL ? (
-                       <img src={user.photoURL} alt={user.displayName || "User"} className="w-6 h-6 rounded-full border border-[#00eaff]" />
+                       <img src={user.photoURL} alt={user.displayName || "User"} className="w-6 h-6 rounded-full border border-white/20" />
                     ) : (
-                       <div className="w-6 h-6 rounded-full bg-[#00eaff]/20 border border-[#00eaff] flex items-center justify-center text-[8px]">
+                       <div className="w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-[8px] text-white">
                          {user.email?.[0].toUpperCase()}
                        </div>
                     )}
                   </Link>
                   <button 
                     onClick={logout}
-                    className="text-[8px] hover:text-[#ff5E00] transition-colors"
+                    className="text-[8px] hover:text-white transition-colors"
                   >
                     Out
                   </button>
@@ -69,7 +88,7 @@ export default function PageWrapper({
               ) : (
                 <button 
                   onClick={loginWithGoogle}
-                  className="px-4 py-1.5 rounded-lg bg-[#00eaff]/10 border border-[#00eaff]/30 text-[#00eaff] hover:bg-[#00eaff]/20 transition-all text-[8px] font-black uppercase tracking-widest"
+                  className="px-5 py-2 bg-white text-black hover:bg-zinc-200 transition-all text-[10px] font-black uppercase tracking-widest"
                 >
                   Join
                 </button>
@@ -80,7 +99,7 @@ export default function PageWrapper({
           {/* Mobile Menu Button */}
           <button 
             onClick={toggleMenu}
-            className="md:hidden p-2 text-[#00eaff] relative z-[60]"
+            className="md:hidden p-2 text-white relative z-[60]"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -91,22 +110,37 @@ export default function PageWrapper({
       <div className={`fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl md:hidden transition-all duration-700 ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'}`}>
         <div className="flex flex-col items-center justify-center h-full gap-8 p-6 text-center">
           <nav className="flex flex-col gap-6">
-            <Link onClick={toggleMenu} className="text-3xl font-black italic uppercase tracking-tighter hover:text-[#00eaff] transition-all" to="/">Home</Link>
-            <Link onClick={toggleMenu} className="text-3xl font-black italic uppercase tracking-tighter hover:text-[#00eaff] transition-all" to="/services">Services</Link>
-            <Link onClick={toggleMenu} className="text-3xl font-black italic uppercase tracking-tighter hover:text-[#00eaff] transition-all" to="/gallery">Gallery</Link>
-            <Link onClick={toggleMenu} className="text-3xl font-black italic uppercase tracking-tighter hover:text-[#00eaff] transition-all" to="/forecast">Forecast</Link>
-            <Link onClick={toggleMenu} className="text-3xl font-black italic uppercase tracking-tighter hover:text-[#00eaff] transition-all" to="/shop">Shop</Link>
-            <Link onClick={toggleMenu} className="text-3xl font-black italic uppercase tracking-tighter hover:text-[#00eaff] transition-all" to="/diary">Diary</Link>
-            <Link onClick={toggleMenu} className="text-3xl font-black italic uppercase tracking-tighter hover:text-[#00eaff] transition-all" to="/memorial">Memorial</Link>
-            <Link onClick={toggleMenu} className="text-3xl font-black italic uppercase tracking-tighter hover:text-[#00eaff] transition-all" to="/members">Members</Link>
-            <Link onClick={toggleMenu} className="text-3xl font-black italic uppercase tracking-tighter hover:text-[#00eaff] transition-all" to="/contact">Contact</Link>
+            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/">
+              <HomeIcon className="w-8 h-8 text-yellow-500" />
+              Home
+            </Link>
+            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/gallery">
+              <Briefcase className="w-8 h-8 text-blue-500" />
+              Work
+            </Link>
+            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/services">
+              <Layers className="w-8 h-8 text-purple-500" />
+              Services
+            </Link>
+            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/founders">
+              <Users className="w-8 h-8 text-emerald-500" />
+              Founders
+            </Link>
+            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/memorial">
+              <Anchor className="w-8 h-8 text-orange-500" />
+              Bull's Memorial
+            </Link>
+            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/contact">
+              <MessageSquare className="w-8 h-8 text-green-500" />
+              Contact
+            </Link>
           </nav>
 
           <div className="mt-8 pt-8 border-t border-white/10 w-full max-w-xs flex flex-col gap-4">
             {user ? (
               <>
                 <Link onClick={toggleMenu} to="/profile" className="flex items-center justify-center gap-3 text-white">
-                  {user.photoURL && <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full border border-[#00eaff]" />}
+                  {user.photoURL && <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full border border-white" />}
                   <span className="font-bold">{user.displayName || "View Profile"}</span>
                 </Link>
                 <button 
@@ -119,7 +153,7 @@ export default function PageWrapper({
             ) : (
               <button 
                 onClick={() => { loginWithGoogle(); toggleMenu(); }}
-                className="w-full py-4 rounded-2xl bg-[#00eaff] text-black font-black uppercase text-xs tracking-widest"
+                className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase text-xs tracking-widest"
               >
                 Sign In With Google
               </button>
@@ -133,14 +167,7 @@ export default function PageWrapper({
         <div className={`relative ${maxWidth} mx-auto px-6 z-10 w-full`}>
           {showHero && (
             <div className="text-center mb-12">
-              <img
-                src={mainHeroImage}
-                alt="Ocean Tide Drop Logo"
-                className="w-48 h-auto mx-auto mb-4 drop-shadow-[0_0_30px_#00eaff] hover:scale-105 transition-transform duration-500"
-              />
-              <div className="text-[#00eaff] text-[10px] md:text-sm font-black uppercase tracking-[0.5em] drop-shadow-[0_0_10px_rgba(0,234,255,0.5)] animate-pulse">
-                CHOOSE YOUR TOOLS AS YOU DO.
-              </div>
+               <span className="text-zinc-600 font-bold uppercase tracking-[0.5em] text-[10px]">AI Surfer Growth Architecture</span>
             </div>
           )}
           {children}
@@ -148,25 +175,36 @@ export default function PageWrapper({
       </main>
 
       {/* FOOTER */}
-      <footer className="py-12 text-center text-white/60 text-sm relative z-10 shrink-0 border-t border-white/5 mt-auto">
-        <div className="flex flex-col items-center justify-center gap-6 mb-8">
-          <img
-            src={mainHeroImage}
-            alt="Ocean Tide Drop Footer Logo"
-            className="w-12 h-auto mb-2 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700"
-          />
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-            <a href="mailto:oceantidedropaisurf@gmail.com" className="hover:text-[#00eaff] transition-colors flex items-center gap-2">
-              <span>oceantidedropaisurf@gmail.com</span>
-            </a>
-            <div className="hidden md:block w-1 h-1 rounded-full bg-white/20"></div>
-            <a href="tel:8542853282" className="hover:text-[#00eaff] transition-colors flex items-center gap-2">
-              <span>(854) 285-3282</span>
-            </a>
-          </div>
+      <footer className="py-20 text-center text-zinc-500 text-sm relative z-10 shrink-0 border-t border-white/5 mt-auto bg-black">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12 text-left mb-20">
+           <div className="col-span-1 md:col-span-2">
+              <div className="w-12 h-12 flex items-center justify-center rounded-sm mb-6">
+                <img src="/logo.png" alt="Ocean Tide Drop AI Surfer Logo" className="w-full h-full object-contain grayscale brightness-200" />
+              </div>
+              <p className="max-w-xs text-zinc-400 font-medium leading-relaxed">
+                Ocean Tide Drop AI Surfer: A premium growth agency building digital architecture for tomorrow-focused brands.
+              </p>
+           </div>
+           <div>
+              <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Capabilities</h4>
+              <ul className="flex flex-col gap-4 text-xs font-bold">
+                 <li><Link to="/services" className="hover:text-white transition-colors">Brand Identity</Link></li>
+                 <li><Link to="/services" className="hover:text-white transition-colors">AI Integration</Link></li>
+                 <li><Link to="/services" className="hover:text-white transition-colors">Growth Design</Link></li>
+                 <li><Link to="/founders" className="hover:text-white transition-colors">Founders Society</Link></li>
+              </ul>
+           </div>
+           <div>
+              <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Contact</h4>
+              <ul className="flex flex-col gap-4 text-xs font-bold">
+                 <li className="flex items-center gap-2"><MapPin className="w-3 h-3 text-cyan-400" /> Charleston, SC</li>
+                 <li><a href="mailto:oceantidedropaisurf@gmail.com" className="hover:text-white transition-colors">oceantidedropaisurf@gmail.com</a></li>
+                 <li><Link to="/contact" className="text-zinc-600 underline">Get in Touch →</Link></li>
+              </ul>
+           </div>
         </div>
-        <div>
-          © {new Date().getFullYear()} Ocean Tide Drop AI Surfer — All Rights Reserved.
+        <div className="pt-12 border-t border-white/5 font-black uppercase tracking-[0.2em] text-[10px]">
+          © {new Date().getFullYear()} Ocean Tide Drop AI Surfer Marketing Agency — Peak Frequency.
         </div>
       </footer>
     </div>

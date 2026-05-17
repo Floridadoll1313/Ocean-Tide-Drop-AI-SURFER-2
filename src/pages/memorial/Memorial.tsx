@@ -1,22 +1,22 @@
 import React from "react";
 import PageWrapper from "../../components/PageWrapper";
 import { motion } from "motion/react";
-import { Waves, Heart, MapPin, Anchor } from "lucide-react";
+import { Waves, Heart, MapPin, Anchor, Hammer, Ruler } from "lucide-react";
 
 export default function Memorial() {
   return (
     <PageWrapper maxWidth="max-w-7xl" showHero={false}>
       <div className="w-full px-6 py-10">
-        <div className="flex flex-col items-center mb-20">
+        <div className="flex flex-col items-center mb-20 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 mb-6">
-            <Anchor className="w-3 h-3" />
-            Eternal Transmission
+            <Hammer className="w-3 h-3" />
+            Master Craftsmanship
           </div>
-          <h1 className="text-5xl md:text-8xl font-black italic uppercase text-white tracking-tighter text-center drop-shadow-[0_0_15px_rgba(30,144,255,0.3)]">
-            Bull <span className="text-blue-500">Memorial</span>
+          <h1 className="text-5xl md:text-8xl font-black italic uppercase text-white tracking-tighter drop-shadow-[0_0_15px_rgba(30,144,255,0.3)]">
+            Bull's <span className="text-blue-500">Memorial</span>
           </h1>
-          <p className="mt-6 text-white/40 text-sm md:text-base uppercase tracking-[0.2em] font-medium text-center max-w-2xl">
-            Honoring the legacy of Johnny Burgess Hooper in Salvo.
+          <p className="mt-6 text-white/60 text-sm md:text-base uppercase tracking-[0.2em] font-medium max-w-2xl leading-relaxed">
+            Honoring the legacy of <span className="text-white">Johnny Burgess Hooper</span> — The Master Carpenter who built the skyline of Hatteras Island. He touched countless homes with his craft and left his mark in the very wood of our community.
           </p>
         </div>
 
@@ -31,7 +31,7 @@ export default function Memorial() {
             <div className="absolute inset-0">
                <img 
                  src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000" 
-                 alt="Bull Memorial" 
+                 alt="Bull's Memorial" 
                  className="w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" 
                />
             </div>
@@ -54,14 +54,17 @@ export default function Memorial() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="glass-card p-10 rounded-[3rem] border border-white/10 bg-white/5"
+              className="glass-card p-10 rounded-[3rem] border border-white/10 bg-white/5 relative overflow-hidden"
             >
-              <Heart className="w-8 h-8 text-blue-500 mb-6" />
-              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter">The Heart of Salvo</h3>
+              <div className="absolute top-0 right-0 p-8 opacity-5">
+                <Hammer className="w-24 h-24" />
+              </div>
+              <Ruler className="w-8 h-8 text-blue-500 mb-6" />
+              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter">The Artisan's Touch</h3>
               <p className="text-white/60 text-lg leading-relaxed font-medium">
-                Johnny "Bull" Burgess Hooper was a cornerstone of the Salvo community. 
-                Whether he was casting a line at sunset or sharing stories on the shore, his presence defined the spirit of our coast. 
-                This space honors the man, the fisherman, and the legend who will forever be catching the golden hour.
+                Johnny "Bull" Burgess Hooper wasn't just a builder; he was a Master Carpenter whose hands shaped the homes and legacy of Hatteras Island. 
+                His precision and vision are etched into the foundations of countless residences across the sound and shore. 
+                He left his mark in wood, creating structures that stand strong against the Atlantic's fiercest storms.
               </p>
             </motion.div>
 
@@ -69,14 +72,17 @@ export default function Memorial() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="glass-card p-10 rounded-[3rem] border border-white/10 bg-white/5"
+              className="glass-card p-10 rounded-[3rem] border border-white/10 bg-white/5 relative overflow-hidden"
             >
-              <Anchor className="w-8 h-8 text-blue-400 mb-6" />
-              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter">The Salvo Horizon</h3>
+              <div className="absolute top-0 right-0 p-8 opacity-5">
+                <Anchor className="w-24 h-24" />
+              </div>
+              <Waves className="w-8 h-8 text-blue-400 mb-6" />
+              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter">Legacy in the Grain</h3>
               <p className="text-white/60 text-lg leading-relaxed font-medium">
-                As the sun dips below the sound in Salvo, we remember Bull. 
-                His legacy is etched into every ripple of the tide and every quiet moment on the pier. 
-                He taught us that the best days are spent with those we love, dogs by our side, waiting for the next strike.
+                Beyond the sawdust and the shoreline, Bull's true masterpiece was the community he helped build. 
+                His work was a testament to integrity—fair lines, strong joints, and a heart as vast as the Pamlico Sound. 
+                As the Hatteras currents shift, his structural legacy remains a beacon for all who appreciate true craftsmanship.
               </p>
             </motion.div>
 

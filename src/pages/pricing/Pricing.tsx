@@ -2,60 +2,215 @@ import React from "react";
 import { Link } from "react-router-dom";
 import PageWrapper from "../../components/PageWrapper";
 
-const tiers = [
+const productLines = [
   {
-    name: "Dawn Patrol",
-    slug: "dawn-patrol",
-    price: "$97",
-    desc: "Your cinematic entry point. Clean landing, AI‑assisted content, and your first automated workflows.",
-    features: [
-      "Cinematic landing page",
-      "AI‑assisted content engine",
-      "Starter automations",
-      "Brand color tuning",
-    ],
-    color: "text-slate-300",
+    title: "Automation & AI Workflows",
+    tiers: [
+      {
+        name: "Automatic AI 1",
+        slug: "automatic-ai-1",
+        price: "$350",
+        desc: "Entry-level automation architecture. Streamlining your core content and basic workflow frequencies.",
+        features: [
+          "Core AI Automation",
+          "Content Synchronization",
+          "Workflow Foundation",
+          "Standard Support",
+        ],
+        color: "text-slate-300",
+      },
+      {
+        name: "Automatic AI 2",
+        slug: "automatic-ai-2",
+        price: "$650",
+        desc: "The professional standard. Deeper automation layers for growing brands and scaling operations.",
+        features: [
+          "Advanced AI Workflows",
+          "Multi-channel Content Sync",
+          "Process Optimization",
+          "Priority Wave Support",
+        ],
+        color: "text-[#00eaff]",
+        popular: true,
+      },
+      {
+        name: "Automatic AI 3",
+        slug: "automatic-ai-3",
+        price: "$1,200",
+        desc: "Elite architectural scale. High-frequency systems for businesses demand total market resonance.",
+        features: [
+          "Full Ecosystem Automation",
+          "Predictive AI Modeling",
+          "Custom Core Integrations",
+          "24/7 Strategic Monitoring",
+        ],
+        color: "text-purple-500",
+      },
+      {
+        name: "Automatic AI Elite",
+        slug: "automatic-ai-elite",
+        price: "$3,500",
+        desc: "The Masterpiece Package. A fully custom, master-built AI empire designed for undisputed dominance.",
+        features: [
+          "Bespoke System Architecture",
+          "White-Glove Integration",
+          "Full Creative Governance",
+          "Unlimited Scale Support",
+        ],
+        oneTime: true,
+        color: "text-yellow-300",
+      },
+    ]
   },
   {
-    name: "Breakline",
-    slug: "breakline",
-    price: "$197",
-    desc: "A multi‑page experience with deeper automations and a tuned content engine that moves with your brand.",
-    features: [
-      "Multi‑page site",
-      "Advanced automations",
-      "Content engine tuning",
-      "Brand story expansion",
-    ],
-    color: "text-[#00eaff]",
-    popular: true,
+    title: "Cinematic Web Systems",
+    tiers: [
+      {
+        name: "Sys Core 1",
+        slug: "cin-core-1",
+        price: "$450",
+        desc: "Foundational cinematic experience. Clean, fast, and architecturally sound.",
+        features: [
+          "Modular Core Components",
+          "Standard Motion Suite",
+          "Responsive Architecture",
+          "SEO Synchronization",
+        ],
+        color: "text-slate-300",
+      },
+      {
+        name: "Sys Core 2",
+        slug: "cin-core-2",
+        price: "$750",
+        desc: "Immersive storytelling platform. Deeper motion integration and customized components.",
+        features: [
+          "Immersive Motion Pack",
+          "Custom Data Viz",
+          "Advanced Story Blocks",
+          "Performance Tuning",
+        ],
+        color: "text-[#00eaff]",
+        popular: true,
+      },
+      {
+        name: "Sys Core 3",
+        slug: "cin-core-3",
+        price: "$1,200",
+        desc: "The high-fidelity portal. Total brand immersion with bespoke interaction models.",
+        features: [
+          "Bespoke Interactions",
+          "3D Element Integration",
+          "Premium Motion Assets",
+          "Priority Deployment",
+        ],
+        color: "text-purple-500",
+      },
+      {
+        name: "Sys Core Elite",
+        slug: "cin-core-elite",
+        price: "$6,500",
+        desc: "The ultimate digital monument. A master-built web system designed to leave a legacy.",
+        features: [
+          "Unlimited Page Architect",
+          "Custom Engine Build",
+          "Full Creative Direction",
+          "Lifetime Core Updates",
+        ],
+        oneTime: true,
+        color: "text-orange-500",
+      },
+    ]
   },
   {
-    name: "Hatteras Island",
-    slug: "hatteras-island",
-    price: "$297",
-    desc: "High‑touch creative systems, evolving brand identity, and ongoing cinematic refinement.",
-    features: [
-      "Ongoing creative direction",
-      "Cinematic brand evolution",
-      "AI content pipelines",
-      "Monthly experiments",
-    ],
-    color: "text-pink-500",
+    title: "Brand Architecture & Identity",
+    tiers: [
+      {
+        name: "Brand Arch 1",
+        slug: "brand-arch-1",
+        price: "$2,500",
+        desc: "Foundational mythic identity. Essential universe-building for emerging pioneers.",
+        features: [
+          "Core Visual Identity",
+          "Universe Style Guide",
+          "Brand Voice Sync",
+          "Essential Asset Pack",
+        ],
+        color: "text-slate-300",
+      },
+      {
+        name: "Premium System 2",
+        slug: "brand-premium-2",
+        price: "$4,500",
+        desc: "Deep brand immersion. A custom systemic world designed for high-frequency resonance.",
+        features: [
+          "Full Identity Ecosystem",
+          "Cinematic Style Guide",
+          "Custom Iconography",
+          "Marketing World-Building",
+        ],
+        color: "text-[#00eaff]",
+        popular: true,
+      },
+      {
+        name: "Enterprise Ecosystem 3",
+        slug: "brand-enterprise-3",
+        price: "$7,500",
+        desc: "The total brand universe. A living, breathing architectural masterpiece built for scale.",
+        features: [
+          "Total Brand Architecture",
+          "Bespoke Visual Language",
+          "Full Asset Governance",
+          "Strategic World Audit",
+        ],
+        color: "text-purple-500",
+      },
+    ]
   },
   {
-    name: "Cape Point",
-    slug: "cape-point",
-    price: "$497",
-    desc: "Full‑stack automation, AI‑driven content pipelines, and mythic brand architecture built for scale.",
-    features: [
-      "Full automation suite",
-      "AI‑driven content pipelines",
-      "Mythic brand architecture",
-      "Founder‑first creative systems",
-    ],
-    color: "text-yellow-300",
-  },
+    title: "AI Surfer Membership",
+    tiers: [
+      {
+        name: "Membership",
+        slug: "membership-basic",
+        price: "$45",
+        desc: "Access to the core sanctuary for creators and founders riding the neon tide.",
+        features: [
+          "Community Sanctuary",
+          "Essential AI Tools",
+          "Weekly Momentum Drops",
+          "Basic Core Access",
+        ],
+        color: "text-slate-300",
+      },
+      {
+        name: "Premium 2",
+        slug: "membership-premium",
+        price: "$95",
+        desc: "Deep community integration and advanced toolsets for scaling visionaries.",
+        features: [
+          "Advanced Toolkit",
+          "Private Mastermind",
+          "Priority Beta Access",
+          "Monthly High-Frequency Sync",
+        ],
+        color: "text-[#00eaff]",
+        popular: true,
+      },
+      {
+        name: "Enterprise 2",
+        slug: "membership-enterprise",
+        price: "$250",
+        desc: "Total platform immersion. Concierge strategy and custom tool development.",
+        features: [
+          "Custom Tool Development",
+          "1-on-1 Concierge Support",
+          "Elite Network Access",
+          "Strategic Governance",
+        ],
+        color: "text-purple-500",
+      },
+    ]
+  }
 ];
 
 export default function Pricing() {
@@ -63,31 +218,55 @@ export default function Pricing() {
     <PageWrapper maxWidth="max-w-7xl" showHero={false}>
       <div className="relative z-10 w-full text-center py-10">
         <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 text-[#00eaff] drop-shadow-[0_0_20px_#00eaff]">Pricing</h1>
-        <p className="text-slate-400 mb-16 max-w-2xl mx-auto">Choose your wave. From initial drops to full-scale cinematic AI automation.</p>
+        <p className="text-slate-400 mb-24 max-w-2xl mx-auto">Choose your wave. From absolute automation to cinematic storytelling architecture.</p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
-          {tiers.map((tier) => (
-            <div key={tier.slug} className={`glass-card p-8 rounded-3xl relative overflow-hidden flex flex-col ${tier.popular ? 'border-[#00eaff]/50 shadow-[0_0_30px_rgba(0,255,255,0.1)]' : 'border-white/10'}`}>
-              {tier.popular && (
-                <div className="absolute top-0 right-0 bg-[#00eaff] text-black text-[10px] font-bold uppercase tracking-widest py-1 px-4 rounded-bl-xl">Best Value</div>
-              )}
-              <h3 className={`text-2xl font-black italic uppercase ${tier.color} mb-2`}>{tier.name}</h3>
-              <div className="text-4xl font-bold mb-4">{tier.price}<span className="text-sm font-normal text-slate-500">/mo</span></div>
-              <p className="text-sm text-slate-400 mb-8">{tier.desc}</p>
-              
-              <div className="flex-1">
-                <ul className="space-y-3 mb-8">
-                  {tier.features.map((feature, i) => (
-                    <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
-                      <span className="text-[#00eaff] mt-0.5">✦</span> {feature}
-                    </li>
-                  ))}
-                </ul>
+        <div className="space-y-40">
+          {productLines.map((line, lineIdx) => (
+            <div key={lineIdx} className="text-left">
+              <div className="flex items-center gap-6 mb-16 px-4">
+                 <div className="h-px bg-white/10 flex-1"></div>
+                 <h2 className="text-lg font-black uppercase tracking-[0.4em] text-zinc-500">{line.title}</h2>
+                 <div className="h-px bg-white/10 flex-1"></div>
               </div>
 
-              <Link to={`/pricing/${tier.slug}`} className="w-full text-center block py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors uppercase tracking-widest text-xs font-bold">
-                Select Tier
-              </Link>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {line.tiers.map((tier) => (
+                  <div key={tier.slug} className={`glass-card p-8 rounded-3xl relative overflow-hidden flex flex-col ${tier.popular ? 'border-[#00eaff]/50 shadow-[0_0_30px_rgba(0,255,255,0.1)]' : 'border-white/10'}`}>
+                    {tier.popular && (
+                      <div className="absolute top-0 right-0 bg-[#00eaff] text-black text-[10px] font-bold uppercase tracking-widest py-1 px-4 rounded-bl-xl">Best Value</div>
+                    )}
+                    <h3 className={`text-2xl font-black italic uppercase ${tier.color} mb-2`}>{tier.name}</h3>
+                    <div className="text-4xl font-bold mb-4">{tier.price}<span className="text-sm font-normal text-slate-500">{tier.oneTime ? '' : '/mo'}</span></div>
+                    <p className="text-sm text-slate-400 mb-8 h-12">{tier.desc}</p>
+                    
+                    <div className="flex-1">
+                      <ul className="space-y-3 mb-8">
+                        {tier.features.map((feature, i) => (
+                          <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
+                            <span className="text-white/20 mt-1">
+                               <div className="w-1.5 h-1.5 bg-soul-gradient rounded-full"></div>
+                            </span> 
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <a 
+                      href="https://buy.stripe.com/mock_link" 
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-full text-center block py-4 rounded-sm bg-white text-black hover:bg-soul-gradient hover:text-white transition-all uppercase tracking-widest text-[10px] font-black group relative overflow-hidden"
+                    >
+                      <span className="relative z-10">Secure Checkout</span>
+                      <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform"></div>
+                    </a>
+                    <div className="mt-4 flex items-center justify-center gap-2 opacity-30 group-hover:opacity-60 transition-opacity">
+                      <span className="text-[8px] font-black uppercase tracking-[0.2em]">Powered by Stripe</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
