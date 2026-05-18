@@ -66,19 +66,6 @@
         "tierId": { "type": "string", "description": "The ID of the subscription tier purchased" }
       },
       "required": ["userId", "amount", "currency", "status", "createdAt"]
-    },
-    "ToolWork": {
-      "title": "Tool Work",
-      "description": "A record of work performed by a user with a tool",
-      "type": "object",
-      "properties": {
-        "userId": { "type": "string", "description": "The UID of the user" },
-        "toolName": { "type": "string", "description": "The name of the tool used" },
-        "action": { "type": "string", "description": "The action performed" },
-        "result": { "type": "string", "description": "The result of the action" },
-        "timestamp": { "type": "string", "format": "date-time", "description": "When the work was performed" }
-      },
-      "required": ["userId", "toolName", "action", "result", "timestamp"]
     }
   },
   "firestore": {
@@ -101,10 +88,6 @@
     "/payments/{paymentId}": {
       "schema": "Payment",
       "description": "User payment records"
-    },
-    "/users/{userId}/work/{workId}": {
-      "schema": "ToolWork",
-      "description": "User tool activity logs"
     }
   }
 }

@@ -102,15 +102,6 @@ service cloud.firestore {
              data.createdAt == request.time;
     }
 
-    function isValidToolWork(data) {
-      return data.keys().hasAll(['userId', 'toolName', 'action', 'result', 'timestamp']) &&
-             data.userId == request.auth.uid &&
-             data.toolName is string &&
-             data.action is string &&
-             data.result is string &&
-             data.timestamp == request.time;
-    }
-
     // ===============================================================
     // Rules
     // ===============================================================
@@ -153,12 +144,6 @@ service cloud.firestore {
       allow read, list: if isAuthenticated() && resource.data.userId == request.auth.uid;
       // Admins can manage all payments.
       allow write: if isAdmin();
-    }
-
-    match /users/{userId}/work/{workId} {
-      allow read, list: if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId) && isValidToolWork(request.resource.data);
-      allow update, delete: if isAdmin();
     }
   }
 }
