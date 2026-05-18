@@ -36,7 +36,8 @@ export default function Forecast() {
   const handleSynthesize = async () => {
     setIsAnalyzing(true);
     try {
-      const response = await fetch("/api/ai/generate", {
+      setAiAnalysis("");
+      const response = await fetch("/api/ai/generate-stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -44,8 +45,30 @@ export default function Forecast() {
           systemInstruction: "You are the AI Surfer Forecast Analyst. Provide high-frequency marketing and aesthetic predictions. Be bold, strategic, and use agency jargon naturally."
         }),
       });
-      const data = await response.json();
-      setAiAnalysis(data.result);
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let fullText = "";
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunkStr = decoder.decode(value, { stream: true });
+          const lines = chunkStr.split('\n');
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const dataStr = line.slice(6);
+              if (dataStr === '[DONE]') break;
+              try {
+                const parsed = JSON.parse(dataStr);
+                if (parsed.text) {
+                  fullText += parsed.text;
+                  setAiAnalysis(fullText);
+                }
+              } catch (e) {}
+            }
+          }
+        }
+      }
     } catch (err) {
       console.error("Analysis Error:", err);
     } finally {

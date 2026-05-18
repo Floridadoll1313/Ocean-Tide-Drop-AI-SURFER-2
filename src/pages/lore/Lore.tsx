@@ -14,7 +14,7 @@ export default function Lore() {
     {
       title: "Hatteras Currents",
       icon: <Waves className="w-6 h-6" />,
-      content: "The currents here aren't just water; they are frequencies. We learned to surf the edge where the Gulf Stream meets the Labrador Current. It's in this collision of energies that Ocean Tide Drop was born, carrying the spirit of the Atlantic into the architecture of the AI age."
+      content: "The currents here aren't just water; they are frequencies. We learned to surf the edge where the Gulf Stream meets the Labrador Current. It's in this collision of energies that AI Surfer was born, carrying the spirit of the Atlantic into the architecture of the AI age."
     },
     {
       title: "The Navigation",

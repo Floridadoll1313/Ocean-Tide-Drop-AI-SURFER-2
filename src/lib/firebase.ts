@@ -9,5 +9,11 @@ export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('https://www.googleapis.com/auth/calendar');
 googleProvider.addScope('https://www.googleapis.com/auth/tasks');
+googleProvider.addScope('https://www.googleapis.com/auth/chat');
+googleProvider.addScope('https://www.googleapis.com/auth/spreadsheets');
+googleProvider.addScope('https://www.googleapis.com/auth/presentations');
+googleProvider.addScope('https://www.googleapis.com/auth/documents');
+googleProvider.addScope('https://mail.google.com/');
+googleProvider.addScope('https://www.googleapis.com/auth/keep');
 
 export { signInWithPopup, signOut };

@@ -16,6 +16,203 @@ export interface Task {
   due?: string;
 }
 
+export interface ChatSpace {
+  name: string;
+  displayName: string;
+  spaceType: string;
+}
+
+export interface ChatMessage {
+  text: string;
+}
+
+export interface Spreadsheet {
+  spreadsheetId: string;
+  spreadsheetUrl: string;
+  properties: {
+    title: string;
+  };
+}
+
+export const createSpreadsheet = async (accessToken: string, title: string): Promise<Spreadsheet> => {
+  const url = 'https://sheets.googleapis.com/v4/spreadsheets';
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      properties: {
+        title,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to create spreadsheet');
+  }
+
+  return response.json();
+};
+
+export interface Presentation {
+  presentationId: string;
+  title: string;
+}
+
+export const createPresentation = async (accessToken: string, title: string): Promise<Presentation> => {
+  const url = 'https://slides.googleapis.com/v1/presentations';
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to create presentation');
+  }
+
+  return response.json();
+};
+
+export interface Document {
+  documentId: string;
+  title: string;
+}
+
+export const createDocument = async (accessToken: string, title: string): Promise<Document> => {
+  const url = 'https://docs.googleapis.com/v1/documents';
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to create document');
+  }
+
+  return response.json();
+};
+
+export interface GmailMessage {
+  id: string;
+  threadId: string;
+  snippet: string;
+  subject?: string;
+  from?: string;
+  date?: string;
+}
+
+export const fetchRecentEmails = async (accessToken: string): Promise<GmailMessage[]> => {
+  const url = 'https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=5&q=in:inbox';
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to fetch emails lists');
+  }
+
+  const data = await response.json();
+  const messages = data.messages || [];
+
+  const detailedMessages: GmailMessage[] = [];
+  for (const msg of messages) {
+    const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (msgRes.ok) {
+      const msgData = await msgRes.json();
+      const headers = msgData.payload?.headers || [];
+      const subject = headers.find((h: any) => h.name === 'Subject')?.value;
+      const from = headers.find((h: any) => h.name === 'From')?.value;
+      const date = headers.find((h: any) => h.name === 'Date')?.value;
+      detailedMessages.push({
+        id: msgData.id,
+        threadId: msgData.threadId,
+        snippet: msgData.snippet,
+        subject,
+        from,
+        date
+      });
+    }
+  }
+
+  return detailedMessages;
+};
+
+export interface KeepNote {
+  name: string;
+  title: string;
+  createTime: string;
+  updateTime: string;
+}
+
+export const fetchNotes = async (accessToken: string): Promise<KeepNote[]> => {
+  const url = 'https://keep.googleapis.com/v1/notes';
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to fetch notes');
+  }
+
+  const data = await response.json();
+  return data.notes || [];
+};
+
+export const fetchChatSpaces = async (accessToken: string): Promise<ChatSpace[]> => {
+  const url = 'https://chat.googleapis.com/v1/spaces';
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to fetch chat spaces');
+  }
+
+  const data = await response.json();
+  return data.spaces || [];
+};
+
+export const sendChatMessage = async (accessToken: string, spaceName: string, text: string): Promise<ChatMessage> => {
+  const url = `https://chat.googleapis.com/v1/${spaceName}/messages`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to send chat message');
+  }
+
+  return response.json();
+};
+
 export const fetchCalendarEvents = async (accessToken: string): Promise<CalendarEvent[]> => {
   const timeMin = new Date().toISOString();
   const url = `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&singleEvents=true&orderBy=startTime`;

@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PageWrapper from "../../components/PageWrapper";
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'stripe-pricing-table': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        'pricing-table-id': string;
+        'publishable-key': string;
+      };
+    }
+  }
+}
 
 const productLines = [
   {
     title: "Automation & AI Workflows",
+    pricingTableId: "prctbl_1TQvzmRwAZCPDqtyFmCeKNi1",
+    publishableKey: "pk_live_51Q2XUORwAZCPDqtydW4uiu9lb4c3lQmiD3stgOYTwouLpIZgGshtd83dt82kZl8olvhEIvJAVBTZJnCuUnCK757o00guoyHSoi",
     tiers: [
       {
         name: "Automatic AI 1",
@@ -64,6 +77,8 @@ const productLines = [
   },
   {
     title: "Cinematic Web Systems",
+    pricingTableId: "prctbl_1TQw2URwAZCPDqtyKTZZUQMo",
+    publishableKey: "pk_live_51Q2XUORwAZCPDqtydW4uiu9lb4c3lQmiD3stgOYTwouLpIZgGshtd83dt82kZl8olvhEIvJAVBTZJnCuUnCK757o00guoyHSoi",
     tiers: [
       {
         name: "Sys Core 1",
@@ -123,6 +138,8 @@ const productLines = [
   },
   {
     title: "Brand Architecture & Identity",
+    pricingTableId: "prctbl_1TQw3pRwAZCPDqtypfjQBD64",
+    publishableKey: "pk_live_51Q2XUORwAZCPDqtydW4uiu9lb4c3lQmiD3stgOYTwouLpIZgGshtd83dt82kZl8olvhEIvJAVBTZJnCuUnCK757o00guoyHSoi",
     tiers: [
       {
         name: "Brand Arch 1",
@@ -214,11 +231,28 @@ const productLines = [
 ];
 
 export default function Pricing() {
+  const [isInIframe, setIsInIframe] = useState(false);
+
+  useEffect(() => {
+    try {
+      setIsInIframe(window.self !== window.top);
+    } catch (e) {
+      setIsInIframe(true);
+    }
+  }, []);
+
   return (
     <PageWrapper maxWidth="max-w-7xl" showHero={false}>
       <div className="relative z-10 w-full text-center py-10">
         <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 text-[#00eaff] drop-shadow-[0_0_20px_#00eaff]">Pricing</h1>
-        <p className="text-slate-400 mb-24 max-w-2xl mx-auto">Choose your wave. From absolute automation to cinematic storytelling architecture.</p>
+        <p className="text-slate-400 mb-12 max-w-2xl mx-auto">Choose your wave. From absolute automation to cinematic storytelling architecture.</p>
+
+        {isInIframe && (
+          <div className="bg-orange-500/10 border border-orange-500/30 text-orange-400 p-6 rounded-sm mb-16 max-w-3xl mx-auto mx-4 text-sm font-medium tracking-wide">
+             <div className="font-bold uppercase tracking-widest text-orange-500 mb-2 text-xs">⚠️ Preview Mode Constraint</div>
+             Stripe Checkout cannot launch from inside this preview window. <strong>To use the Subscribe buttons, please open this app in a new tab</strong> by clicking the arrow/window icon at the top right of your screen.
+          </div>
+        )}
 
         <div className="space-y-40">
           {productLines.map((line, lineIdx) => (
@@ -230,7 +264,14 @@ export default function Pricing() {
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {line.tiers.map((tier) => (
+                {(line as any).pricingTableId ? (
+                  <div className="col-span-full">
+                    <stripe-pricing-table 
+                      pricing-table-id={(line as any).pricingTableId}
+                      publishable-key={(line as any).publishableKey}>
+                    </stripe-pricing-table>
+                  </div>
+                ) : line.tiers.map((tier) => (
                   <div key={tier.slug} className={`glass-card p-8 rounded-3xl relative overflow-hidden flex flex-col ${tier.popular ? 'border-[#00eaff]/50 shadow-[0_0_30px_rgba(0,255,255,0.1)]' : 'border-white/10'}`}>
                     {tier.popular && (
                       <div className="absolute top-0 right-0 bg-[#00eaff] text-black text-[10px] font-bold uppercase tracking-widest py-1 px-4 rounded-bl-xl">Best Value</div>
