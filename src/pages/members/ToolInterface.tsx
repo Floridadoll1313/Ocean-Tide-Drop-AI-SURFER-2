@@ -43,6 +43,7 @@ interface ToolConfig {
   actions: string[];
   settings: Setting[];
   minTier: 'basic' | 'premium' | 'enterprise';
+  prompts?: string[];
 }
 
 const TOOLS: Record<string, ToolConfig> = {
@@ -62,6 +63,11 @@ const TOOLS: Record<string, ToolConfig> = {
     color: "#ffffff",
     status: "Tone Loaded",
     actions: ["Analyze Brand Voice", "Generate Style Guide", "Rewrite Content", "Detect Inconsistency"],
+    prompts: [
+      "Analyze this brand text and extract its core tone and vocabulary.",
+      "Rewrite the underlying message to be more authoritative and visionary.",
+      "Generate a 5-point brand voice guideline based on these values."
+    ],
     settings: [
       { id: 'creativity', label: 'Linguistic Resonance', type: 'range', min: 0, max: 100, value: 75 },
       { id: 'formality', label: 'Semantic Authority', type: 'range', min: 0, max: 100, value: 50 },
@@ -84,6 +90,11 @@ const TOOLS: Record<string, ToolConfig> = {
     color: "#ffffff",
     status: "Frequency Synced",
     actions: ["Generate Ad Suite", "A/B Variation Flow", "Predict CTR", "Competitor Analysis"],
+    prompts: [
+      "Create 3 high-converting ad variations for a premium B2B software.",
+      "Write an urgent, FOMO-driven Facebook ad for an upcoming webinar.",
+      "Analyze our competitor's ad copy and suggest a stronger counter-hook."
+    ],
     settings: [
       { id: 'urgency', label: 'Conversion Velocity', type: 'range', min: 0, max: 100, value: 80 },
       { id: 'benefit-focus', label: 'Value Intensity', type: 'range', min: 0, max: 100, value: 90 },
@@ -106,6 +117,11 @@ const TOOLS: Record<string, ToolConfig> = {
     color: "#ffffff",
     status: "Crawl Active",
     actions: ["Keyword Mapping", "GAP Analysis", "On-Page Audit", "Link Prophet"],
+    prompts: [
+      "Cluster these keywords based on search intent and funnel stage.",
+      "Generate a content outline optimized for featured snippets.",
+      "Identify content gaps between our site and typical market leaders."
+    ],
     settings: [
       { id: 'depth', label: 'Scan Depth', type: 'range', min: 1, max: 50, value: 25 },
       { id: 'intent-focus', label: 'Search Intent Focus', type: 'range', min: 1, max: 10, value: 8 },
@@ -128,6 +144,11 @@ const TOOLS: Record<string, ToolConfig> = {
     color: "#ffffff",
     status: "Engine: Online",
     actions: ["Sync Nodes", "Bridge APIs", "Monitor Health", "Optimize Throughput"],
+    prompts: [
+      "Design a workflow connecting our payment gateway, CRM, and team chat.",
+      "Suggest robust error-handling steps for a lead enrichment automation.",
+      "Outline a self-healing automation logic for a broken API endpoint."
+    ],
     settings: [
       { id: 'concurrency', label: 'Parallel Processing', type: 'range', min: 1, max: 50, value: 16 },
       { id: 'buffer', label: 'Memory Allocation', type: 'range', min: 1, max: 100, value: 64 },
@@ -150,6 +171,11 @@ const TOOLS: Record<string, ToolConfig> = {
     color: "#ffffff",
     status: "Guardian Active",
     actions: ["Analyze Risk", "Optimize Capital", "Sync Governance", "Generate Protocol"],
+    prompts: [
+      "Evaluate the risk/reward of launching a new software product in Q3.",
+      "Draft a quarterly governance memo aligning team output.",
+      "Analyze potential compliance bottlenecks when scaling to EU markets."
+    ],
     settings: [
       { id: 'risk-tolerance', label: 'Risk Aperture', type: 'range', min: 1, max: 100, value: 15 },
       { id: 'governance-speed', label: 'Response Velocity', type: 'range', min: 1, max: 100, value: 90 },
@@ -172,6 +198,11 @@ const TOOLS: Record<string, ToolConfig> = {
     color: "#ffffff",
     status: "Forge Ready",
     actions: ["Initiate Forge", "Map Logic Gate", "Bridge Custom API", "Sync Neural Core"],
+    prompts: [
+      "Create a spec for an internal tool that scores sales calls.",
+      "Outline the data schema needed for a real-time volatility tracker.",
+      "Define frontend/backend requirements for a generated landing page engine."
+    ],
     settings: [
       { id: 'complexity', label: 'Neural Complexity', type: 'range', min: 1, max: 10, value: 7 },
       { id: 'io-speed', label: 'Data Throughput', type: 'range', min: 1, max: 100, value: 100 },
@@ -228,8 +259,10 @@ export default function ToolInterface() {
   if (!user) return <Navigate to="/members" replace />;
   if (!tool) return <Navigate to="/members" replace />;
 
-  const runAction = async (action: string) => {
-    if (!promptInput.trim()) {
+  const runAction = async (action: string, overridePrompt?: string) => {
+    const promptToUse = overridePrompt !== undefined ? overridePrompt : promptInput;
+
+    if (!promptToUse.trim()) {
       setLogs(prev => [...prev, "Warning: Prompt input is empty. AI synthesis requires core data."]);
       return;
     }
@@ -240,29 +273,57 @@ export default function ToolInterface() {
     setAiResult(null);
 
     try {
-      const response = await fetch("/api/ai/generate", {
+      const response = await fetch("/api/ai/generate-stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          prompt: `Action: ${action}\nTool: ${tool.name}\nInput: ${promptInput}\nSettings: ${JSON.stringify(toolSettings)}`,
+          prompt: `Action: ${action}\nTool: ${tool.name}\nInput: ${promptToUse}\nSettings: ${JSON.stringify(toolSettings)}`,
           systemInstruction: `You are the ${tool.name} module. Provide highly professional, structured, and strategic output for the given action and input. Format the response with clear headings and bullet points where appropriate.`
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) throw new Error("AI Core Linkage Error");
 
-      if (!response.ok) throw new Error(data.error || "AI Core Linkage Error");
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let fullText = "";
+      
+      setAiResult("");
 
-      setAiResult(data.result);
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunkStr = decoder.decode(value, { stream: true });
+          const lines = chunkStr.split('\n');
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const dataStr = line.slice(6);
+              if (dataStr === '[DONE]') break;
+              try {
+                const parsed = JSON.parse(dataStr);
+                if (parsed.error) {
+                  throw new Error(parsed.error);
+                }
+                if (parsed.text) {
+                  fullText += parsed.text;
+                  setAiResult(fullText);
+                }
+              } catch (e) {}
+            }
+          }
+        }
+      }
+
       setLogs(prev => [...prev, `Success: AI output synthesized for ${action}.`]);
 
       // Persist the action and result
-      if (user) {
+      if (user && fullText) {
         await addDoc(collection(db, "users", user.uid, "work"), {
           userId: user.uid,
           toolName: tool.name,
           action: action,
-          result: data.result,
+          result: fullText,
           timestamp: serverTimestamp()
         });
       }
@@ -435,6 +496,27 @@ export default function ToolInterface() {
                       onChange={(e) => setPromptInput(e.target.value)}
                       className="w-full bg-white/5 border border-white/10 p-6 text-white text-sm font-medium focus:outline-none focus:border-white/20 transition-colors min-h-[120px] resize-none"
                     />
+                    
+                    {tool.prompts && tool.prompts.length > 0 && (
+                      <div className="mt-6">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600 mb-4">Suggested Commands</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {tool.prompts.map((prompt, i) => (
+                            <button
+                              key={i}
+                              onClick={() => {
+                                setPromptInput(prompt);
+                                runAction(tool.actions[0], prompt);
+                              }}
+                              className="text-left px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 transition-all text-xs text-zinc-400 hover:text-white rounded-sm flex items-center gap-2"
+                            >
+                              <Play className="w-3 h-3" />
+                              {prompt}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* AI ACTIONS GRID */}

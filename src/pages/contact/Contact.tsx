@@ -13,7 +13,8 @@ export default function Contact() {
 
     setIsConsulting(true);
     try {
-      const response = await fetch("/api/ai/generate", {
+      setConsultResult("");
+      const response = await fetch("/api/ai/generate-stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -21,8 +22,30 @@ export default function Contact() {
           systemInstruction: "You are the AI Surfer Lead Strategist. The user is inquiring about marketing/branding services. Provide a brief, brilliant set of 'Preliminary Strategic Initializations' (immediate advice/feedback) based on their message. Be sophisticated, high-conviction, and professional."
         }),
       });
-      const data = await response.json();
-      setConsultResult(data.result);
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let fullText = "";
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunkStr = decoder.decode(value, { stream: true });
+          const lines = chunkStr.split('\n');
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const dataStr = line.slice(6);
+              if (dataStr === '[DONE]') break;
+              try {
+                const parsed = JSON.parse(dataStr);
+                if (parsed.text) {
+                  fullText += parsed.text;
+                  setConsultResult(fullText);
+                }
+              } catch (e) {}
+            }
+          }
+        }
+      }
     } catch (err) {
       console.error("Consult Error:", err);
     } finally {
@@ -45,7 +68,7 @@ export default function Contact() {
           </h1>
 
           <p className="mt-4 text-lg text-white/80 max-w-2xl mx-auto mb-16 underline decoration-soul-gradient decoration-2">
-            The Ocean Tide Drop team is here to help you ride the frequency of growth. Whether you need cinematic branding or advanced AI automations, we're ready to architect your future.
+            The AI Surfer team is here to help you ride the frequency of growth. Whether you need cinematic branding or advanced AI automations, we're ready to architect your future.
           </p>
 
           <div className="mb-20 glass-card p-10 border border-white/10 bg-white/5 rounded-[2rem] text-left">

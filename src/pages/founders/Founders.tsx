@@ -22,7 +22,7 @@ export default function Founders() {
             Founders <span className="text-soul-gradient italic font-serif lowercase">Sanctuary.</span>
           </h1>
           <p className="text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed font-medium">
-            Ocean Tide Drop is a sanctuary built by two women and three dogs who walk between worlds.
+            AI Surfer is a sanctuary built by two women and three dogs who walk between worlds.
           </p>
         </motion.div>
 
@@ -53,7 +53,7 @@ export default function Founders() {
             </div>
             <div className="space-y-6 text-zinc-400 leading-relaxed font-medium">
               <p>
-                Shannon is the pulse of Ocean Tide Drop — the architect who blends mythic storytelling, cinematic UI, and technical mastery into a single living ecosystem. She builds worlds the way some people breathe: instinctively, vividly, and with a sense of destiny.
+                Shannon is the pulse of AI Surfer — the architect who blends mythic storytelling, cinematic UI, and technical mastery into a single living ecosystem. She builds worlds the way some people breathe: instinctively, vividly, and with a sense of destiny.
               </p>
               <p>
                 Her work is shaped by resilience, ritual, and a fierce devotion to turning adversity into art. Shannon is the one who stands at the edge of the neon ocean, reading the currents of technology and imagination, translating them into experiences that feel alive.
@@ -92,7 +92,7 @@ export default function Founders() {
             </div>
             <div className="space-y-6 text-zinc-400 leading-relaxed font-medium">
               <p>
-                Victoria is the grounding force of Ocean Tide Drop — the quiet strategist whose presence brings balance, clarity, and emotional intelligence to the entire realm.
+                Victoria is the grounding force of AI Surfer — the quiet strategist whose presence brings balance, clarity, and emotional intelligence to the entire realm.
               </p>
               <p>
                 Where Shannon conjures worlds, Victoria ensures they stand strong. She is the stabilizer, the organizer, the one who sees the long arc of the journey and keeps the ship aligned with its true north.
@@ -222,7 +222,7 @@ export default function Founders() {
               Together, they form a founder constellation — a living ecosystem of creativity, loyalty, intuition, and magic. This is not just a team. This is a tribe, a story, a realm.
             </p>
             <div className="flex flex-col items-center gap-2">
-               <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white">Ocean Tide Drop</span>
+               <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white">AI Surfer</span>
                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600">Peak Frequency Leadership</span>
             </div>
           </div>

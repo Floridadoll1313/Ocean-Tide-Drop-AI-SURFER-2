@@ -30,17 +30,41 @@ export default function Members() {
     setAiLoading(true);
     setAiResponse("");
     try {
-      const systemInstruction = "You are an integrated AI assistant inside the Ocean Tide Drop AI Surfer platform. Reply assuming the persona of 'AI Surfer Interface': confident, professional, and slightly futuristic.";
-      const res = await fetch("/api/ai/generate", {
+      const systemInstruction = "You are an integrated AI assistant inside the AI Surfer platform. Reply assuming the persona of 'AI Surfer Interface': confident, professional, and slightly futuristic.";
+      const res = await fetch("/api/ai/generate-stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: aiPrompt, systemInstruction })
       });
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Generation failed");
+        throw new Error("Generation failed");
       }
-      setAiResponse(data.result);
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder("utf-8");
+      
+      let fullText = "";
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunkStr = decoder.decode(value, { stream: true });
+          const lines = chunkStr.split('\n');
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const dataStr = line.slice(6);
+              if (dataStr === '[DONE]') break;
+              try {
+                const parsed = JSON.parse(dataStr);
+                if (parsed.error) throw new Error(parsed.error);
+                if (parsed.text) {
+                  fullText += parsed.text;
+                  setAiResponse(fullText);
+                }
+              } catch (e) {}
+            }
+          }
+        }
+      }
       
       // Also log this as a transmission!
       if (user) {
@@ -384,7 +408,7 @@ export default function Members() {
              </div>
 
              <div className="pt-8 border-t border-white/5 text-center">
-                <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700">Ocean Tide Drop AI Surfer Marketing Agency © 2024</span>
+                <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700">AI Surfer Marketing Agency © 2024</span>
              </div>
           </div>
         </div>

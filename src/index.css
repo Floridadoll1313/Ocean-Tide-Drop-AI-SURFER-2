@@ -1,6 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&family=Space+Grotesk:wght@300;500;700&display=swap');
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-orbitron: "Orbitron", ui-sans-serif, system-ui, sans-serif;
+}
+
+
 /* APP LAYOUT */
+
+@layer base {
+  button, input, textarea, select {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+  }
+
+  button:hover:not(:disabled) {
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.25), inset 0 0 10px rgba(0, 234, 255, 0.1);
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(0, 234, 255, 0.3), inset 0 0 10px rgba(0, 234, 255, 0.1);
+    border-color: rgba(0, 234, 255, 0.5);
+  }
+}
 
 #root {
   width: 100%;

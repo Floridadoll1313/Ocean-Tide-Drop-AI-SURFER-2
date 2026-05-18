@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PageWrapper from "../../components/PageWrapper";
 import { useAuth } from "../../hooks/useAuth";
 import { 
-  Calendar, 
+  Calendar as CalendarIcon, 
   CheckSquare, 
   Clock, 
   Plus, 
@@ -12,7 +12,14 @@ import {
   Loader2,
   CalendarDays,
   Layout,
-  X
+  X,
+  MessageSquare,
+  Send,
+  FileSpreadsheet,
+  Presentation as PresentationIcon,
+  FileText,
+  Mail,
+  StickyNote
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
@@ -22,16 +29,32 @@ import {
   Task,
   createCalendarEvent,
   createTask,
-  updateTaskStatus
+  updateTaskStatus,
+  fetchChatSpaces,
+  sendChatMessage,
+  ChatSpace,
+  createSpreadsheet,
+  Spreadsheet,
+  createPresentation,
+  Presentation,
+  createDocument,
+  Document,
+  fetchRecentEmails,
+  GmailMessage,
+  fetchNotes,
+  KeepNote
 } from "../../services/googleWorkspaceService";
 
 export default function Workspace() {
   const { user, accessToken, loginWithGoogle } = useAuth();
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [chatSpaces, setChatSpaces] = useState<ChatSpace[]>([]);
+  const [emails, setEmails] = useState<GmailMessage[]>([]);
+  const [notes, setNotes] = useState<KeepNote[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'calendar' | 'tasks'>('calendar');
+  const [activeTab, setActiveTab] = useState<'calendar' | 'tasks' | 'chat' | 'sheets' | 'slides' | 'docs' | 'gmail' | 'keep'>('calendar');
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [newEvent, setNewEvent] = useState({
@@ -43,18 +66,38 @@ export default function Workspace() {
     endTime: '10:00'
   });
   const [creating, setCreating] = useState(false);
+  const [chatMessage, setChatMessage] = useState("");
+  const [sendingMessage, setSendingMessage] = useState<string | null>(null);
+
+  const [spreadsheetTitle, setSpreadsheetTitle] = useState("");
+  const [creatingSheet, setCreatingSheet] = useState(false);
+  const [recentSheet, setRecentSheet] = useState<Spreadsheet | null>(null);
+
+  const [presentationTitle, setPresentationTitle] = useState("");
+  const [creatingSlide, setCreatingSlide] = useState(false);
+  const [recentSlide, setRecentSlide] = useState<Presentation | null>(null);
+
+  const [documentTitle, setDocumentTitle] = useState("");
+  const [creatingDoc, setCreatingDoc] = useState(false);
+  const [recentDoc, setRecentDoc] = useState<Document | null>(null);
 
   const loadData = async () => {
     if (!accessToken) return;
     setLoading(true);
     setError(null);
     try {
-      const [fetchedEvents, fetchedTasks] = await Promise.all([
+      const [fetchedEvents, fetchedTasks, fetchedChat, fetchedEmails, fetchedNotes] = await Promise.all([
         fetchCalendarEvents(accessToken),
-        fetchTasks(accessToken)
+        fetchTasks(accessToken),
+        fetchChatSpaces(accessToken),
+        fetchRecentEmails(accessToken),
+        fetchNotes(accessToken)
       ]);
       setEvents(fetchedEvents);
       setTasks(fetchedTasks);
+      setChatSpaces(fetchedChat);
+      setEmails(fetchedEmails);
+      setNotes(fetchedNotes);
     } catch (err: any) {
       console.error("Load Error:", err);
       setError(err.message || "Failed to synchronize with Google Workspace");
@@ -113,6 +156,77 @@ export default function Workspace() {
       setError(err.message || "Failed to create event");
     } finally {
       setCreating(false);
+    }
+  };
+
+  const handleSendMessage = async (spaceName: string) => {
+    if (!accessToken || !chatMessage.trim()) return;
+    
+    const confirmSend = window.confirm(`Send message to this space?`);
+    if (!confirmSend) return;
+
+    setSendingMessage(spaceName);
+    try {
+      await sendChatMessage(accessToken, spaceName, chatMessage);
+      setChatMessage("");
+      // optionally add toast or success message here
+      alert("Message sent successfully!");
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to send chat message");
+    } finally {
+      setSendingMessage(null);
+    }
+  };
+
+  const handleCreateSheet = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!accessToken || !spreadsheetTitle.trim()) return;
+
+    setCreatingSheet(true);
+    try {
+      const sheet = await createSpreadsheet(accessToken, spreadsheetTitle);
+      setRecentSheet(sheet);
+      setSpreadsheetTitle("");
+    } catch (err: any) {
+      console.error("Failed to create spreadsheet:", err);
+      setError(err.message || "Failed to create spreadsheet");
+    } finally {
+      setCreatingSheet(false);
+    }
+  };
+
+  const handleCreateSlide = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!accessToken || !presentationTitle.trim()) return;
+
+    setCreatingSlide(true);
+    try {
+      const slide = await createPresentation(accessToken, presentationTitle);
+      setRecentSlide(slide);
+      setPresentationTitle("");
+    } catch (err: any) {
+      console.error("Failed to create presentation:", err);
+      setError(err.message || "Failed to create presentation");
+    } finally {
+      setCreatingSlide(false);
+    }
+  };
+
+  const handleCreateDoc = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!accessToken || !documentTitle.trim()) return;
+
+    setCreatingDoc(true);
+    try {
+      const doc = await createDocument(accessToken, documentTitle);
+      setRecentDoc(doc);
+      setDocumentTitle("");
+    } catch (err: any) {
+      console.error("Failed to create document:", err);
+      setError(err.message || "Failed to create document");
+    } finally {
+      setCreatingDoc(false);
     }
   };
 
@@ -186,20 +300,62 @@ export default function Workspace() {
         </div>
 
         {/* TABS */}
-        <div className="flex gap-px bg-white/10 border border-white/10 mb-12 overflow-hidden">
+        <div className="flex gap-px bg-white/10 border border-white/10 mb-12 overflow-hidden flex-col md:flex-row">
           <button 
             onClick={() => setActiveTab('calendar')}
-            className={`flex-1 py-6 flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'calendar' ? 'bg-[#00eaff] text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
+            className={`flex-1 py-4 flex flex-col items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'calendar' ? 'bg-[#00eaff] text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
           >
-            <Calendar className="w-4 h-4" />
+            <CalendarIcon className="w-4 h-4" />
             Calendar Events
           </button>
           <button 
             onClick={() => setActiveTab('tasks')}
-            className={`flex-1 py-6 flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'tasks' ? 'bg-purple-500 text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
+            className={`flex-1 py-4 flex flex-col items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'tasks' ? 'bg-purple-500 text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
           >
             <CheckSquare className="w-4 h-4" />
             Strategic Tasks
+          </button>
+          <button 
+            onClick={() => setActiveTab('chat')}
+            className={`flex-1 py-4 flex flex-col items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'chat' ? 'bg-emerald-500 text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            Team Comms
+          </button>
+          <button 
+            onClick={() => setActiveTab('sheets')}
+            className={`flex-1 py-4 flex flex-col items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'sheets' ? 'bg-emerald-400 text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            Sheets
+          </button>
+          <button 
+            onClick={() => setActiveTab('slides')}
+            className={`flex-1 py-4 flex flex-col items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'slides' ? 'bg-orange-400 text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
+          >
+            <PresentationIcon className="w-4 h-4" />
+            Slides
+          </button>
+          <button 
+            onClick={() => setActiveTab('docs')}
+            className={`flex-1 py-4 flex flex-col items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'docs' ? 'bg-blue-400 text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
+          >
+            <FileText className="w-4 h-4" />
+            Docs
+          </button>
+          <button 
+            onClick={() => setActiveTab('gmail')}
+            className={`flex-1 py-4 flex flex-col items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'gmail' ? 'bg-red-500 text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
+          >
+            <Mail className="w-4 h-4" />
+            Gmail
+          </button>
+          <button 
+            onClick={() => setActiveTab('keep')}
+            className={`flex-1 py-4 flex flex-col items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'keep' ? 'bg-yellow-400 text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
+          >
+            <StickyNote className="w-4 h-4" />
+            Keep
           </button>
         </div>
 
@@ -350,7 +506,7 @@ export default function Workspace() {
                   </div>
                 )}
               </motion.div>
-            ) : (
+            ) : activeTab === 'tasks' ? (
               <motion.div 
                 key="tasks"
                 initial={{ opacity: 0, y: 20 }}
@@ -365,19 +521,67 @@ export default function Workspace() {
                 ) : (
                   <div className="space-y-4">
                     {tasks.map(task => (
-                      <div key={task.id} className="glass-card p-6 border-white/10 bg-white/5 flex items-center gap-6 group hover:border-purple-500/30 transition-all duration-500">
-                        <div 
+                      <motion.div 
+                        layout
+                        key={task.id} 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="glass-card p-6 border-white/10 bg-white/5 flex items-center gap-6 group hover:border-purple-500/30 transition-all duration-500 relative overflow-hidden"
+                      >
+                        {/* Status Change Flash */}
+                        <AnimatePresence>
+                          {task.status === 'completed' && (
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 0.05, scale: 1.2 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                              className="absolute inset-0 bg-emerald-400 pointer-events-none"
+                            />
+                          )}
+                        </AnimatePresence>
+
+                        <motion.div 
                           onClick={() => handleCompleteTask(task.id, task.status)}
-                          className={`w-6 h-6 rounded border flex items-center justify-center transition-colors cursor-pointer ${task.status === 'completed' ? 'bg-emerald-500 border-emerald-500' : 'border-white/20 group-hover:border-purple-500'}`}
+                          whileTap={{ scale: 0.9 }}
+                          className={`w-6 h-6 rounded border flex items-center justify-center transition-all cursor-pointer z-10 ${task.status === 'completed' ? 'bg-emerald-500 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'border-white/20 group-hover:border-purple-500'}`}
                         >
-                          {task.status === 'completed' && <Plus className="w-4 h-4 text-black rotate-45" />}
-                        </div>
-                        <div className="flex-grow">
-                          <h3 
-                            className={`text-sm font-black uppercase tracking-widest ${task.status === 'completed' ? 'text-zinc-600 line-through' : 'text-white'}`}
+                          <AnimatePresence mode="wait">
+                            {task.status === 'completed' ? (
+                              <motion.div
+                                key="check"
+                                initial={{ scale: 0, rotate: -45 }}
+                                animate={{ scale: 1, rotate: 45 }}
+                                exit={{ scale: 0, rotate: -45 }}
+                              >
+                                <Plus className="w-4 h-4 text-black" />
+                              </motion.div>
+                            ) : (
+                              <motion.div
+                                key="box"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                              />
+                            )}
+                          </AnimatePresence>
+                        </motion.div>
+                        <div className="flex-grow z-10">
+                          <motion.h3 
+                            animate={{ 
+                              color: task.status === 'completed' ? '#52525b' : '#ffffff',
+                            }}
+                            className="text-sm font-black uppercase tracking-widest relative inline-block"
                           >
                             {task.title}
-                          </h3>
+                            {task.status === 'completed' && (
+                              <motion.div 
+                                initial={{ scaleX: 0 }}
+                                animate={{ scaleX: 1 }}
+                                transition={{ duration: 0.4, ease: "circOut" }}
+                                className="absolute left-0 right-0 h-px bg-zinc-500 top-1/2 origin-left"
+                              />
+                            )}
+                          </motion.h3>
                           {task.notes && (
                             <p className="text-zinc-500 text-[10px] uppercase font-bold mt-1 tracking-tight">{task.notes}</p>
                           )}
@@ -387,12 +591,310 @@ export default function Workspace() {
                             Due: {new Date(task.due).toLocaleDateString()}
                           </div>
                         )}
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            ) : activeTab === 'chat' ? (
+              <motion.div 
+                key="chat"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-4"
+              >
+                {chatSpaces.length === 0 && !loading ? (
+                  <div className="py-20 text-center glass-card border-white/5 bg-white/2">
+                    <p className="text-zinc-600 text-xs font-black uppercase tracking-widest">No accessible chat spaces found.</p>
+                  </div>
+                ) : (
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {chatSpaces.map(space => (
+                      <div key={space.name} className="glass-card p-6 border border-white/10 bg-black flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-3 bg-emerald-500/10 rounded-lg">
+                              <MessageSquare className="w-4 h-4 text-emerald-500" />
+                            </div>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">{space.spaceType}</span>
+                          </div>
+                          <h3 className="text-xl font-black uppercase tracking-tight text-white mb-6">
+                            {space.displayName || "Direct Message"}
+                          </h3>
+                        </div>
+                        
+                        <div className="mt-4 pt-4 border-t border-white/10 flex gap-2">
+                           <input 
+                             type="text"
+                             placeholder="Message this space..."
+                             className="flex-1 bg-white/5 border border-white/10 px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-colors"
+                             value={chatMessage}
+                             onChange={(e) => setChatMessage(e.target.value)}
+                           />
+                           <button 
+                             onClick={() => handleSendMessage(space.name)}
+                             disabled={sendingMessage === space.name || !chatMessage.trim()}
+                             className="px-6 bg-emerald-500 text-black hover:bg-white transition-all disabled:opacity-50 font-black flex items-center justify-center"
+                           >
+                              {sendingMessage === space.name ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-4 h-4" />}
+                           </button>
+                        </div>
                       </div>
                     ))}
                   </div>
                 )}
               </motion.div>
-            )}
+            ) : activeTab === 'sheets' ? (
+              <motion.div 
+                key="sheets"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-8"
+              >
+                <div className="flex justify-between items-center bg-black p-6 border border-white/10 glass-card">
+                  <div>
+                    <h2 className="text-xl font-black uppercase tracking-tighter text-white">Data Architecture</h2>
+                    <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mt-1">Deploy new Google Sheets matrices.</p>
+                  </div>
+                </div>
+
+                <div className="glass-card p-8 border border-white/10 bg-white/5 relative overflow-hidden">
+                  <form onSubmit={handleCreateSheet} className="flex gap-4">
+                    <input 
+                      type="text" 
+                      required
+                      value={spreadsheetTitle}
+                      onChange={(e) => setSpreadsheetTitle(e.target.value)}
+                      className="flex-1 bg-white/5 border border-white/10 px-6 py-4 text-white focus:outline-none focus:border-emerald-400/50 transition-colors"
+                      placeholder="Enter new sheet name..."
+                    />
+                    <button 
+                      type="submit"
+                      disabled={creatingSheet}
+                      className="bg-emerald-400 text-black px-8 py-4 text-xs font-black uppercase tracking-[0.3em] hover:bg-white transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {creatingSheet ? <Loader2 className="w-5 h-5 animate-spin" /> : "Deploy Sheet"}
+                    </button>
+                  </form>
+                </div>
+
+                {recentSheet && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="glass-card p-8 border border-emerald-500/30 bg-emerald-500/5 flex justify-between items-center"
+                  >
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-emerald-500/20 rounded">
+                          <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
+                        </div>
+                        <h3 className="text-lg font-black uppercase text-white">{recentSheet.properties.title}</h3>
+                      </div>
+                      <p className="text-xs text-zinc-400 font-bold tracking-widest">Successfully deployed to Google Drive.</p>
+                    </div>
+                    <a 
+                      href={recentSheet.spreadsheetUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded text-[10px] font-black uppercase tracking-widest transition-colors flex items-center gap-2"
+                    >
+                      Open Sheet <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </motion.div>
+                )}
+              </motion.div>
+            ) : activeTab === 'slides' ? (
+              <motion.div 
+                key="slides"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-8"
+              >
+                <div className="flex justify-between items-center bg-black p-6 border border-white/10 glass-card">
+                  <div>
+                    <h2 className="text-xl font-black uppercase tracking-tighter text-white">Visual Presentations</h2>
+                    <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mt-1">Generate Google Slides decks.</p>
+                  </div>
+                </div>
+
+                <div className="glass-card p-8 border border-white/10 bg-white/5 relative overflow-hidden">
+                  <form onSubmit={handleCreateSlide} className="flex gap-4">
+                    <input 
+                      type="text" 
+                      required
+                      value={presentationTitle}
+                      onChange={(e) => setPresentationTitle(e.target.value)}
+                      className="flex-1 bg-white/5 border border-white/10 px-6 py-4 text-white focus:outline-none focus:border-orange-400/50 transition-colors"
+                      placeholder="Enter new presentation name..."
+                    />
+                    <button 
+                      type="submit"
+                      disabled={creatingSlide}
+                      className="bg-orange-400 text-black px-8 py-4 text-xs font-black uppercase tracking-[0.3em] hover:bg-white transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {creatingSlide ? <Loader2 className="w-5 h-5 animate-spin" /> : "Deploy Slides"}
+                    </button>
+                  </form>
+                </div>
+
+                {recentSlide && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="glass-card p-8 border border-orange-500/30 bg-orange-500/5 flex justify-between items-center"
+                  >
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-orange-500/20 rounded">
+                          <PresentationIcon className="w-4 h-4 text-orange-400" />
+                        </div>
+                        <h3 className="text-lg font-black uppercase text-white">{recentSlide.title}</h3>
+                      </div>
+                      <p className="text-xs text-zinc-400 font-bold tracking-widest">Successfully deployed to Google Drive.</p>
+                    </div>
+                    <a 
+                      href={`https://docs.google.com/presentation/d/${recentSlide.presentationId}/edit`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded text-[10px] font-black uppercase tracking-widest transition-colors flex items-center gap-2"
+                    >
+                      Open Slides <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </motion.div>
+                )}
+              </motion.div>
+            ) : activeTab === 'docs' ? (
+              <motion.div 
+                key="docs"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-8"
+              >
+                <div className="flex justify-between items-center bg-black p-6 border border-white/10 glass-card">
+                  <div>
+                    <h2 className="text-xl font-black uppercase tracking-tighter text-white">Document Processing</h2>
+                    <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mt-1">Initialize Google Docs workflows.</p>
+                  </div>
+                </div>
+
+                <div className="glass-card p-8 border border-white/10 bg-white/5 relative overflow-hidden">
+                  <form onSubmit={handleCreateDoc} className="flex gap-4">
+                    <input 
+                      type="text" 
+                      required
+                      value={documentTitle}
+                      onChange={(e) => setDocumentTitle(e.target.value)}
+                      className="flex-1 bg-white/5 border border-white/10 px-6 py-4 text-white focus:outline-none focus:border-blue-400/50 transition-colors"
+                      placeholder="Enter new document name..."
+                    />
+                    <button 
+                      type="submit"
+                      disabled={creatingDoc}
+                      className="bg-blue-400 text-black px-8 py-4 text-xs font-black uppercase tracking-[0.3em] hover:bg-white transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {creatingDoc ? <Loader2 className="w-5 h-5 animate-spin" /> : "Deploy Doc"}
+                    </button>
+                  </form>
+                </div>
+
+                {recentDoc && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="glass-card p-8 border border-blue-500/30 bg-blue-500/5 flex justify-between items-center"
+                  >
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-blue-500/20 rounded">
+                          <FileText className="w-4 h-4 text-blue-400" />
+                        </div>
+                        <h3 className="text-lg font-black uppercase text-white">{recentDoc.title}</h3>
+                      </div>
+                      <p className="text-xs text-zinc-400 font-bold tracking-widest">Successfully deployed to Google Drive.</p>
+                    </div>
+                    <a 
+                      href={`https://docs.google.com/document/d/${recentDoc.documentId}/edit`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded text-[10px] font-black uppercase tracking-widest transition-colors flex items-center gap-2"
+                    >
+                      Open Doc <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </motion.div>
+                )}
+              </motion.div>
+            ) : activeTab === 'gmail' ? (
+              <motion.div 
+                key="gmail"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-4"
+              >
+                {emails.length === 0 && !loading ? (
+                  <div className="py-20 text-center glass-card border-white/5 bg-white/2">
+                    <p className="text-zinc-600 text-xs font-black uppercase tracking-widest">No recent emails discovered.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {emails.map((email) => (
+                      <div key={email.id} className="glass-card p-6 border-white/10 bg-white/5 flex gap-6 hover:border-red-500/30 transition-all duration-500 hover:bg-white/[0.07] cursor-pointer" onClick={() => window.open(`https://mail.google.com/mail/u/0/#inbox/${email.id}`, '_blank')}>
+                        <div className="p-3 bg-red-500/10 rounded-lg h-fit flex-shrink-0">
+                          <Mail className="w-4 h-4 text-red-500" />
+                        </div>
+                        <div className="flex-1">
+                           <div className="flex justify-between mb-2">
+                             <h4 className="text-white font-bold max-w-[70%] truncate text-sm">{email.from}</h4>
+                             <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest flex-shrink-0 ml-4">
+                               {email.date ? new Date(email.date).toLocaleDateString() : ""}
+                             </span>
+                           </div>
+                           <h5 className="text-zinc-300 font-medium text-sm mb-2">{email.subject}</h5>
+                           <p className="text-zinc-500 text-xs line-clamp-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: email.snippet || '' }}></p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            ) : activeTab === 'keep' ? (
+              <motion.div 
+                key="keep"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-4"
+              >
+                {notes.length === 0 && !loading ? (
+                  <div className="py-20 text-center glass-card border-white/5 bg-white/2">
+                    <p className="text-zinc-600 text-xs font-black uppercase tracking-widest">No Keep notes found.</p>
+                  </div>
+                ) : (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {notes.map((note) => (
+                      <div key={note.name} className="glass-card p-6 border-white/10 bg-yellow-400/5 hover:border-yellow-400/30 transition-all duration-500">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="p-2 bg-yellow-400/10 rounded">
+                            <StickyNote className="w-4 h-4 text-yellow-400" />
+                          </div>
+                          {note.updateTime && (
+                           <span className="text-[9px] text-zinc-500 font-black uppercase tracking-widest text-right">
+                             {new Date(note.updateTime).toLocaleDateString()}
+                           </span>
+                          )}
+                        </div>
+                        <h4 className="text-white font-bold text-lg mb-2">{note.title || "Untitled Note"}</h4>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            ) : null}
           </AnimatePresence>
         </div>
       </div>
