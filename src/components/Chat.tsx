@@ -11,7 +11,7 @@ import {
   Timestamp 
 } from "firebase/firestore";
 import { useAuth } from "../hooks/useAuth";
-import { Send, User as UserIcon, MessageSquare } from "lucide-react";
+import { Send, MessageSquare } from "lucide-react";
 
 interface Message {
   id: string;

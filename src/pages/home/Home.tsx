@@ -6,16 +6,13 @@ import {
   Waves, Bot, Cpu, Headset, 
   Globe, Palette, Smartphone, Search,
   TrendingUp, Database, Mail, Zap,
-  Activity, PenTool, Rocket,
+  Activity, Rocket,
   CheckCircle2, ArrowRight
 } from "lucide-react";
 
 export default function Home() {
-  const [subscribed, setSubscribed] = React.useState(false);
-
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubscribed(true);
   };
 
   return (

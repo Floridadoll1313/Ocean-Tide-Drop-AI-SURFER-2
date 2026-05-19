@@ -76,8 +76,8 @@ export default function Members() {
           timestamp: serverTimestamp()
         }).catch(err => console.error("Error saving work:", err));
       }
-    } catch (err: any) {
-      setAiResponse(`[ERROR]: ${err.message}`);
+    } catch (err: unknown) {
+      setAiResponse(`[ERROR]: ${(err as Error).message}`);
     } finally {
       setAiLoading(false);
     }

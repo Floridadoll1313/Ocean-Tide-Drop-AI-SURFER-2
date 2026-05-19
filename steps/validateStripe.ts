@@ -1,3 +1,3 @@
-export function validateStripe(payload: any, env: any) {
+export function validateStripe(payload: unknown, _env: unknown) {
   return payload;
 }

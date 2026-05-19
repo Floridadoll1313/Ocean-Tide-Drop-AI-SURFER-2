@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Menu, X, LogOut, User as UserIcon, Globe, MapPin, Mail, Phone, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram } from "lucide-react";
-
-import mainHeroImage from "../assets/images/regenerated_image_1778855299759.png";
+import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 export default function PageWrapper({ 
   children, 
@@ -16,8 +15,23 @@ export default function PageWrapper({
 }) {
   const { user, loading, loginWithGoogle, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const isActive = (path: string) => {
+    if (path === "/" && location.pathname !== "/") return false;
+    return location.pathname.startsWith(path);
+  };
+
+  const navLinks = [
+    { to: "/", label: "Home", icon: HomeIcon, color: "text-yellow-500" },
+    { to: "/gallery", label: "Work", icon: Briefcase, color: "text-blue-500" },
+    { to: "/services", label: "Services", icon: Layers, color: "text-purple-500" },
+    { to: "/founders", label: "Founders", icon: Users, color: "text-emerald-500" },
+    { to: "/memorial", label: "Bull's Memorial", icon: Anchor, color: "text-orange-500" },
+    { to: "/contact", label: "Contact", icon: MessageSquare, color: "text-green-500" },
+  ];
 
   return (
     <div className="min-h-screen bg-transparent text-white flex flex-col relative overflow-x-hidden">
@@ -35,49 +49,43 @@ export default function PageWrapper({
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex gap-8 text-[11px] font-bold uppercase tracking-[0.15em] items-center text-zinc-400">
-            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/">
-              <HomeIcon className="w-3.5 h-3.5 text-yellow-500 group-hover:scale-110 transition-transform" />
-              <span>Home</span>
-            </Link>
-            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/gallery">
-              <Briefcase className="w-3.5 h-3.5 text-blue-500 group-hover:scale-110 transition-transform" />
-              <span>Work</span>
-            </Link>
-            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/services">
-              <Layers className="w-3.5 h-3.5 text-purple-500 group-hover:scale-110 transition-transform" />
-              <span>Services</span>
-            </Link>
-            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/founders">
-              <Users className="w-3.5 h-3.5 text-emerald-500 group-hover:scale-110 transition-transform" />
-              <span>Founders</span>
-            </Link>
-            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/memorial">
-              <Anchor className="w-3.5 h-3.5 text-orange-500 group-hover:scale-110 transition-transform" />
-              <span>Bull's Memorial</span>
-            </Link>
-            <Link className="hover:text-white transition-all flex items-center gap-2 group" to="/contact">
-              <MessageSquare className="w-3.5 h-3.5 text-green-500 group-hover:scale-110 transition-transform" />
-              <span>Contact</span>
-            </Link>
+            {navLinks.map((link) => (
+              <Link 
+                key={link.to}
+                className={`transition-all flex flex-col items-center gap-1 group relative ${isActive(link.to) ? 'text-white' : 'hover:text-white'}`} 
+                to={link.to}
+              >
+                <div className="flex items-center gap-2">
+                  <link.icon className={`w-3.5 h-3.5 ${link.color} group-hover:scale-110 transition-transform ${isActive(link.to) ? 'scale-110' : ''}`} />
+                  <span>{link.label}</span>
+                </div>
+                {isActive(link.to) && (
+                  <motion.div 
+                    layoutId="activeNav"
+                    className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+                  />
+                )}
+              </Link>
+            ))}
             
             <div className="pl-6 border-l border-white/10 flex items-center gap-6">
               {loading ? (
                 <div className="w-4 h-4 rounded-full border border-white/20 border-t-white animate-spin"></div>
               ) : user ? (
                 <div className="flex items-center gap-3">
-                  <Link to="/members" className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity px-4 py-2 bg-white/5 border border-white/10 rounded-sm group">
+                  <Link to="/members" className={`flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-sm group transition-all ${isActive('/members') && !isActive('/members/sync') ? 'border-white/30 bg-white/10' : ''}`}>
                     <LayoutDashboard className="w-3.5 h-3.5 text-cyan-400 group-hover:rotate-12 transition-transform" />
-                    <span>Dashboard</span>
+                    <span className={isActive('/members') && !isActive('/members/sync') ? 'text-white' : ''}>Dashboard</span>
                   </Link>
-                  <Link to="/members/sync" className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity px-4 py-2 bg-white/5 border border-white/10 rounded-sm group ml-2">
+                  <Link to="/members/sync" className={`flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-sm group ml-2 transition-all ${isActive('/members/sync') ? 'border-white/30 bg-white/10' : ''}`}>
                     <CalendarIcon className="w-3.5 h-3.5 text-emerald-400 group-hover:rotate-12 transition-transform" />
-                    <span>Neural Sync</span>
+                    <span className={isActive('/members/sync') ? 'text-white' : ''}>Neural Sync</span>
                   </Link>
                   <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity ml-2">
                     {user.photoURL ? (
-                       <img src={user.photoURL} alt={user.displayName || "User"} className="w-6 h-6 rounded-full border border-white/20" />
+                       <img src={user.photoURL} alt={user.displayName || "User"} className={`w-6 h-6 rounded-full border transition-all ${isActive('/profile') ? 'border-white scale-110' : 'border-white/20'}`} />
                     ) : (
-                       <div className="w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-[8px] text-white">
+                       <div className={`w-6 h-6 rounded-full bg-white/10 border flex items-center justify-center text-[8px] text-white transition-all ${isActive('/profile') ? 'border-white scale-110' : 'border-white/20'}`}>
                          {user.email?.[0].toUpperCase()}
                        </div>
                     )}
@@ -111,64 +119,78 @@ export default function PageWrapper({
       </header>
 
       {/* Mobile Menu Overlay */}
-      <div className={`fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl md:hidden transition-all duration-700 ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'}`}>
-        <div className="flex flex-col items-center justify-center h-full gap-8 p-6 text-center">
-          <nav className="flex flex-col gap-6">
-            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/">
-              <HomeIcon className="w-8 h-8 text-yellow-500" />
-              Home
-            </Link>
-            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/gallery">
-              <Briefcase className="w-8 h-8 text-blue-500" />
-              Work
-            </Link>
-            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/services">
-              <Layers className="w-8 h-8 text-purple-500" />
-              Services
-            </Link>
-            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/founders">
-              <Users className="w-8 h-8 text-emerald-500" />
-              Founders
-            </Link>
-            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/memorial">
-              <Anchor className="w-8 h-8 text-orange-500" />
-              Bull's Memorial
-            </Link>
-            <Link onClick={toggleMenu} className="text-4xl font-black uppercase tracking-tighter hover:text-zinc-500 transition-all text-white flex items-center justify-center gap-4" to="/contact">
-              <MessageSquare className="w-8 h-8 text-green-500" />
-              Contact
-            </Link>
-          </nav>
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20, clipPath: 'circle(0% at 90% 5%)' }}
+            animate={{ opacity: 1, y: 0, clipPath: 'circle(150% at 90% 5%)' }}
+            exit={{ opacity: 0, y: -20, clipPath: 'circle(0% at 90% 5%)' }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl md:hidden overflow-hidden"
+          >
+            <div className="flex flex-col items-center justify-center h-full gap-8 p-6 text-center">
+              <nav className="flex flex-col gap-6">
+                {navLinks.map((link, idx) => (
+                  <motion.div
+                    key={link.to}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + idx * 0.05 }}
+                  >
+                    <Link 
+                      onClick={toggleMenu} 
+                      className={`text-4xl font-black uppercase tracking-tighter transition-all flex items-center justify-center gap-4 ${isActive(link.to) ? 'text-white' : 'text-zinc-500 hover:text-white'}`} 
+                      to={link.to}
+                    >
+                      <link.icon className={`w-8 h-8 ${isActive(link.to) ? link.color : 'text-zinc-700'}`} />
+                      {link.label}
+                      {isActive(link.to) && (
+                        <motion.div 
+                          layoutId="mobileActiveDot"
+                          className="w-2 h-2 rounded-full bg-white ml-2 shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+                        />
+                      )}
+                    </Link>
+                  </motion.div>
+                ))}
+              </nav>
 
-          <div className="mt-8 pt-8 border-t border-white/10 w-full max-w-xs flex flex-col gap-4">
-            {user ? (
-              <>
-                <Link onClick={toggleMenu} to="/members/sync" className="flex items-center justify-center gap-3 text-white">
-                  <CalendarIcon className="w-6 h-6 text-emerald-400" />
-                  <span className="font-bold">Neural Sync</span>
-                </Link>
-                <Link onClick={toggleMenu} to="/profile" className="flex items-center justify-center gap-3 text-white text-sm opacity-60">
-                  {user.photoURL && <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full border border-white" />}
-                  <span className="font-bold">{user.displayName || "View Profile"}</span>
-                </Link>
-                <button 
-                  onClick={() => { logout(); toggleMenu(); }}
-                  className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-black uppercase text-xs tracking-widest"
-                >
-                  Sign Out
-                </button>
-              </>
-            ) : (
-              <button 
-                onClick={() => { loginWithGoogle(); toggleMenu(); }}
-                className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase text-xs tracking-widest"
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="mt-8 pt-8 border-t border-white/10 w-full max-w-xs flex flex-col gap-4"
               >
-                Sign In With Google
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+                {user ? (
+                  <>
+                    <Link onClick={toggleMenu} to="/members/sync" className={`flex items-center justify-center gap-3 transition-opacity ${isActive('/members/sync') ? 'opacity-100' : 'opacity-60'}`}>
+                      <CalendarIcon className="w-6 h-6 text-emerald-400" />
+                      <span className="font-bold">Neural Sync</span>
+                    </Link>
+                    <Link onClick={toggleMenu} to="/profile" className={`flex items-center justify-center gap-3 text-sm transition-opacity ${isActive('/profile') ? 'opacity-100' : 'opacity-60'}`}>
+                      {user.photoURL && <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full border border-white" />}
+                      <span className="font-bold">{user.displayName || "View Profile"}</span>
+                    </Link>
+                    <button 
+                      onClick={() => { logout(); toggleMenu(); }}
+                      className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-black uppercase text-xs tracking-widest"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <button 
+                    onClick={() => { loginWithGoogle(); toggleMenu(); }}
+                    className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase text-xs tracking-widest"
+                  >
+                    Sign In With Google
+                  </button>
+                )}
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* CONTENT */}
       <main className="flex-1 pt-32 pb-20 relative flex flex-col items-center fade-in">

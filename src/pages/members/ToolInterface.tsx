@@ -28,7 +28,7 @@ interface Setting {
   type: 'range' | 'toggle';
   min?: number;
   max?: number;
-  value: any;
+  value: unknown;
 }
 
 interface ToolConfig {
@@ -218,7 +218,7 @@ export default function ToolInterface() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<'actions' | 'settings'>('actions');
-  const [toolSettings, setToolSettings] = useState<Record<string, any>>({});
+  const [toolSettings, setToolSettings] = useState<Record<string, unknown>>({});
   const [logs, setLogs] = useState<string[]>(["Connection established.", "Initializing secure environment..."]);
   const [activeAction, setActiveAction] = useState<string | null>(null);
   const [promptInput, setPromptInput] = useState("");
@@ -327,9 +327,9 @@ export default function ToolInterface() {
           timestamp: serverTimestamp()
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("AI Action Error:", err);
-      setLogs(prev => [...prev, `Error: ${err.message}`]);
+      setLogs(prev => [...prev, `Error: ${(err as Error).message}`]);
     } finally {
       setIsProcessing(false);
       setActiveAction(null);
@@ -624,7 +624,7 @@ export default function ToolInterface() {
                     </button>
                     <button 
                       onClick={() => {
-                        const defaultSettings: Record<string, any> = {};
+                        const defaultSettings: Record<string, unknown> = {};
                         tool.settings.forEach(s => { defaultSettings[s.id] = s.value; });
                         setToolSettings(defaultSettings);
                         setLogs(prev => [...prev, "Parameters restored to base configuration."]);

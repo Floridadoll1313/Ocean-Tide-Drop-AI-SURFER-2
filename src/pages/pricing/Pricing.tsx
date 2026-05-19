@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import PageWrapper from "../../components/PageWrapper";
 
 declare global {
@@ -231,15 +230,16 @@ const productLines = [
 ];
 
 export default function Pricing() {
-  const [isInIframe, setIsInIframe] = useState(false);
-
-  useEffect(() => {
-    try {
-      setIsInIframe(window.self !== window.top);
-    } catch (e) {
-      setIsInIframe(true);
+  const [isInIframe] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        return window.self !== window.top;
+      } catch {
+        return true;
+      }
     }
-  }, []);
+    return false;
+  });
 
   return (
     <PageWrapper maxWidth="max-w-7xl" showHero={false}>
@@ -264,11 +264,11 @@ export default function Pricing() {
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {(line as any).pricingTableId ? (
+                {(line as { pricingTableId?: string; publishableKey?: string }).pricingTableId ? (
                   <div className="col-span-full">
                     <stripe-pricing-table 
-                      pricing-table-id={(line as any).pricingTableId}
-                      publishable-key={(line as any).publishableKey}>
+                      pricing-table-id={(line as { pricingTableId: string }).pricingTableId}
+                      publishable-key={(line as { publishableKey: string }).publishableKey}>
                     </stripe-pricing-table>
                   </div>
                 ) : line.tiers.map((tier) => (

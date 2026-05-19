@@ -140,9 +140,9 @@ export default function Monetization() {
       } else {
         throw new Error(data.error || "Failed to create checkout session");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("❌ Checkout Error:", err);
-      alert(err.message || "An error occurred during checkout. Check your network or environment configuration.");
+      alert((err as Error).message || "An error occurred during checkout. Check your network or environment configuration.");
     } finally {
       setLoading(null);
     }
