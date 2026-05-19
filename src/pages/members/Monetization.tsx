@@ -1,25 +1,105 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PageWrapper from "../../components/PageWrapper";
 import { motion } from "motion/react";
 import { 
-  DollarSign, 
-  TrendingUp, 
   Target, 
   Zap, 
-  BarChart3, 
   ShieldCheck, 
   ArrowRight,
   Sparkles,
-  PieChart,
   Repeat,
   CheckCircle2,
-  Lock,
   ArrowUpRight,
   Loader2
 } from "lucide-react";
+import { useAuth } from "../../hooks/useAuth";
+
+interface PricingTier {
+  id: string;
+  name: string;
+  price: string;
+  period: string;
+  description: string;
+  features: string[];
+  color: string;
+  popular?: boolean;
+}
 
 export default function Monetization() {
   const [loading, setLoading] = useState<string | null>(null);
+  const { user } = useAuth();
+  const [tiers, setTiers] = useState<PricingTier[]>([
+    {
+      id: "dawn-patrol",
+      name: "Dawn Patrol",
+      price: "$49",
+      period: "/month",
+      description: "For creators starting their high-frequency journey.",
+      features: [
+        "Daily AI Trend Analysis",
+        "Basic Workflow Automations",
+        "Standard Cinematic Templates",
+        "Community Access"
+      ],
+      color: "border-cyan-500/20"
+    },
+    {
+      id: "breakline",
+      name: "Breakline",
+      price: "$99",
+      period: "/month",
+      description: "Optimized for scaling digital structures.",
+      features: [
+        "Everything in Dawn Patrol",
+        "Advanced AI Marketing Tools",
+        "Unlimited Workflow Triggers",
+        "Primary Support Frequency"
+      ],
+      color: "border-purple-500/30",
+      popular: true
+    },
+    {
+      id: "hatteras-island",
+      name: "Surfer Elite",
+      price: "$249",
+      period: "/month",
+      description: "The elite frequency for established brands.",
+      features: [
+        "Everything in Breakline",
+        "Cinematic Brand Architecture",
+        "Custom AI Personas",
+        "High-Frequency Consultation"
+      ],
+      color: "border-orange-500/20"
+    },
+    {
+      id: "cape-point",
+      name: "Cape Point",
+      price: "$499",
+      period: "/month",
+      description: "Ultimate architectural mastery and custom growth.",
+      features: [
+        "Full Private AI Ecosystem",
+        "Dedicated Growth Architect",
+        "White-Label Implementation",
+        "Peak Priority 24/7"
+      ],
+      color: "border-white/20"
+    }
+  ]);
+
+  useEffect(() => {
+    fetch("/api/pricing-tiers")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setTiers(data);
+        }
+      })
+      .catch((err) => {
+        console.warn("Could not retrieve dynamic pricing tiers, using fallbacks:", err);
+      });
+  }, []);
 
   const blueprint = [
     {
@@ -60,66 +140,6 @@ export default function Monetization() {
     }
   ];
 
-  const tiers = [
-    {
-      id: "dawn-patrol",
-      name: "Dawn Patrol",
-      price: "$49",
-      period: "/month",
-      description: "For creators starting their high-frequency journey.",
-      features: [
-        "Daily AI Trend Analysis",
-        "Basic Workflow Automations",
-        "Standard Cinematic Templates",
-        "Community Access"
-      ],
-      color: "border-cyan-500/20"
-    },
-    {
-      id: "breakline",
-      name: "Breakline",
-      price: "$99",
-      period: "/month",
-      description: "Optimized for scaling digital structures.",
-      features: [
-        "Everything in Dawn Patrol",
-        "Advanced AI Marketing Tools",
-        "Unlimited Workflow Triggers",
-        "Primary Support Frequency"
-      ],
-      color: "border-purple-500/30",
-      popular: true
-    },
-    {
-      id: "hatteras-island",
-      name: "Hatteras Island",
-      price: "$249",
-      period: "/month",
-      description: "The elite frequency for established brands.",
-      features: [
-        "Everything in Breakline",
-        "Cinematic Brand Architecture",
-        "Custom AI Personas",
-        "High-Frequency Consultation"
-      ],
-      color: "border-orange-500/20"
-    },
-    {
-      id: "cape-point",
-      name: "Cape Point",
-      price: "$499",
-      period: "/month",
-      description: "Ultimate architectural mastery and custom growth.",
-      features: [
-        "Full Private AI Ecosystem",
-        "Dedicated Growth Architect",
-        "White-Label Implementation",
-        "Peak Priority 24/7"
-      ],
-      color: "border-white/20"
-    }
-  ];
-
   const handleCheckout = async (tierId: string) => {
     console.log("🌊 Attempting synchronization for tier:", tierId);
     setLoading(tierId);
@@ -127,7 +147,11 @@ export default function Monetization() {
       const response = await fetch("/api/stripe/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tierId }),
+        body: JSON.stringify({ 
+          tierId,
+          userId: user?.uid || null,
+          email: user?.email || null
+        }),
       });
       
       const data = await response.json();

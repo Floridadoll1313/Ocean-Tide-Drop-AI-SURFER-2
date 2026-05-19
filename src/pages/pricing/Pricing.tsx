@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import React, { useState } from "react";
 import PageWrapper from "../../components/PageWrapper";
 
@@ -245,7 +246,7 @@ export default function Pricing() {
     <PageWrapper maxWidth="max-w-7xl" showHero={false}>
       <div className="relative z-10 w-full text-center py-10">
         <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 text-[#00eaff] drop-shadow-[0_0_20px_#00eaff]">Pricing</h1>
-        <p className="text-slate-400 mb-12 max-w-2xl mx-auto">Choose your wave. From absolute automation to cinematic storytelling architecture.</p>
+        <p className="text-cyan-100 font-bold mb-12 max-w-2xl mx-auto text-base">Choose your wave. From high-tier AI workflow automations to high-fidelity custom digital systems.</p>
 
         {isInIframe && (
           <div className="bg-orange-500/10 border border-orange-500/30 text-orange-400 p-6 rounded-sm mb-16 max-w-3xl mx-auto mx-4 text-sm font-medium tracking-wide">
@@ -258,9 +259,9 @@ export default function Pricing() {
           {productLines.map((line, lineIdx) => (
             <div key={lineIdx} className="text-left">
               <div className="flex items-center gap-6 mb-16 px-4">
-                 <div className="h-px bg-white/10 flex-1"></div>
-                 <h2 className="text-lg font-black uppercase tracking-[0.4em] text-zinc-500">{line.title}</h2>
-                 <div className="h-px bg-white/10 flex-1"></div>
+                 <div className="h-px bg-cyan-400/20 flex-1"></div>
+                 <h2 className="text-lg font-black uppercase tracking-[0.4em] text-cyan-300">{line.title}</h2>
+                 <div className="h-px bg-cyan-400/20 flex-1"></div>
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -272,20 +273,20 @@ export default function Pricing() {
                     </stripe-pricing-table>
                   </div>
                 ) : line.tiers.map((tier) => (
-                  <div key={tier.slug} className={`glass-card p-8 rounded-3xl relative overflow-hidden flex flex-col ${tier.popular ? 'border-[#00eaff]/50 shadow-[0_0_30px_rgba(0,255,255,0.1)]' : 'border-white/10'}`}>
+                  <div key={tier.slug} className={`glass-card p-8 rounded-3xl relative overflow-hidden flex flex-col ${tier.popular ? 'border-[#00eaff] shadow-[0_0_30px_rgba(0,255,255,0.15)] bg-slate-950/60' : 'border-white/10'}`}>
                     {tier.popular && (
                       <div className="absolute top-0 right-0 bg-[#00eaff] text-black text-[10px] font-bold uppercase tracking-widest py-1 px-4 rounded-bl-xl">Best Value</div>
                     )}
                     <h3 className={`text-2xl font-black italic uppercase ${tier.color} mb-2`}>{tier.name}</h3>
-                    <div className="text-4xl font-bold mb-4">{tier.price}<span className="text-sm font-normal text-slate-500">{tier.oneTime ? '' : '/mo'}</span></div>
-                    <p className="text-sm text-slate-400 mb-8 h-12">{tier.desc}</p>
+                    <div className="text-4xl font-bold mb-4">{tier.price}<span className="text-sm font-semibold text-cyan-400">{tier.oneTime ? '' : '/mo'}</span></div>
+                    <p className="text-sm text-[#00eaff] font-bold mb-8 h-12 leading-relaxed">{tier.desc}</p>
                     
                     <div className="flex-1">
                       <ul className="space-y-3 mb-8">
                         {tier.features.map((feature, i) => (
-                          <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
-                            <span className="text-white/20 mt-1">
-                               <div className="w-1.5 h-1.5 bg-soul-gradient rounded-full"></div>
+                          <li key={i} className="text-sm text-white font-medium flex items-start gap-2 leading-relaxed">
+                            <span className="text-[#00eaff] mt-1.5 flex-shrink-0">
+                               <div className="w-2 h-2 bg-[#00eaff] rounded-full shadow-[0_0_10px_#00eaff]"></div>
                             </span> 
                             {feature}
                           </li>
@@ -302,8 +303,8 @@ export default function Pricing() {
                       <span className="relative z-10">Secure Checkout</span>
                       <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform"></div>
                     </a>
-                    <div className="mt-4 flex items-center justify-center gap-2 opacity-30 group-hover:opacity-60 transition-opacity">
-                      <span className="text-[8px] font-black uppercase tracking-[0.2em]">Powered by Stripe</span>
+                    <div className="mt-4 flex items-center justify-center gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                      <span className="text-[8px] font-black uppercase tracking-[0.2em] text-cyan-400">Powered by Stripe</span>
                     </div>
                   </div>
                 ))}

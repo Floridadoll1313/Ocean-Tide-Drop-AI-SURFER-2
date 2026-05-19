@@ -609,7 +609,7 @@ copy events (user_id, action) from stdin with (format csv);
 1,click
 1,view
 2,click
-\.
+\\.
 \`\`\`
 
 Reference: [COPY](https://www.postgresql.org/docs/current/sql-copy.html)

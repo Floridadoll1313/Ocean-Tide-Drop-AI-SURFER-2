@@ -2,17 +2,17 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PageWrapper from '../../components/PageWrapper';
 import { motion } from 'motion/react';
-import { Anchor, Hammer, Waves, Compass } from 'lucide-react';
+import { Hammer, Waves, Compass } from 'lucide-react';
 
 export default function Lore() {
   const stories = [
     {
       title: "The Carpenter's Line",
       icon: <Hammer className="w-6 h-6" />,
-      content: "Before the algorithms and neural networks, there was Bull. A Master Carpenter who understood that any structure—whether a home on Hatteras Island or a digital empire—requires a foundation built for the storm. He didn't just build homes; he designed legacies across the Outer Banks, teaching us that the measure of a man is the integrity of his joinery."
+      content: "Before the algorithms and neural networks, there was Bull. A Master Carpenter who understood that any structure—whether a home on the wild ocean front or a digital empire—requires a foundation built for the storm. He didn't just build homes; he designed legacies across the surfing coast, teaching us that the measure of a man is the integrity of his joinery."
     },
     {
-      title: "Hatteras Currents",
+      title: "Surfer's Currents",
       icon: <Waves className="w-6 h-6" />,
       content: "The currents here aren't just water; they are frequencies. We learned to surf the edge where the Gulf Stream meets the Labrador Current. It's in this collision of energies that AI Surfer was born, carrying the spirit of the Atlantic into the architecture of the AI age."
     },

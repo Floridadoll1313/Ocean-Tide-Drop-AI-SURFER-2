@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import PageWrapper from "../../components/PageWrapper";
 import { motion, AnimatePresence } from "motion/react";
-import { Image as ImageIcon, Maximize2, Zap, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Maximize2, X } from "lucide-react";
 
 const GALLERY_ITEMS = [
-  { id: '1', title: "The Hatteras Pillar", category: "Artisan Legacy", size: "large", color: "#f59e0b", image: "https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&q=80&w=1000", description: "Inspired by Bull's master structural design on the Outer Banks." },
+  { id: '1', title: "The Outer Banks Pillar", category: "Artisan Legacy", size: "large", color: "#f59e0b", image: "https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&q=80&w=1000", description: "Inspired by Bull's master structural design on the Outer Banks." },
   { id: '2', title: "Neon Swell", category: "Cinematic", size: "large", color: "#00eaff", image: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&q=80&w=1000", description: "Capturing the high-frequency energy of the nocturnal tide." },
   { id: '3', title: "Neural Drift", category: "Abstract", size: "medium", color: "#ff5E00", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1000", description: "AI-driven architecture mapped from ocean floor resonance." },
   { id: '4', title: "Synth Tide", category: "Mythic", size: "small", color: "#ec4899", image: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&q=80&w=1000", description: "Digital dreams rendered in physical structures." },
@@ -32,7 +32,7 @@ export default function Gallery() {
             Selected <span className="text-soul-gradient italic font-serif lowercase">Work.</span>
           </h1>
           <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest leading-loose">
-             From Bull's master-built homes on Hatteras Island to high-frequency digital architecture—our work is defined by structural integrity and elite growth design.
+             From Bull's master-built coastal homes to high-frequency digital architecture—our work is defined by structural integrity and elite growth design.
           </p>
         </div>
 

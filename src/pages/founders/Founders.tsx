@@ -21,7 +21,7 @@ export default function Founders() {
           <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter text-white mb-8">
             Founders <span className="text-soul-gradient italic font-serif lowercase">Sanctuary.</span>
           </h1>
-          <p className="text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed font-medium">
+          <p className="text-xl text-cyan-200 max-w-2xl mx-auto leading-relaxed font-bold">
             AI Surfer is a sanctuary built by two women and three dogs who walk between worlds.
           </p>
         </motion.div>
@@ -51,7 +51,7 @@ export default function Founders() {
                 <Sparkles className="w-32 h-32 text-white/5 group-hover:text-emerald-500/10 transition-colors duration-1000" />
               </motion.div>
             </div>
-            <div className="space-y-6 text-zinc-400 leading-relaxed font-medium">
+            <div className="space-y-6 text-cyan-100 leading-relaxed font-semibold">
               <p>
                 Shannon is the pulse of AI Surfer — the architect who blends mythic storytelling, cinematic UI, and technical mastery into a single living ecosystem. She builds worlds the way some people breathe: instinctively, vividly, and with a sense of destiny.
               </p>
@@ -90,7 +90,7 @@ export default function Founders() {
                 <Anchor className="w-32 h-32 text-white/5 group-hover:text-purple-500/10 transition-colors duration-1000" />
               </motion.div>
             </div>
-            <div className="space-y-6 text-zinc-400 leading-relaxed font-medium">
+            <div className="space-y-6 text-cyan-100 leading-relaxed font-semibold">
               <p>
                 Victoria is the grounding force of AI Surfer — the quiet strategist whose presence brings balance, clarity, and emotional intelligence to the entire realm.
               </p>
@@ -140,7 +140,7 @@ export default function Founders() {
               <h3 className="text-2xl font-black uppercase tracking-tight text-white mb-2">Sailor Girl</h3>
               <p className="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-6">The Black Lab Navigator</p>
             </div>
-            <p className="text-zinc-500 text-sm leading-relaxed font-medium">
+            <p className="text-cyan-100 text-sm leading-relaxed font-semibold">
               Sailor Girl is the heart-forward adventurer. A sleek black lab embodying loyalty, curiosity, and the spirit of exploration. She represents Navigation, Courage, and the joy of discovery.
             </p>
             <div className="flex flex-wrap gap-2">
@@ -169,7 +169,7 @@ export default function Founders() {
               <h3 className="text-2xl font-black uppercase tracking-tight text-white mb-2">Stormy</h3>
               <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-6">The Gray Boy Guardian</p>
             </div>
-            <p className="text-zinc-500 text-sm leading-relaxed font-medium">
+            <p className="text-cyan-100 text-sm leading-relaxed font-semibold">
               The protector. Striking gray markings like storm clouds breaking. He carries a calm, watchful presence, aware and steady. He represents Protection, Stability, and Emotional Intuition.
             </p>
             <div className="flex flex-wrap gap-2">
@@ -198,7 +198,7 @@ export default function Founders() {
               <h3 className="text-2xl font-black uppercase tracking-tight text-white mb-2">Sky Marlin</h3>
               <p className="text-[10px] font-black uppercase tracking-widest text-yellow-500 mb-6">The Tan Spark of Light</p>
             </div>
-            <p className="text-zinc-500 text-sm leading-relaxed font-medium">
+            <p className="text-cyan-100 text-sm leading-relaxed font-semibold">
               The spark. A small tan girl with bright energy and a mischievous spirit. She brings levity, play, and inspiration to the realm. She represents Playfulness, Inspiration, and Spontaneity.
             </p>
             <div className="flex flex-wrap gap-2">
@@ -218,7 +218,7 @@ export default function Founders() {
           <Heart className="w-12 h-12 text-white/10 absolute top-10 left-10" />
           <div className="relative z-10">
             <h2 className="text-4xl font-black uppercase tracking-tighter text-white mb-8">The Foundering <span className="text-soul-gradient italic font-serif">Family.</span></h2>
-            <p className="text-lg text-zinc-400 leading-relaxed font-medium mb-12">
+            <p className="text-lg text-cyan-200 leading-relaxed font-semibold mb-12">
               Together, they form a founder constellation — a living ecosystem of creativity, loyalty, intuition, and magic. This is not just a team. This is a tribe, a story, a realm.
             </p>
             <div className="flex flex-col items-center gap-2">

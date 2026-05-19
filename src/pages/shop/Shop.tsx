@@ -1,7 +1,7 @@
 import React from "react";
 import PageWrapper from "../../components/PageWrapper";
 import { motion } from "motion/react";
-import { ShoppingBag, Star, Zap, CreditCard, ShieldCheck } from "lucide-react";
+import { ShoppingBag, Star, CreditCard, ShieldCheck } from "lucide-react";
 
 const SHOP_ITEMS = [
   {
