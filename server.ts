@@ -40,15 +40,16 @@ async function generateAIContent(req: express.Request, res: express.Response) {
     });
 
     res.json({ result: response.text });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as Error;
     console.error("AI Error:", error);
     
     // Graceful fallback for rate limits so the app keeps working with a simulated response
-    if (error?.status === 429 || error?.message?.toLowerCase().includes("rate") || error?.message?.toLowerCase().includes("quota") || error?.message?.toLowerCase().includes("exhausted")) {
+    if ((error as any)?.status === 429 || err?.message?.toLowerCase().includes("rate") || err?.message?.toLowerCase().includes("quota") || err?.message?.toLowerCase().includes("exhausted")) {
        return res.json({ result: "⚠️ AI Core Rate Limit Exceeded.\n\nThe neural link is currently running at maximum capacity on the free tier. Please wait a moment for the frequency to cool down, or connect a paid Gemini API key for unlimited throughput.\n\nSimulated Output: [Action successful. Data processed.]" });
     }
     
-    res.status(500).json({ error: error.message || "Failed to generate AI content" });
+    res.status(500).json({ error: (error as Error).message || "Failed to generate AI content" });
   }
 }
 
@@ -57,8 +58,8 @@ async function startSurferPipeline(req: express.Request, res: express.Response) 
     const payload = req.body;
     console.log("🌊 Starting Surfer Pipeline for payload:", payload);
     res.json({ status: "TRIGGERED", workflow: "surferPipeline", timestamp: new Date().toISOString() });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    res.status(500).json({ error: (error as Error).message });
   }
 }
 
@@ -92,17 +93,18 @@ async function generateAIContentStream(req: express.Request, res: express.Respon
     
     res.write("data: [DONE]\n\n");
     res.end();
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as Error;
     console.error("AI Stream Error:", error);
     
-    if (error?.status === 429 || error?.message?.toLowerCase().includes("rate") || error?.message?.toLowerCase().includes("quota") || error?.message?.toLowerCase().includes("exhausted")) {
+    if ((error as any)?.status === 429 || err?.message?.toLowerCase().includes("rate") || err?.message?.toLowerCase().includes("quota") || err?.message?.toLowerCase().includes("exhausted")) {
        res.write(`data: ${JSON.stringify({ text: "⚠️ AI Core Rate Limit Exceeded.\n\nThe neural link is currently running at maximum capacity on the free tier. Please wait a moment for the frequency to cool down, or connect a paid Gemini API key for unlimited throughput.\n\nSimulated Output: [Action successful. Data processed.]" })}\n\n`);
        res.write("data: [DONE]\n\n");
        res.end();
        return;
     }
     
-    res.write(`data: ${JSON.stringify({ error: error.message || "Failed to generate AI content" })}\n\n`);
+    res.write(`data: ${JSON.stringify({ error: err.message || "Failed to generate AI content" })}\n\n`);
     res.end();
   }
 }
@@ -130,19 +132,20 @@ async function startServer() {
       console.log("🔔 Stripe Webhook received:", event.type);
 
       switch (event.type) {
-        case "checkout.session.completed":
+        case "checkout.session.completed": {
           const session = event.data.object as Stripe.Checkout.Session;
           console.log("💰 Payment successful for session:", session.id);
           // TODO: Handle post-payment logic (e.g. fulfill order, update user tier)
           break;
+        }
         default:
           console.log(`Unhandled event type ${event.type}`);
       }
 
       res.json({ received: true });
-    } catch (err: any) {
-      console.error(`❌ Webhook Error: ${err.message}`);
-      res.status(400).send(`Webhook Error: ${err.message}`);
+    } catch (err: unknown) {
+      console.error(`❌ Webhook Error: ${(err as Error).message}`);
+      res.status(400).send(`Webhook Error: ${(err as Error).message}`);
     }
   });
 
@@ -207,9 +210,9 @@ async function startServer() {
       });
 
       res.json({ url: session.url });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Stripe Session Error:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: (error as Error).message });
     }
   });
 
@@ -234,8 +237,8 @@ async function startServer() {
         let template = fs.readFileSync(templatePath, "utf-8");
         template = await vite.transformIndexHtml(url, template);
         res.status(200).set({ "Content-Type": "text/html" }).send(template);
-      } catch (e: any) {
-        vite.ssrFixStacktrace(e);
+      } catch (e: unknown) {
+        vite.ssrFixStacktrace(e as Error);
         console.error("Vite Transform Error:", e);
         next(e);
       }

@@ -1,3 +1,3 @@
-export function saveToD1(data: any, env: any) {
+export function saveToD1(data: unknown, _env: unknown) {
   return data;
 }

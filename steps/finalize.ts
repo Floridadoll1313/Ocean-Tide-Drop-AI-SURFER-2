@@ -1,3 +1,3 @@
-export function finalize(data: any, env: any) {
+export function finalize(data: unknown, _env: unknown) {
   return data;
 }

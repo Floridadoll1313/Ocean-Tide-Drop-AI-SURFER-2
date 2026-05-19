@@ -1,3 +1,3 @@
-export function sendWelcomeEmail(data: any, env: any) {
+export function sendWelcomeEmail(data: unknown, _env: unknown) {
   return data;
 }

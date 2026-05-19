@@ -11,7 +11,6 @@ import {
   ShieldAlert,
   Loader2,
   CalendarDays,
-  Layout,
   X,
   MessageSquare,
   Send,
@@ -98,9 +97,9 @@ export default function Workspace() {
       setChatSpaces(fetchedChat);
       setEmails(fetchedEmails);
       setNotes(fetchedNotes);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Load Error:", err);
-      setError(err.message || "Failed to synchronize with Google Workspace");
+      setError((err as Error).message || "Failed to synchronize with Google Workspace");
     } finally {
       setLoading(false);
     }
@@ -115,11 +114,11 @@ export default function Workspace() {
     
     try {
       await updateTaskStatus(accessToken, taskId, newStatus);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to update task:", err);
-      setError(err.message || "Failed to update task status");
+      setError((err as Error).message || "Failed to update task status");
       // Revert optimism
-      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: currentStatus as any } : t));
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: currentStatus as 'completed' | 'needsAction' } : t));
     }
   };
 
@@ -152,8 +151,8 @@ export default function Workspace() {
         endTime: '10:00'
       });
       loadData();
-    } catch (err: any) {
-      setError(err.message || "Failed to create event");
+    } catch (err: unknown) {
+      setError((err as Error).message || "Failed to create event");
     } finally {
       setCreating(false);
     }
@@ -171,9 +170,9 @@ export default function Workspace() {
       setChatMessage("");
       // optionally add toast or success message here
       alert("Message sent successfully!");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || "Failed to send chat message");
+      setError((err as Error).message || "Failed to send chat message");
     } finally {
       setSendingMessage(null);
     }
@@ -188,9 +187,9 @@ export default function Workspace() {
       const sheet = await createSpreadsheet(accessToken, spreadsheetTitle);
       setRecentSheet(sheet);
       setSpreadsheetTitle("");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to create spreadsheet:", err);
-      setError(err.message || "Failed to create spreadsheet");
+      setError((err as Error).message || "Failed to create spreadsheet");
     } finally {
       setCreatingSheet(false);
     }
@@ -205,9 +204,9 @@ export default function Workspace() {
       const slide = await createPresentation(accessToken, presentationTitle);
       setRecentSlide(slide);
       setPresentationTitle("");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to create presentation:", err);
-      setError(err.message || "Failed to create presentation");
+      setError((err as Error).message || "Failed to create presentation");
     } finally {
       setCreatingSlide(false);
     }
@@ -222,9 +221,9 @@ export default function Workspace() {
       const doc = await createDocument(accessToken, documentTitle);
       setRecentDoc(doc);
       setDocumentTitle("");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to create document:", err);
-      setError(err.message || "Failed to create document");
+      setError((err as Error).message || "Failed to create document");
     } finally {
       setCreatingDoc(false);
     }

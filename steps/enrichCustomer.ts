@@ -1,3 +1,3 @@
-export function enrichCustomer(data: any, env: any) {
+export function enrichCustomer(data: unknown, _env: unknown) {
   return data;
 }
