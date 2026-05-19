@@ -17,7 +17,7 @@ const TIERS: Record<string, { title: string; color: string; glow: string; descri
     description: "Calibrating deeper automations...",
   },
   "hatteras-island": {
-    title: "Hatteras Island",
+    title: "Surfer Elite",
     color: "text-pink-500",
     glow: "shadow-[0_0_40px_rgba(255,0,128,0.5)]",
     description: "Opening high-touch creative systems...",

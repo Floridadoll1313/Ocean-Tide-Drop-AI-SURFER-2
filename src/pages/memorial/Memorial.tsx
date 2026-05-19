@@ -10,7 +10,7 @@ interface Story {
   id: string;
   name: string;
   content: string;
-  created_at: any;
+  created_at: unknown;
 }
 
 export default function Memorial() {
@@ -71,15 +71,15 @@ export default function Memorial() {
     <PageWrapper maxWidth="max-w-7xl" showHero={false}>
       <div className="w-full px-6 py-10">
         <div className="flex flex-col items-center mb-20 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 mb-6">
-            <Hammer className="w-3 h-3" />
-            Master Craftsmanship
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-black uppercase tracking-[0.3em] text-cyan-400 mb-6">
+            <Anchor className="w-3 h-3" />
+            The Salvo Sanctuary
           </div>
-          <h1 className="text-5xl md:text-8xl font-black italic uppercase text-white tracking-tighter drop-shadow-[0_0_15px_rgba(30,144,255,0.3)]">
-            Bull's <span className="text-blue-500">Memorial</span>
+          <h1 className="text-5xl md:text-8xl font-black italic uppercase text-white tracking-tighter drop-shadow-[0_0_15px_rgba(30,144,255,0.3)] font-orbitron">
+            Bull's <span className="text-cyan-400">Memorial</span>
           </h1>
-          <p className="mt-6 text-white/60 text-sm md:text-base uppercase tracking-[0.2em] font-medium max-w-2xl leading-relaxed">
-            Honoring the legacy of <span className="text-white">Johnny Burgess Hooper</span> — The Master Carpenter who built the skyline of Hatteras Island. He touched countless homes with his craft and left his mark in the very wood of our community.
+          <p className="mt-6 text-white/70 text-sm md:text-base uppercase tracking-[0.2em] font-medium max-w-3xl leading-relaxed">
+            Honoring the coastal legacy of <span className="text-cyan-300 font-extrabold pb-1 border-b border-cyan-400/30">Johnny Burgess Hooper ("Bull")</span> — The Master Carpenter whose legendary craftsmanship built the very skyline of Salvo, NC, and the tri-villages.
           </p>
         </div>
 
@@ -88,27 +88,28 @@ export default function Memorial() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1 }}
-            className="relative aspect-[4/5] rounded-[3rem] overflow-hidden border border-white/10 group"
+            className="relative aspect-[4/5] rounded-[3rem] overflow-hidden border border-white/10 group animate-float"
           >
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-10" />
             <div className="absolute inset-0">
                <img 
                  src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000" 
-                 alt="Bull's Memorial" 
-                 className="w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" 
+                 alt="Salvo Beach and Pamlico Sound" 
+                 className="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" 
+                 referrerPolicy="no-referrer"
                />
             </div>
-            <div className="absolute inset-0 flex items-center justify-center bg-blue-900/20">
-               <Waves className="w-32 h-32 text-blue-500/20 animate-pulse" />
+            <div className="absolute inset-0 flex items-center justify-center bg-cyan-950/20">
+               <Waves className="w-32 h-32 text-cyan-400/20 animate-pulse" />
             </div>
             
-            <div className="absolute bottom-12 left-12 z-20">
-              <div className="flex items-center gap-3 text-blue-400 mb-2">
-                <MapPin className="w-4 h-4" />
-                <span className="text-xs font-black uppercase tracking-widest text-shadow-sm">Salvo, NC</span>
+            <div className="absolute bottom-12 left-12 right-12 z-20">
+              <div className="flex items-center gap-3 text-cyan-400 mb-2">
+                <MapPin className="w-4 h-4 animate-bounce" />
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-shadow-sm">Salvo, Outer Banks</span>
               </div>
-              <h2 className="text-4xl font-black italic uppercase text-white tracking-tighter">Johnny Burgess Hooper</h2>
-              <p className="text-white/60 text-sm font-black uppercase tracking-widest mt-2">"Bull" — Forever Fishing</p>
+              <h2 className="text-3xl md:text-4xl font-black italic uppercase text-white tracking-tighter">Johnny Burgess Hooper</h2>
+              <p className="text-cyan-300/80 text-sm font-black uppercase tracking-widest mt-2 font-mono">"Bull" — Anchored in Salvo soundside & shores</p>
             </div>
           </motion.div>
 
@@ -119,15 +120,13 @@ export default function Memorial() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="glass-card p-10 rounded-[3rem] border border-white/10 bg-white/5 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 p-8 opacity-5">
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03]">
                 <Hammer className="w-24 h-24" />
               </div>
-              <Ruler className="w-8 h-8 text-blue-500 mb-6" />
-              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter">The Artisan's Touch</h3>
-              <p className="text-white/60 text-lg leading-relaxed font-medium">
-                Johnny "Bull" Burgess Hooper wasn't just a builder; he was a Master Carpenter whose hands shaped the homes and legacy of Hatteras Island. 
-                His precision and vision are etched into the foundations of countless residences across the sound and shore. 
-                He left his mark in wood, creating structures that stand strong against the Atlantic's fiercest storms.
+              <Ruler className="w-8 h-8 text-cyan-400 mb-6" />
+              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter font-orbitron">Outer Banks Masterclass Integrity</h3>
+              <p className="text-white/70 text-base leading-relaxed font-sans">
+                Johnny "Bull" Burgess Hooper was a cornerstone of the coastal surfer community. Operating primarily out of Salvo, NC, his master carpentry hands raised resilient beach homes and coastal landmarks engineered to stand strong against the fierce Atlantic ocean storms. Every rafter, joist, and deck he framed is a testament to honest craftsmanship.
               </p>
             </motion.div>
 
@@ -137,41 +136,39 @@ export default function Memorial() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="glass-card p-10 rounded-[3rem] border border-white/10 bg-white/5 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 p-8 opacity-5">
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03]">
                 <Anchor className="w-24 h-24" />
               </div>
-              <Waves className="w-8 h-8 text-blue-400 mb-6" />
-              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter">Legacy in the Grain</h3>
-              <p className="text-white/60 text-lg leading-relaxed font-medium">
-                Beyond the sawdust and the shoreline, Bull's true masterpiece was the community he helped build. 
-                His work was a testament to integrity—fair lines, strong joints, and a heart as vast as the Pamlico Sound. 
-                As the Hatteras currents shift, his structural legacy remains a beacon for all who appreciate true craftsmanship.
+              <Waves className="w-8 h-8 text-cyan-400 mb-6" />
+              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter font-orbitron">The Wind and Sound of Salvo</h3>
+              <p className="text-white/70 text-base leading-relaxed font-sans">
+                Like the persistent breezes blowing across the Salvo Day Use Area and the Pamlico Sound, Bull's influence lives on in the very wood and structure of our Outer Banks tri-villages. He built with heart, precision, and an unshakeable dedication. His architectural legacy remains a radiant beacon for all who treasure the ocean life and authentic quality.
               </p>
             </motion.div>
 
             <div className="pt-6 flex gap-6">
               <button 
                 onClick={() => setIsModalOpen(true)}
-                className="flex-1 py-5 rounded-2xl bg-blue-600 text-white text-xs font-black uppercase tracking-widest hover:bg-blue-500 transition-all shadow-[0_10px_30px_rgba(37,99,235,0.3)]"
+                className="flex-1 py-5 rounded-2xl bg-cyan-400 text-black text-xs font-black uppercase tracking-widest hover:bg-white transition-all shadow-[0_10px_30px_rgba(6,182,212,0.3)] font-mono"
               >
-                Share a Memory
+                Share a memory of Bull
               </button>
               <Link 
                 to="/gallery"
-                className="px-10 py-5 rounded-2xl bg-white/5 border border-white/10 text-white text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center"
+                className="px-10 py-5 rounded-2xl bg-white/5 border border-white/10 text-white text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center font-mono"
               >
-                Gallery
+                Work Gallery
               </Link>
             </div>
           </div>
         </div>
 
         <div className="mt-32 pt-20 border-t border-white/5 text-center">
-          <p className="text-white/20 text-[10px] font-black uppercase tracking-[1em] mb-10">Forever in the Swell</p>
+          <p className="text-cyan-400/30 text-[10px] font-black uppercase tracking-[1em] mb-10 font-mono">Forever in the Waves & Wind of Salvo</p>
           <div className="flex justify-center gap-10">
-             <div className="w-1 h-1 rounded-full bg-blue-500 animate-ping" />
-             <div className="w-1 h-1 rounded-full bg-blue-500 animate-ping delay-100" />
-             <div className="w-1 h-1 rounded-full bg-blue-500 animate-ping delay-200" />
+             <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+             <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping delay-100" />
+             <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping delay-200" />
           </div>
         </div>
         {/* STORIES SECTION */}

@@ -28,6 +28,7 @@ export default function PageWrapper({
     { to: "/", label: "Home", icon: HomeIcon, color: "text-yellow-500" },
     { to: "/gallery", label: "Work", icon: Briefcase, color: "text-blue-500" },
     { to: "/services", label: "Services", icon: Layers, color: "text-purple-500" },
+    { to: "/members", label: "Members", icon: LayoutDashboard, color: "text-cyan-400" },
     { to: "/reviews", label: "Reviews", icon: Star, color: "text-yellow-400" },
     { to: "/founders", label: "Founders", icon: Users, color: "text-emerald-500" },
     { to: "/memorial", label: "Bull's Memorial", icon: Anchor, color: "text-orange-500" },
@@ -49,7 +50,7 @@ export default function PageWrapper({
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex gap-8 text-[11px] font-bold uppercase tracking-[0.15em] items-center text-zinc-400">
+          <nav className="hidden md:flex gap-8 text-[11px] font-bold uppercase tracking-[0.15em] items-center text-cyan-200">
             {navLinks.map((link) => (
               <Link 
                 key={link.to}
@@ -140,7 +141,7 @@ export default function PageWrapper({
                   >
                     <Link 
                       onClick={toggleMenu} 
-                      className={`text-4xl font-black uppercase tracking-tighter transition-all flex items-center justify-center gap-4 ${isActive(link.to) ? 'text-white' : 'text-zinc-500 hover:text-white'}`} 
+                      className={`text-4xl font-black uppercase tracking-tighter transition-all flex items-center justify-center gap-4 ${isActive(link.to) ? 'text-white' : 'text-cyan-400 hover:text-white'}`} 
                       to={link.to}
                     >
                       <link.icon className={`w-8 h-8 ${isActive(link.to) ? link.color : 'text-zinc-700'}`} />
@@ -198,7 +199,7 @@ export default function PageWrapper({
         <div className={`relative ${maxWidth} mx-auto px-6 z-10 w-full`}>
           {showHero && (
             <div className="text-center mb-12">
-               <span className="text-zinc-600 font-bold uppercase tracking-[0.5em] text-[10px]">AI Surfer Growth Architecture</span>
+               <span className="text-cyan-400 font-bold uppercase tracking-[0.5em] text-[10px]">AI Surfer Growth Architecture</span>
             </div>
           )}
           {children}
@@ -206,7 +207,7 @@ export default function PageWrapper({
       </main>
 
       {/* FOOTER */}
-      <footer className="relative pt-32 pb-20 text-center text-zinc-500 text-sm z-10 shrink-0 mt-auto bg-black">
+      <footer className="relative pt-32 pb-20 text-center text-cyan-200/90 text-sm z-10 shrink-0 mt-auto bg-black">
         {/* WAVE DIVIDER */}
         <div className="absolute top-0 left-0 w-full overflow-hidden leading-none transform -translate-y-full">
             <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-[calc(100%+1.3px)] h-[50px] relative block">
@@ -219,24 +220,24 @@ export default function PageWrapper({
               <div className="w-12 h-12 flex items-center justify-center rounded-sm mb-6">
                 <img src="/logo.svg" alt="AI Surfer Logo" className="w-full h-full object-contain grayscale brightness-200" />
               </div>
-              <p className="max-w-xs text-zinc-400 font-medium leading-relaxed mb-8">
+              <p className="max-w-xs text-white font-medium leading-relaxed mb-8">
                 AI Surfer: A premium growth agency building digital architecture for tomorrow-focused brands.
               </p>
               <div className="flex items-center gap-4">
-                 <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-cyan-500/20 hover:border-cyan-400 hover:text-cyan-400 transition-all text-zinc-400">
+                 <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-cyan-500/20 hover:border-cyan-400 hover:text-cyan-400 transition-all text-white">
                     <Twitter className="w-4 h-4" />
                  </a>
-                 <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-400 hover:text-blue-400 transition-all text-zinc-400">
+                 <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-400 hover:text-blue-400 transition-all text-white">
                     <Linkedin className="w-4 h-4" />
                  </a>
-                 <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-pink-500/20 hover:border-pink-400 hover:text-pink-400 transition-all text-zinc-400">
+                 <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-pink-500/20 hover:border-pink-400 hover:text-pink-400 transition-all text-white">
                     <Instagram className="w-4 h-4" />
                  </a>
               </div>
            </div>
            <div>
               <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Capabilities</h4>
-              <ul className="flex flex-col gap-4 text-xs font-bold">
+              <ul className="flex flex-col gap-4 text-xs font-bold text-white/90">
                  <li><Link to="/services" className="hover:text-white transition-colors">Brand Identity</Link></li>
                  <li><Link to="/services" className="hover:text-white transition-colors">AI Integration</Link></li>
                  <li><Link to="/services" className="hover:text-white transition-colors">Growth Design</Link></li>
@@ -245,8 +246,8 @@ export default function PageWrapper({
            </div>
            <div>
               <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Contact</h4>
-              <ul className="flex flex-col gap-4 text-xs font-bold">
-                 <li className="flex items-center gap-2"><MapPin className="w-3 h-3 text-cyan-400" /> Charleston, SC</li>
+              <ul className="flex flex-col gap-4 text-xs font-bold text-white/90">
+                 <li className="flex items-center gap-2"><MapPin className="w-3 h-3 text-cyan-400" /> Charleston, SC 29414</li>
                  <li><a href="mailto:oceantidedropaisurf@gmail.com" className="hover:text-white transition-colors">oceantidedropaisurf@gmail.com</a></li>
                  <li className="pt-4"><Link to="/contact" className="inline-block px-6 py-3 bg-cyan-500/10 border border-cyan-400 text-cyan-400 font-black uppercase text-[10px] tracking-widest hover:bg-cyan-400 hover:text-black transition-all">Start Your Project</Link></li>
                  <li className="pt-4 mt-4 border-t border-white/5 flex flex-col gap-2">
@@ -256,7 +257,7 @@ export default function PageWrapper({
               </ul>
            </div>
         </div>
-        <div className="pt-12 border-t border-white/5 font-black uppercase tracking-[0.2em] text-[10px]">
+        <div className="pt-12 border-t border-white/5 font-black uppercase tracking-[0.2em] text-[10px] text-white">
           © {new Date().getFullYear()} AI Surfer Marketing Agency — Peak Frequency.
         </div>
       </footer>

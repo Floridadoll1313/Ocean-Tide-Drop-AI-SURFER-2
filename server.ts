@@ -4,8 +4,15 @@ import fs from "fs";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
+import admin from "firebase-admin";
 
 dotenv.config();
+
+// Initialize Firebase Admin lazily/on start
+if (admin.apps.length === 0) {
+  admin.initializeApp();
+}
+const db = admin.firestore();
 
 const app = express();
 const PORT = 3000;
@@ -45,7 +52,7 @@ async function generateAIContent(req: express.Request, res: express.Response) {
     console.error("AI Error:", error);
     
     // Graceful fallback for rate limits so the app keeps working with a simulated response
-    if ((error as any)?.status === 429 || err?.message?.toLowerCase().includes("rate") || err?.message?.toLowerCase().includes("quota") || err?.message?.toLowerCase().includes("exhausted")) {
+    if ((error as { status?: number })?.status === 429 || err?.message?.toLowerCase().includes("rate") || err?.message?.toLowerCase().includes("quota") || err?.message?.toLowerCase().includes("exhausted")) {
        return res.json({ result: "⚠️ AI Core Rate Limit Exceeded.\n\nThe neural link is currently running at maximum capacity on the free tier. Please wait a moment for the frequency to cool down, or connect a paid Gemini API key for unlimited throughput.\n\nSimulated Output: [Action successful. Data processed.]" });
     }
     
@@ -97,7 +104,7 @@ async function generateAIContentStream(req: express.Request, res: express.Respon
     const err = error as Error;
     console.error("AI Stream Error:", error);
     
-    if ((error as any)?.status === 429 || err?.message?.toLowerCase().includes("rate") || err?.message?.toLowerCase().includes("quota") || err?.message?.toLowerCase().includes("exhausted")) {
+    if ((error as { status?: number })?.status === 429 || err?.message?.toLowerCase().includes("rate") || err?.message?.toLowerCase().includes("quota") || err?.message?.toLowerCase().includes("exhausted")) {
        res.write(`data: ${JSON.stringify({ text: "⚠️ AI Core Rate Limit Exceeded.\n\nThe neural link is currently running at maximum capacity on the free tier. Please wait a moment for the frequency to cool down, or connect a paid Gemini API key for unlimited throughput.\n\nSimulated Output: [Action successful. Data processed.]" })}\n\n`);
        res.write("data: [DONE]\n\n");
        res.end();
@@ -109,8 +116,95 @@ async function generateAIContentStream(req: express.Request, res: express.Respon
   }
 }
 
+async function seedTiersIfEmpty() {
+  try {
+    const tiersColl = db.collection("pricing_tiers");
+    const snapshot = await tiersColl.limit(1).get();
+    
+    if (snapshot.empty) {
+      console.log("🌱 Seeding default dynamic pricing tiers in Firestore...");
+      const defaultTiers = [
+        {
+          id: "dawn-patrol",
+          name: "Dawn Patrol",
+          price: "$49",
+          period: "/month",
+          description: "For creators starting their high-frequency journey.",
+          color: "border-cyan-500/20",
+          features: [
+            "Daily AI Trend Analysis",
+            "Basic Workflow Automations",
+            "Standard Cinematic Templates",
+            "Community Access"
+          ],
+          popular: false,
+          stripePriceId: process.env.STRIPE_PRICE_ID_DAWN_PATROL || ""
+        },
+        {
+          id: "breakline",
+          name: "Breakline",
+          price: "$99",
+          period: "/month",
+          description: "Optimized for scaling digital structures.",
+          color: "border-purple-500/30",
+          features: [
+            "Everything in Dawn Patrol",
+            "Advanced AI Marketing Tools",
+            "Unlimited Workflow Triggers",
+            "Primary Support Frequency"
+          ],
+          popular: true,
+          stripePriceId: process.env.STRIPE_PRICE_ID_BREAKLINE || ""
+        },
+        {
+          id: "hatteras-island",
+          name: "Surfer Elite",
+          price: "$249",
+          period: "/month",
+          description: "The elite frequency for established brands.",
+          color: "border-orange-500/20",
+          features: [
+            "Everything in Breakline",
+            "Cinematic Brand Architecture",
+            "Custom AI Personas",
+            "High-Frequency Consultation"
+          ],
+          popular: false,
+          stripePriceId: process.env.STRIPE_PRICE_ID_HATTERAS_ISLAND || ""
+        },
+        {
+          id: "cape-point",
+          name: "Cape Point",
+          price: "$499",
+          period: "/month",
+          description: "Ultimate architectural mastery and custom growth.",
+          color: "border-white/20",
+          features: [
+            "Full Private AI Ecosystem",
+            "Dedicated Growth Architect",
+            "White-Label Implementation",
+            "Peak Priority 24/7"
+          ],
+          popular: false,
+          stripePriceId: process.env.STRIPE_PRICE_ID_CAPE_POINT || ""
+        }
+      ];
+
+      for (const tier of defaultTiers) {
+        await tiersColl.doc(tier.id).set(tier);
+      }
+      console.log("✅ Seeding dynamic pricing tiers complete!");
+    } else {
+      console.log("📊 Non-empty pricing_tiers collection loaded.");
+    }
+  } catch {
+    // Ignore seeding error in missing GCP environments
+  }
+}
+
 async function startServer() {
   console.log("🚀 Initializing server...");
+  await seedTiersIfEmpty();
   
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
   const stripe = (stripeSecret && stripeSecret.trim() !== "") ? new Stripe(stripeSecret) : null;
@@ -134,12 +228,114 @@ async function startServer() {
       switch (event.type) {
         case "checkout.session.completed": {
           const session = event.data.object as Stripe.Checkout.Session;
-          console.log("💰 Payment successful for session:", session.id);
-          // TODO: Handle post-payment logic (e.g. fulfill order, update user tier)
+          console.log("💰 checkout.session.completed event captured for:", session.id);
+          
+          const userId = session.client_reference_id || session.metadata?.userId;
+          const tierId = session.metadata?.tierId;
+          const stripeCustomerId = session.customer as string;
+          const stripeSubscriptionId = session.subscription as string;
+
+          if (!userId) {
+            console.warn("⚠️ Missing client_reference_id or userId in session metadata.");
+            break;
+          }
+
+          let mappedTier: "basic" | "premium" | "enterprise" = "basic";
+          if (tierId === "breakline" || tierId === "hatteras-island") {
+            mappedTier = "premium";
+          } else if (tierId === "cape-point") {
+            mappedTier = "enterprise";
+          }
+
+          console.log(`🔗 Webhook updating user ${userId} to active on tier ${mappedTier}`);
+          
+          // Write directly using admin SDK to update user status
+          const userRef = db.collection("users").doc(userId);
+          await userRef.set({
+            subscriptionStatus: "active",
+            tier: mappedTier,
+            stripeCustomerId: stripeCustomerId || null,
+            stripeSubscriptionId: stripeSubscriptionId || null,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+
+          // Record payment transaction
+          const paymentId = `pay_${Date.now()}_${userId.slice(0, 6)}`;
+          await db.collection("payments").doc(paymentId).set({
+            userId: userId,
+            amount: session.amount_total || 0,
+            currency: session.currency || "usd",
+            status: "succeeded",
+            stripeSessionId: session.id,
+            tierId: tierId || "dawn-patrol",
+            createdAt: admin.firestore.FieldValue.serverTimestamp()
+          });
+
+          console.log(`✅ Success logging checkout session to users & payments collections for user ${userId}.`);
           break;
         }
+
+        case "customer.subscription.created":
+        case "customer.subscription.updated": {
+          const subscription = event.data.object as Stripe.Subscription;
+          console.log(`🔔 customer.subscription.${event.type === "customer.subscription.created" ? "created" : "updated"} triggered:`, subscription.id);
+          
+          const userId = subscription.metadata?.userId;
+          const tierId = subscription.metadata?.tierId;
+          const stripeCustomerId = subscription.customer as string;
+
+          if (userId) {
+            let mappedTier: "basic" | "premium" | "enterprise" = "basic";
+            if (tierId === "breakline" || tierId === "hatteras-island") {
+              mappedTier = "premium";
+            } else if (tierId === "cape-point") {
+              mappedTier = "enterprise";
+            }
+
+            const userRef = db.collection("users").doc(userId);
+            await userRef.set({
+              subscriptionStatus: "active",
+              tier: mappedTier,
+              stripeCustomerId: stripeCustomerId,
+              stripeSubscriptionId: subscription.id,
+              updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+            console.log(`✅ Updated subscription for ${userId} to active.`);
+          }
+          break;
+        }
+
+        case "customer.subscription.deleted": {
+          const subscription = event.data.object as Stripe.Subscription;
+          console.log("🔔 customer.subscription.deleted event captured:", subscription.id);
+
+          const userId = subscription.metadata?.userId;
+          if (userId) {
+            const userRef = db.collection("users").doc(userId);
+            await userRef.set({
+              subscriptionStatus: "canceled",
+              tier: "none",
+              updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+            console.log(`✅ Cancelled subscription statuses on user profile: ${userId}`);
+          } else {
+            // Safe fallback lookup
+            const usersQuery = await db.collection("users").where("stripeSubscriptionId", "==", subscription.id).limit(1).get();
+            if (!usersQuery.empty) {
+              const userDoc = usersQuery.docs[0];
+              await userDoc.ref.set({
+                subscriptionStatus: "canceled",
+                tier: "none",
+                updatedAt: admin.firestore.FieldValue.serverTimestamp()
+              }, { merge: true });
+              console.log(`✅ Found subscriber via back-search of subscriptionID & canceled profile.`);
+            }
+          }
+          break;
+        }
+
         default:
-          console.log(`Unhandled event type ${event.type}`);
+          console.log(`Unhandled webhook event type: ${event.type}`);
       }
 
       res.json({ received: true });
@@ -162,25 +358,57 @@ async function startServer() {
   app.post("/api/ai/generate", generateAIContent);
   app.post("/api/ai/generate-stream", generateAIContentStream);
 
-  // Stripe Checkout Session
-  app.post("/api/stripe/create-checkout-session", async (req, res) => {
+  // Get Dynamic Pricing Tiers
+  app.get("/api/pricing-tiers", async (req, res) => {
+    try {
+      const snapshot = await db.collection("pricing_tiers").get();
+      const list: Record<string, unknown>[] = [];
+      snapshot.forEach(docSnap => {
+        list.push(docSnap.data() as Record<string, unknown>);
+      });
+      
+      const order = ["dawn-patrol", "breakline", "hatteras-island", "cape-point"];
+      list.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+      
+      res.json(list);
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // Stripe Checkout Session Dual Endpoint Handler
+  const checkoutSessionHandler = async (req: express.Request, res: express.Response) => {
     if (!stripe) {
       return res.status(500).json({ error: "Stripe is not configured" });
     }
 
-    const { tierId } = req.body;
+    const { tierId, userId, email } = req.body;
     if (!tierId) {
       return res.status(400).json({ error: "tierId is required" });
     }
 
-    const priceMap: Record<string, string | undefined> = {
-      "dawn-patrol": process.env.STRIPE_PRICE_ID_DAWN_PATROL,
-      "breakline": process.env.STRIPE_PRICE_ID_BREAKLINE,
-      "hatteras-island": process.env.STRIPE_PRICE_ID_HATTERAS_ISLAND,
-      "cape-point": process.env.STRIPE_PRICE_ID_CAPE_POINT,
-    };
+    let priceId: string | undefined;
 
-    const priceId = priceMap[tierId];
+    // Load Price ID from dynamic Firestore tier if configured
+    try {
+      const docSnap = await db.collection("pricing_tiers").doc(tierId).get();
+      if (docSnap.exists) {
+        priceId = docSnap.data()?.stripePriceId;
+      }
+    } catch (dbErr) {
+      console.warn("DB dynamic pricetiers fetch warn:", dbErr);
+    }
+
+    // Direct fallback from system environment
+    if (!priceId) {
+      const priceMap: Record<string, string | undefined> = {
+        "dawn-patrol": process.env.STRIPE_PRICE_ID_DAWN_PATROL,
+        "breakline": process.env.STRIPE_PRICE_ID_BREAKLINE,
+        "hatteras-island": process.env.STRIPE_PRICE_ID_HATTERAS_ISLAND,
+        "cape-point": process.env.STRIPE_PRICE_ID_CAPE_POINT,
+      };
+      priceId = priceMap[tierId];
+    }
 
     if (!priceId) {
       return res.status(400).json({ error: `Price ID not configured for tier: ${tierId}` });
@@ -194,16 +422,27 @@ async function startServer() {
       
       const origin = req.headers.origin || `${protocol}://${host}`;
       
-      console.log("💳 Creating checkout session for tier:", tierId);
-      console.log("📍 Origin Details:", { origin, protocol, host, forwardedProtocol, forwardedHost });
+      console.log("💳 Creating checkout session for tier:", tierId, "user:", userId);
 
       const session = await stripe.checkout.sessions.create({
+        client_reference_id: userId,
+        customer_email: email || undefined,
         line_items: [
           {
             price: priceId,
             quantity: 1,
           },
         ],
+        metadata: {
+          userId: userId || "",
+          tierId: tierId,
+        },
+        subscription_data: {
+          metadata: {
+            userId: userId || "",
+            tierId: tierId,
+          }
+        },
         mode: "subscription",
         success_url: `${origin}/members?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/members/monetization?canceled=true`,
@@ -214,7 +453,10 @@ async function startServer() {
       console.error("Stripe Session Error:", error);
       res.status(500).json({ error: (error as Error).message });
     }
-  });
+  };
+
+  app.post("/api/stripe/create-checkout-session", checkoutSessionHandler);
+  app.post("/api/create-checkout-session", checkoutSessionHandler);
 
   const isProduction = process.env.NODE_ENV === "production";
 

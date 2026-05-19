@@ -64,7 +64,9 @@ export default function Forecast() {
                   fullText += parsed.text;
                   setAiAnalysis(fullText);
                 }
-              } catch (e) {}
+              } catch {
+                // Ignore parsing errors
+              }
             }
           }
         }

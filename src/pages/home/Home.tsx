@@ -9,46 +9,84 @@ import {
   Activity, Rocket,
   CheckCircle2, ArrowRight, Star
 } from "lucide-react";
+import cyberSurferWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
 
 export default function Home() {
   return (
     <PageWrapper maxWidth="max-w-screen-2xl" showHero={false}>
       {/* 🌊 HERO SECTION */}
-      <div className="flex flex-col items-center text-center min-h-[85vh] justify-center gap-12 max-w-5xl mx-auto relative mt-10">
+      <div className="flex flex-col items-center text-center max-w-6xl mx-auto relative mt-16 px-6">
         
         {/* Background glow effects */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan-900/20 blur-[150px] mix-blend-screen rounded-full pointer-events-none"></div>
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-cyan-950/35 blur-[120px] mix-blend-screen rounded-full pointer-events-none"></div>
 
+        {/* 1. Main Words at the Top */}
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -25 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="flex flex-col items-center gap-8 relative z-10"
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="flex flex-col items-center gap-6 relative z-10 max-w-4xl"
         >
           <div className="flex items-center gap-4">
              <div className="h-[1px] w-12 bg-cyan-500/50"></div>
-             <span className="text-[11px] font-bold uppercase tracking-[0.4em] text-cyan-400">Welcome to the Wave</span>
+             <span className="text-[11px] font-bold uppercase tracking-[0.4em] text-cyan-400">AI Surfer Core Systems</span>
              <div className="h-[1px] w-12 bg-cyan-500/50"></div>
           </div>
           
-          <h1 className="text-[clamp(2.5rem,6vw,4.5rem)] font-orbitron font-bold leading-[1.2] tracking-tighter uppercase text-white">
+          <h1 className="text-[clamp(2.5rem,5.5vw,4.5rem)] font-orbitron font-black leading-[1.15] tracking-tighter uppercase text-white">
             AI Systems That Help Businesses <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-emerald-400">Surf Faster</span>, Sell Smarter, <br />
             <span className="italic font-serif text-pink-500 lowercase tracking-normal">and scale smoothly.</span>
           </h1>
 
-          <p className="text-base text-zinc-400 max-w-2xl leading-relaxed font-sans">
-            Custom AI automation, modern websites, chatbots, lead systems, and business tools built for forward momentum brands.
+          <p className="text-base md:text-lg text-cyan-100 max-w-2xl leading-relaxed font-sans font-medium">
+            Storm-resilient AI automation, high-converting websites, and smart business tools built for high-frequency surfing.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center gap-6 mt-8">
-             <Link to="/contact" className="px-10 py-5 bg-cyan-500/10 border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black font-black uppercase text-xs tracking-[0.2em] transition-all transform hover:scale-105 flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center gap-4 mt-4 mb-12">
+             <Link to="/contact" className="px-10 py-5 bg-cyan-500/10 border border-cyan-400/80 text-cyan-400 hover:bg-cyan-400 hover:text-black font-black uppercase text-xs tracking-[0.2em] transition-all transform hover:scale-105 flex items-center gap-3">
                🚀 Book a Call
              </Link>
              <Link to="/gallery" className="px-10 py-5 bg-white/5 border border-white/10 text-white hover:bg-white hover:text-black font-black uppercase text-xs tracking-[0.2em] transition-all flex items-center gap-3">
                🌺 See Our Work
              </Link>
           </div>
+        </motion.div>
+
+        {/* 2. Enticing Image Box with Cyber Floating Animation */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 0.3 }}
+          className="relative w-full z-10 rounded-xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(6,182,212,0.15)] group max-w-5xl"
+        >
+          {/* Neon corner trims */}
+          <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400 z-20"></div>
+          <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-pink-400 z-20"></div>
+          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-emerald-400 z-20"></div>
+          <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-400 z-20"></div>
+
+          {/* Immersive overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent z-10"></div>
+          
+          {/* Cyber Status Tag */}
+          <div className="absolute top-6 left-6 z-20 bg-black/80 backdrop-blur-md px-4 py-2 border border-white/10 rounded-sm flex items-center gap-3">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span className="text-[9px] font-bold text-white uppercase tracking-widest font-mono">Surfer Telemetry Active_</span>
+          </div>
+
+          <motion.div
+            whileHover={{ scale: 1.025 }}
+            transition={{ type: "spring", stiffness: 150, damping: 25 }}
+            className="overflow-hidden"
+          >
+            <img 
+              src={cyberSurferWave} 
+              alt="Cyber Surfer riding a neon wave under cosmic skies" 
+              className="w-full h-auto aspect-[16/9] object-cover transition-all duration-700 opacity-90 group-hover:scale-105 group-hover:opacity-100"
+              referrerPolicy="no-referrer"
+            />
+          </motion.div>
         </motion.div>
       </div>
 
@@ -66,7 +104,7 @@ export default function Home() {
           <div className="glass-card p-10 border-t-2 border-t-blue-500 hover:border-t-cyan-400 transition-all group">
             <Cpu className="w-12 h-12 text-blue-500 mb-8 group-hover:scale-110 transition-transform" />
             <h3 className="text-2xl font-black uppercase text-white mb-6">AI Services</h3>
-            <ul className="space-y-4 text-zinc-400 font-medium font-sans">
+            <ul className="space-y-4 text-slate-100 font-bold font-sans">
               <li className="flex items-center gap-3"><Bot className="w-4 h-4 text-cyan-400" /> AI Chatbots</li>
               <li className="flex items-center gap-3"><Activity className="w-4 h-4 text-cyan-400" /> Workflow Automation</li>
               <li className="flex items-center gap-3"><Cpu className="w-4 h-4 text-cyan-400" /> AI Assistants</li>
@@ -78,7 +116,7 @@ export default function Home() {
           <div className="glass-card p-10 border-t-2 border-t-pink-500 hover:border-t-pink-400 transition-all group">
             <Globe className="w-12 h-12 text-pink-500 mb-8 group-hover:scale-110 transition-transform" />
             <h3 className="text-2xl font-black uppercase text-white mb-6">Web Services</h3>
-            <ul className="space-y-4 text-zinc-400 font-medium font-sans">
+            <ul className="space-y-4 text-slate-100 font-bold font-sans">
               <li className="flex items-center gap-3"><Globe className="w-4 h-4 text-pink-400" /> React/Vite Websites</li>
               <li className="flex items-center gap-3"><Palette className="w-4 h-4 text-pink-400" /> Landing Pages</li>
               <li className="flex items-center gap-3"><Smartphone className="w-4 h-4 text-pink-400" /> Mobile Optimization</li>
@@ -90,7 +128,7 @@ export default function Home() {
           <div className="glass-card p-10 border-t-2 border-t-emerald-400 hover:border-t-emerald-300 transition-all group">
             <TrendingUp className="w-12 h-12 text-emerald-400 mb-8 group-hover:scale-110 transition-transform" />
             <h3 className="text-2xl font-black uppercase text-white mb-6">Business Growth</h3>
-            <ul className="space-y-4 text-zinc-400 font-medium font-sans">
+            <ul className="space-y-4 text-slate-100 font-bold font-sans">
               <li className="flex items-center gap-3"><Database className="w-4 h-4 text-emerald-400" /> Lead Capture Systems</li>
               <li className="flex items-center gap-3"><Database className="w-4 h-4 text-emerald-400" /> CRM Integration</li>
               <li className="flex items-center gap-3"><Mail className="w-4 h-4 text-emerald-400" /> Email/SMS Automation</li>
@@ -106,7 +144,7 @@ export default function Home() {
            <h2 className="text-4xl md:text-6xl font-orbitron font-black uppercase tracking-tight text-white mb-6">
              The 3-Step <span className="text-cyan-400">Wave Flow</span>
            </h2>
-           <p className="text-zinc-400 font-sans max-w-2xl mx-auto text-lg">We turn complex technology constraints into seamless digital velocity.</p>
+           <p className="text-[#00eaff] font-sans max-w-2xl mx-auto text-lg font-bold">We turn complex technology constraints into seamless digital velocity.</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-12 relative z-10">
@@ -115,7 +153,7 @@ export default function Home() {
                 <Waves className="w-8 h-8 text-blue-400" />
              </div>
              <h4 className="text-xl font-bold text-white mb-4">1. Catch the Wave 🌊</h4>
-             <p className="text-zinc-500 font-sans line-clamp-3">We learn your business. Deep discovery to understand your operational bottlenecks and growth desires.</p>
+             <p className="text-slate-100 font-sans line-clamp-3 font-medium">We learn your business. Deep discovery to understand your operational bottlenecks and growth desires.</p>
           </div>
           
           <div className="relative text-center p-8 group">
@@ -123,7 +161,7 @@ export default function Home() {
                 <Zap className="w-8 h-8 text-pink-400" />
              </div>
              <h4 className="text-xl font-bold text-white mb-4">2. Build the Current ⚡</h4>
-             <p className="text-zinc-500 font-sans line-clamp-3">We create your AI systems and web tools utilizing state-of-the-art React, Vite, and Tailwind workflows.</p>
+             <p className="text-slate-100 font-sans line-clamp-3 font-medium">We create your AI systems and web tools utilizing state-of-the-art React, Vite, and Tailwind workflows.</p>
           </div>
 
           <div className="relative text-center p-8 group">
@@ -131,7 +169,7 @@ export default function Home() {
                 <Rocket className="w-8 h-8 text-emerald-400" />
              </div>
              <h4 className="text-xl font-bold text-white mb-4">3. Ride the Growth 🐬</h4>
-             <p className="text-zinc-500 font-sans line-clamp-3">Automation helps your business scale. Watch your conversion metrics and task efficiency skyrocket.</p>
+             <p className="text-slate-100 font-sans line-clamp-3 font-medium">Automation helps your business scale. Watch your conversion metrics and task efficiency skyrocket.</p>
           </div>
         </div>
       </div>
@@ -182,7 +220,7 @@ export default function Home() {
               <h2 className="text-4xl md:text-5xl font-orbitron font-black uppercase tracking-tight text-white mb-8">
                 Tech Agency Meets <span className="text-cyan-400">Beach Energy.</span>
               </h2>
-              <p className="text-zinc-400 font-sans text-lg mb-10 leading-relaxed">
+              <p className="text-slate-100 font-sans text-lg mb-10 leading-relaxed font-semibold">
                 Not corporate drywall energy. We bring high-end developmental power with smooth, personalized collaboration. You get an elite engineering outfit that actually feels good to work with.
               </p>
 
@@ -233,7 +271,7 @@ export default function Home() {
                   <div className="w-10 h-10 bg-zinc-800 rounded-full border border-white/20 flex items-center justify-center font-bold text-xs">TV</div>
                   <div>
                      <h5 className="text-white font-bold text-sm">Thomas Vance</h5>
-                     <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">CEO, NexaStream</span>
+                     <span className="text-[10px] text-cyan-300 font-black uppercase tracking-widest">CEO, NexaStream</span>
                   </div>
                </div>
             </div>
@@ -247,7 +285,7 @@ export default function Home() {
                   <div className="w-10 h-10 bg-zinc-800 rounded-full border border-white/20 flex items-center justify-center font-bold text-xs">SJ</div>
                   <div>
                      <h5 className="text-white font-bold text-sm">Sarah Jenkins</h5>
-                     <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Marketing Director, Bloom</span>
+                     <span className="text-[10px] text-pink-300 font-black uppercase tracking-widest">Marketing Director, Bloom</span>
                   </div>
                </div>
             </div>
@@ -261,7 +299,7 @@ export default function Home() {
                   <div className="w-10 h-10 bg-zinc-800 rounded-full border border-white/20 flex items-center justify-center font-bold text-xs">MT</div>
                   <div>
                      <h5 className="text-white font-bold text-sm">Marcus Thorne</h5>
-                     <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Founder, Thorne & Co</span>
+                     <span className="text-[10px] text-emerald-300 font-black uppercase tracking-widest">Founder, Thorne & Co</span>
                   </div>
                </div>
             </div>
@@ -282,7 +320,7 @@ export default function Home() {
                <h2 className="text-5xl md:text-7xl font-orbitron font-black uppercase tracking-tighter text-white mb-8">
                  Ready to Ride the <span className="text-cyan-400 italic">AI Wave?</span>
                </h2>
-               <p className="text-xl text-zinc-300 font-sans max-w-2xl mx-auto mb-12">
+               <p className="text-xl text-white font-bold font-sans max-w-2xl mx-auto mb-12 leading-relaxed">
                  Join the elite brands that are surfing ahead of the competition. Let's architect your next growth phase.
                </p>
                <Link to="/contact" className="inline-flex px-12 py-6 bg-cyan-400 text-black font-black uppercase text-xs tracking-[0.2em] hover:bg-white transition-all shadow-[0_0_40px_rgba(34,211,238,0.4)] hover:shadow-[0_0_60px_rgba(255,255,255,0.6)]">

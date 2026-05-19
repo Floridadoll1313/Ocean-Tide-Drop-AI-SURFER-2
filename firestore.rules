@@ -115,6 +115,11 @@ service cloud.firestore {
     // Rules
     // ===============================================================
 
+    match /pricing_tiers/{tierId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /users/{userId} {
       // Users can only read their own full profile.
       allow read: if isOwner(userId) || isAdmin();

@@ -1,6 +1,5 @@
 {
   "name": "ai-surfer",
-  "private": true,
   "version": "0.0.0",
   "main": "dist/server.cjs",
   "type": "module",
@@ -18,6 +17,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "firebase": "^12.13.0",
+    "firebase-admin": "^13.10.0",
     "lucide-react": "^0.344.0",
     "motion": "^12.38.0",
     "react": "^18.2.0",

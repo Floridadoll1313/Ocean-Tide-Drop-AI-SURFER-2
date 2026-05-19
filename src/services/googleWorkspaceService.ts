@@ -140,9 +140,9 @@ export const fetchRecentEmails = async (accessToken: string): Promise<GmailMessa
     if (msgRes.ok) {
       const msgData = await msgRes.json();
       const headers = msgData.payload?.headers || [];
-      const subject = headers.find((h: any) => h.name === 'Subject')?.value;
-      const from = headers.find((h: any) => h.name === 'From')?.value;
-      const date = headers.find((h: any) => h.name === 'Date')?.value;
+      const subject = headers.find((h: { name: string; value: string }) => h.name === 'Subject')?.value;
+      const from = headers.find((h: { name: string; value: string }) => h.name === 'From')?.value;
+      const date = headers.find((h: { name: string; value: string }) => h.name === 'Date')?.value;
       detailedMessages.push({
         id: msgData.id,
         threadId: msgData.threadId,
