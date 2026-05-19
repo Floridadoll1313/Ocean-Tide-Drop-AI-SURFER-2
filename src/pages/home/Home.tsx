@@ -7,14 +7,10 @@ import {
   Globe, Palette, Smartphone, Search,
   TrendingUp, Database, Mail, Zap,
   Activity, Rocket,
-  CheckCircle2, ArrowRight
+  CheckCircle2, ArrowRight, Star
 } from "lucide-react";
 
 export default function Home() {
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
-
   return (
     <PageWrapper maxWidth="max-w-screen-2xl" showHero={false}>
       {/* 🌊 HERO SECTION */}
@@ -223,42 +219,58 @@ export default function Home() {
       {/* 🌊 TESTIMONIALS */}
       <div className="mt-40 max-w-7xl mx-auto px-6 relative z-10 border-t border-white/5 pt-32">
          <div className="text-center mb-20">
-           <h2 className="text-4xl font-orbitron font-black uppercase text-white mb-4">Client Telemetry</h2>
+           <span className="text-cyan-400 font-bold uppercase tracking-[0.4em] text-[10px] mb-4 block">Telemetry</span>
+           <h2 className="text-4xl font-orbitron font-black uppercase text-white mb-4">Client Feedback</h2>
          </div>
-
+ 
          <div className="grid md:grid-cols-3 gap-8">
-            <div className="glass-card p-10 border-l-2 border-l-cyan-400">
+            <div className="glass-card p-10 border-l-2 border-l-cyan-400 flex flex-col">
+               <div className="flex gap-1 mb-6">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-cyan-400 text-cyan-400" />)}
+               </div>
                <p className="text-white font-sans text-lg leading-relaxed mb-8">"Made our workflow 10x easier. Their AI integration completely shifted how we manage incoming requests."</p>
                <div className="flex items-center gap-4 mt-auto">
-                  <div className="w-10 h-10 bg-zinc-800 rounded-full border border-white/20"></div>
+                  <div className="w-10 h-10 bg-zinc-800 rounded-full border border-white/20 flex items-center justify-center font-bold text-xs">TV</div>
                   <div>
-                     <h5 className="text-white font-bold text-sm">Tech Startup Founder</h5>
-                     <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">SaaS Industry</span>
+                     <h5 className="text-white font-bold text-sm">Thomas Vance</h5>
+                     <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">CEO, NexaStream</span>
                   </div>
                </div>
             </div>
             
-            <div className="glass-card p-10 border-l-2 border-l-pink-400">
+            <div className="glass-card p-10 border-l-2 border-l-pink-400 flex flex-col">
+               <div className="flex gap-1 mb-6">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-pink-400 text-pink-400" />)}
+               </div>
                <p className="text-white font-sans text-lg leading-relaxed mb-8">"Our leads doubled after launch. The new landing page architecture converts like a machine."</p>
                <div className="flex items-center gap-4 mt-auto">
-                  <div className="w-10 h-10 bg-zinc-800 rounded-full border border-white/20"></div>
+                  <div className="w-10 h-10 bg-zinc-800 rounded-full border border-white/20 flex items-center justify-center font-bold text-xs">SJ</div>
                   <div>
-                     <h5 className="text-white font-bold text-sm">E-commerce Director</h5>
-                     <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Retail Sector</span>
+                     <h5 className="text-white font-bold text-sm">Sarah Jenkins</h5>
+                     <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Marketing Director, Bloom</span>
                   </div>
                </div>
             </div>
-
-            <div className="glass-card p-10 border-l-2 border-l-emerald-400">
-               <p className="text-white font-sans text-lg leading-relaxed mb-8">"Finally a tech company that explains things simply. We scaled our operations without the typical corporate friction."</p>
+ 
+            <div className="glass-card p-10 border-l-2 border-l-emerald-400 flex flex-col">
+               <div className="flex gap-1 mb-6">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-emerald-400 text-emerald-400" />)}
+               </div>
+               <p className="text-white font-sans text-lg leading-relaxed mb-8">"Finally a tech company that explains things simply. We scaled our operations without the typical friction."</p>
                <div className="flex items-center gap-4 mt-auto">
-                  <div className="w-10 h-10 bg-zinc-800 rounded-full border border-white/20"></div>
+                  <div className="w-10 h-10 bg-zinc-800 rounded-full border border-white/20 flex items-center justify-center font-bold text-xs">MT</div>
                   <div>
-                     <h5 className="text-white font-bold text-sm">Agency Owner</h5>
-                     <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Marketing Sector</span>
+                     <h5 className="text-white font-bold text-sm">Marcus Thorne</h5>
+                     <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Founder, Thorne & Co</span>
                   </div>
                </div>
             </div>
+         </div>
+
+         <div className="mt-12 text-center">
+            <Link to="/reviews" className="inline-flex items-center gap-2 text-cyan-400 font-bold uppercase text-[10px] tracking-[0.3em] hover:text-white transition-all">
+               See All Reviews <ArrowRight className="w-3 h-3" />
+            </Link>
          </div>
       </div>
 

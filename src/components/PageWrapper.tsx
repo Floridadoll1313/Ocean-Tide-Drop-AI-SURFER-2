@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin } from "lucide-react";
+import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 export default function PageWrapper({ 
@@ -28,6 +28,7 @@ export default function PageWrapper({
     { to: "/", label: "Home", icon: HomeIcon, color: "text-yellow-500" },
     { to: "/gallery", label: "Work", icon: Briefcase, color: "text-blue-500" },
     { to: "/services", label: "Services", icon: Layers, color: "text-purple-500" },
+    { to: "/reviews", label: "Reviews", icon: Star, color: "text-yellow-400" },
     { to: "/founders", label: "Founders", icon: Users, color: "text-emerald-500" },
     { to: "/memorial", label: "Bull's Memorial", icon: Anchor, color: "text-orange-500" },
     { to: "/contact", label: "Contact", icon: MessageSquare, color: "text-green-500" },
