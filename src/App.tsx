@@ -21,6 +21,7 @@ import Forecast from './pages/forecast/Forecast';
 import Diary from './pages/diary/Diary';
 import Shop from './pages/shop/Shop';
 import Memorial from './pages/memorial/Memorial';
+import Reviews from './pages/reviews/Reviews';
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           <Route path="/diary" element={<Diary />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/memorial" element={<Memorial />} />
+          <Route path="/reviews" element={<Reviews />} />
           <Route path="/mcp" element={<Mcp />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
