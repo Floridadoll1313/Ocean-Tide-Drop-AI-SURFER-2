@@ -424,3 +424,274 @@ export const uploadDriveFile = async (
   return response.json();
 };
 
+export interface FormFile {
+  id: string;
+  name: string;
+  mimeType: string;
+  webViewLink?: string;
+  modifiedTime?: string;
+}
+
+export interface FormItem {
+  title?: string;
+  itemId?: string;
+  questionItem?: {
+    question?: {
+      questionId?: string;
+      required?: boolean;
+      textQuestion?: Record<string, unknown>;
+      choiceQuestion?: {
+        type?: string;
+        options?: Array<{ value: string }>;
+      };
+    };
+  };
+}
+
+export interface GoogleForm {
+  formId: string;
+  info: {
+    title: string;
+    documentTitle?: string;
+    description?: string;
+  };
+  responderUri: string;
+  revisionId?: string;
+  items?: FormItem[];
+}
+
+export interface FormResponse {
+  responseId: string;
+  createTime: string;
+  lastSubmittedTime: string;
+  answers?: Record<string, {
+    questionId: string;
+    textAnswers?: {
+      answers: Array<{ value: string }>;
+    };
+  }>;
+}
+
+export const fetchFormsFromDrive = async (accessToken: string): Promise<FormFile[]> => {
+  const url = `https://www.googleapis.com/drive/v3/files?pageSize=50&fields=files(id,name,mimeType,webViewLink,modifiedTime)&q=mimeType='application/vnd.google-apps.form' and trashed=false&orderBy=modifiedTime desc`;
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to fetch forms from Google Drive');
+  }
+
+  const data = await response.json();
+  return data.files || [];
+};
+
+export const fetchFormDetails = async (accessToken: string, formId: string): Promise<GoogleForm> => {
+  const url = `https://forms.googleapis.com/v1/forms/${formId}`;
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to fetch Google Form details');
+  }
+
+  return response.json();
+};
+
+export const fetchFormResponses = async (accessToken: string, formId: string): Promise<FormResponse[]> => {
+  const url = `https://forms.googleapis.com/v1/forms/${formId}/responses`;
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to fetch form responses');
+  }
+
+  const data = await response.json();
+  return data.responses || [];
+};
+
+export const createGoogleForm = async (
+  accessToken: string,
+  title: string,
+  description?: string
+): Promise<GoogleForm> => {
+  const url = 'https://forms.googleapis.com/v1/forms';
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      info: {
+        title,
+        documentTitle: title,
+        description,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to create Google Form');
+  }
+
+  const createdForm: GoogleForm = await response.json();
+
+  // Let's add standard starter questions so it's a useful interactive form right away!
+  // We'll add Name (Text question), Email (Text question), and Rating (Choice question)
+  const batchUrl = `https://forms.googleapis.com/v1/forms/${createdForm.formId}:batchUpdate`;
+  const batchResponse = await fetch(batchUrl, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      requests: [
+        {
+          createItem: {
+            item: {
+              title: "Full Name",
+              questionItem: {
+                question: {
+                  required: true,
+                  textQuestion: {}
+                }
+              }
+            },
+            location: { index: 0 }
+          }
+        },
+        {
+          createItem: {
+            item: {
+              title: "Email Address",
+              questionItem: {
+                question: {
+                  required: true,
+                  textQuestion: {}
+                }
+              }
+            },
+            location: { index: 1 }
+          }
+        },
+        {
+          createItem: {
+            item: {
+              title: "Experience Rating",
+              questionItem: {
+                question: {
+                  required: true,
+                  choiceQuestion: {
+                    type: "RADIO",
+                    options: [
+                      { value: "Excellent" },
+                      { value: "Good" },
+                      { value: "Average" },
+                      { value: "Needs Improvement" }
+                    ]
+                  }
+                }
+              }
+            },
+            location: { index: 2 }
+          }
+        },
+        {
+          createItem: {
+            item: {
+              title: "Additional Comments",
+              questionItem: {
+                question: {
+                  required: false,
+                  textQuestion: {}
+                }
+              }
+            },
+            location: { index: 3 }
+          }
+        }
+      ]
+    }),
+  });
+
+  if (!batchResponse.ok) {
+    console.warn("Could not seed starter questions for Google Form");
+  }
+
+  // Refetch full form details with items
+  return fetchFormDetails(accessToken, createdForm.formId);
+};
+
+export const addFormQuestion = async (
+  accessToken: string,
+  formId: string,
+  questionTitle: string,
+  type: 'TEXT' | 'RADIO',
+  options?: string[],
+  required = false
+): Promise<GoogleForm> => {
+  const url = `https://forms.googleapis.com/v1/forms/${formId}:batchUpdate`;
+  
+  const questionItem: {
+    question: {
+      required: boolean;
+      textQuestion?: Record<string, unknown>;
+      choiceQuestion?: {
+        type: string;
+        options?: Array<{ value: string }>;
+      };
+    };
+  } = {
+    question: {
+      required,
+    }
+  };
+
+  if (type === 'TEXT') {
+    questionItem.question.textQuestion = {};
+  } else {
+    questionItem.question.choiceQuestion = {
+      type: 'RADIO',
+      options: options?.map(o => ({ value: o })) || [{ value: 'Option 1' }],
+    };
+  }
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      requests: [
+        {
+          createItem: {
+            item: {
+              title: questionTitle,
+              questionItem,
+            },
+            location: { index: 0 },
+          },
+        },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to add question to Google Form');
+  }
+
+  return fetchFormDetails(accessToken, formId);
+};
+
+

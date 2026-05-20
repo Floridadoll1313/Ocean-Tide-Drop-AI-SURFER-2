@@ -23,7 +23,11 @@ import {
   Search,
   UploadCloud,
   Trash2,
-  File
+  File,
+  ClipboardList,
+  ListPlus,
+  BarChart3,
+  CheckCircle2
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
@@ -49,7 +53,15 @@ import {
   fetchDriveFiles,
   deleteDriveFile,
   uploadDriveFile,
-  DriveFile
+  DriveFile,
+  FormFile,
+  GoogleForm,
+  FormResponse,
+  fetchFormsFromDrive,
+  fetchFormDetails,
+  fetchFormResponses,
+  createGoogleForm,
+  addFormQuestion
 } from "../../services/googleWorkspaceService";
 
 export default function Workspace() {
@@ -61,12 +73,25 @@ export default function Workspace() {
   const [notes, setNotes] = useState<KeepNote[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'calendar' | 'tasks' | 'chat' | 'sheets' | 'slides' | 'docs' | 'gmail' | 'keep' | 'drive'>('calendar');
+  const [activeTab, setActiveTab] = useState<'calendar' | 'tasks' | 'chat' | 'sheets' | 'slides' | 'docs' | 'gmail' | 'keep' | 'drive' | 'forms'>('calendar');
 
   const [driveFiles, setDriveFiles] = useState<DriveFile[]>([]);
   const [driveSearch, setDriveSearch] = useState('');
   const [uploadingFile, setUploadingFile] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+
+  // Google Forms States
+  const [forms, setForms] = useState<FormFile[]>([]);
+  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+  const [selectedForm, setSelectedForm] = useState<GoogleForm | null>(null);
+  const [formResponses, setFormResponses] = useState<FormResponse[]>([]);
+  const [loadingFormDetails, setLoadingFormDetails] = useState(false);
+  const [formTitle, setFormTitle] = useState("");
+  const [creatingForm, setCreatingForm] = useState(false);
+  const [newQuestionTitle, setNewQuestionTitle] = useState("");
+  const [newQuestionType, setNewQuestionType] = useState<'TEXT' | 'RADIO'>('TEXT');
+  const [newQuestionOptions, setNewQuestionOptions] = useState("Excellent, Good, Average, Needs Improvement");
+  const [addingQuestion, setAddingQuestion] = useState(false);
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [newEvent, setNewEvent] = useState({
@@ -100,7 +125,7 @@ export default function Workspace() {
     setLoading(true);
     setError(null);
     try {
-      const [fetchedEvents, fetchedTasks, fetchedChat, fetchedEmails, fetchedNotes, fetchedDrive] = await Promise.all([
+      const [fetchedEvents, fetchedTasks, fetchedChat, fetchedEmails, fetchedNotes, fetchedDrive, fetchedForms] = await Promise.all([
         fetchCalendarEvents(accessToken).catch((err: unknown) => {
           console.warn("Calendar load failed:", err);
           return [] as CalendarEvent[];
@@ -131,6 +156,10 @@ export default function Workspace() {
         fetchDriveFiles(accessToken).catch((err: unknown) => {
           console.warn("Drive files load failed:", err);
           return [] as DriveFile[];
+        }),
+        fetchFormsFromDrive(accessToken).catch((err: unknown) => {
+          console.warn("Forms load failed:", err);
+          return [] as FormFile[];
         })
       ]);
       setEvents(fetchedEvents);
@@ -139,6 +168,7 @@ export default function Workspace() {
       setEmails(fetchedEmails);
       setNotes(fetchedNotes);
       setDriveFiles(fetchedDrive);
+      setForms(fetchedForms);
     } catch (err: unknown) {
       console.error("Load Error:", err);
       setError((err as Error).message || "Failed to synchronize with Google Workspace");
@@ -146,6 +176,85 @@ export default function Workspace() {
       setLoading(false);
     }
   }, [accessToken]);
+
+  const handleSelectForm = async (formId: string) => {
+    if (!accessToken) return;
+    setLoadingFormDetails(true);
+    setSelectedFormId(formId);
+    setError(null);
+    try {
+      const [details, responses] = await Promise.all([
+        fetchFormDetails(accessToken, formId),
+        fetchFormResponses(accessToken, formId).catch((err) => {
+          console.warn("Could not load responses for form:", err);
+          return [] as FormResponse[];
+        })
+      ]);
+      setSelectedForm(details);
+      setFormResponses(responses);
+    } catch (err: unknown) {
+      console.error("Form Load Error:", err);
+      setError((err as Error).message || "Failed to load Google Form details");
+    } finally {
+      setLoadingFormDetails(false);
+    }
+  };
+
+  const handleCreateForm = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!accessToken || !formTitle.trim()) return;
+    setCreatingForm(true);
+    setError(null);
+    try {
+      const newForm = await createGoogleForm(accessToken, formTitle, "Created via AI Surfer Hot Island Fun");
+      setForms(prev => [
+        {
+          id: newForm.formId,
+          name: newForm.info.title,
+          mimeType: "application/vnd.google-apps.form",
+          webViewLink: newForm.responderUri,
+          modifiedTime: new Date().toISOString()
+        },
+        ...prev
+      ]);
+      setSelectedForm(newForm);
+      setSelectedFormId(newForm.formId);
+      setFormResponses([]);
+      setFormTitle("");
+    } catch (err: unknown) {
+      console.error("Create Form Error:", err);
+      setError((err as Error).message || "Failed to create Google Form");
+    } finally {
+      setCreatingForm(false);
+    }
+  };
+
+  const handleAddQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!accessToken || !selectedFormId || !newQuestionTitle.trim()) return;
+    setAddingQuestion(true);
+    setError(null);
+    try {
+      const opts = newQuestionType === 'RADIO' 
+        ? newQuestionOptions.split(",").map(o => o.trim()).filter(Boolean) 
+        : undefined;
+
+      const updatedForm = await addFormQuestion(
+        accessToken,
+        selectedFormId,
+        newQuestionTitle,
+        newQuestionType,
+        opts
+      );
+      setSelectedForm(updatedForm);
+      setNewQuestionTitle("");
+    } catch (err: unknown) {
+      console.error("Add Question Error:", err);
+      setError((err as Error).message || "Failed to add question to Form");
+    } finally {
+      setAddingQuestion(false);
+    }
+  };
 
   const handleCompleteTask = async (taskId: string, currentStatus: string) => {
     if (!accessToken) return;
@@ -481,6 +590,13 @@ export default function Workspace() {
           >
             <Folder className="w-4 h-4" />
             Drive & Picker
+          </button>
+          <button 
+            onClick={() => setActiveTab('forms')}
+            className={`flex-1 py-4 flex flex-col items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'forms' ? 'bg-amber-400 text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
+          >
+            <ClipboardList className="w-4 h-4" />
+            Forms
           </button>
         </div>
 
@@ -1133,6 +1249,317 @@ export default function Workspace() {
                         </div>
                       );
                     })}
+                  </div>
+                )}
+              </motion.div>
+            ) : activeTab === 'forms' ? (
+              <motion.div 
+                key="forms"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-8 animate-fade-in"
+              >
+                {!selectedFormId ? (
+                  <>
+                    <div className="flex justify-between items-center bg-black p-6 border border-white/10 glass-card">
+                      <div>
+                        <h2 className="text-xl font-black uppercase tracking-tighter text-white">Google Forms Workspace</h2>
+                        <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mt-1">Design surveys, publish instantly, and analyze live respondent telemetry.</p>
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+                      <div className="md:col-span-1 bg-white/2 border border-white/10 p-6 rounded-sm flex flex-col justify-between">
+                        <div>
+                          <h3 className="text-sm font-black uppercase tracking-wider text-amber-400 mb-2">Create Core Form</h3>
+                          <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider leading-relaxed mb-6">Instantly kick off a customized Google Form pre-seeded with professional rating, name, and comment fields.</p>
+                        </div>
+                        <form onSubmit={handleCreateForm} className="space-y-4">
+                          <div>
+                            <label className="block text-[8px] font-mono tracking-widest uppercase text-zinc-500 mb-2">Form Title</label>
+                            <input 
+                              type="text"
+                              value={formTitle}
+                              onChange={(e) => setFormTitle(e.target.value)}
+                              placeholder="e.g., Customer Feedback Tracker"
+                              className="w-full bg-white/5 border border-white/10 p-3.5 text-xs text-white focus:outline-none focus:border-amber-400 transition-colors rounded"
+                              required
+                            />
+                          </div>
+                          <button
+                            type="submit"
+                            disabled={creatingForm}
+                            className="w-full bg-amber-400 text-black py-4 text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                          >
+                            {creatingForm ? <Loader2 className="w-4 h-4 animate-spin" /> : <ClipboardList className="w-4 h-4" />}
+                            Provision Form Node
+                          </button>
+                        </form>
+                      </div>
+
+                      <div className="md:col-span-2 space-y-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <h3 className="text-xs font-mono tracking-widest uppercase text-zinc-400">Your Google Forms ({forms.length})</h3>
+                        </div>
+
+                        {forms.length === 0 ? (
+                          <div className="py-20 text-center border border-white/10 rounded bg-white/2">
+                            <ClipboardList className="w-10 h-10 text-zinc-700 mx-auto mb-4" />
+                            <p className="text-zinc-500 text-xs font-black uppercase tracking-widest">No active forms discovered on this node.</p>
+                            <p className="text-zinc-600 text-[10px] uppercase tracking-wider mt-1">Create your first form using the left provisioning architect panel.</p>
+                          </div>
+                        ) : (
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            {forms.map((f) => (
+                              <div key={f.id} className="glass-card p-5 border-white/10 bg-white/5 flex flex-col justify-between hover:border-amber-400/40 transition-all group">
+                                <div>
+                                  <div className="flex items-start justify-between mb-3">
+                                    <div className="p-2 bg-amber-400/10 rounded">
+                                      <ClipboardList className="w-4 h-4 text-amber-400 animate-pulse" />
+                                    </div>
+                                    <span className="text-[8px] font-mono text-zinc-500 uppercase">
+                                      {f.modifiedTime ? new Date(f.modifiedTime).toLocaleDateString() : ""}
+                                    </span>
+                                  </div>
+                                  <h4 className="text-white font-bold text-sm line-clamp-2" title={f.name}>{f.name}</h4>
+                                  <p className="text-[8px] text-zinc-500 font-mono tracking-wider uppercase mt-1">Google Form Asset</p>
+                                </div>
+
+                                <div className="mt-6 pt-4 border-t border-white/5 flex gap-2">
+                                  <button
+                                    onClick={() => handleSelectForm(f.id)}
+                                    className="flex-1 text-[9px] font-black uppercase tracking-wider border border-white/15 bg-white/5 hover:bg-amber-400 hover:text-black hover:border-amber-400 text-white py-2.5 transition-all text-center rounded"
+                                  >
+                                    Inspect & Edit
+                                  </button>
+                                  {f.webViewLink && (
+                                    <a
+                                      href={f.webViewLink}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/35 text-zinc-300 hover:text-white rounded"
+                                      title="Open live Google Form page"
+                                    >
+                                      <ExternalLink className="w-3.5 h-3.5" />
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="space-y-8 animate-fade-in">
+                    <div className="flex items-center justify-between bg-black p-6 border border-white/10 glass-card">
+                      <div className="flex items-center gap-4">
+                        <button 
+                          onClick={() => {
+                            setSelectedFormId(null);
+                            setSelectedForm(null);
+                            setFormResponses([]);
+                          }}
+                          className="p-2.5 bg-white/5 border border-white/15 hover:border-white/40 text-zinc-300 hover:text-white transition-all text-xs font-black uppercase tracking-widest rounded"
+                        >
+                          &larr; Back
+                        </button>
+                        <div>
+                          <h2 className="text-xl font-black uppercase tracking-tighter text-white">
+                            {loadingFormDetails ? "Loading details..." : selectedForm?.info?.title || "Inspect Form"}
+                          </h2>
+                          <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mt-1">
+                            {selectedForm?.info?.description || "Interact with schemas, add fields, and track target telemetry."}
+                          </p>
+                        </div>
+                      </div>
+
+                      {selectedForm?.responderUri && (
+                        <a 
+                          href={selectedForm.responderUri}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-amber-400 text-black px-6 py-3.5 text-xs font-black uppercase tracking-widest hover:bg-white transition-all flex items-center gap-2"
+                        >
+                          Share View Form
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      )}
+                    </div>
+
+                    {loadingFormDetails ? (
+                      <div className="py-32 flex flex-col items-center justify-center gap-4">
+                        <Loader2 className="w-10 h-10 text-amber-400 animate-spin" />
+                        <span className="text-[9px] font-mono tracking-widest uppercase text-zinc-400">Downloading Core Schema Stream...</span>
+                      </div>
+                    ) : (
+                      <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
+                        {/* QUESTIONS SCHEMA PANEL */}
+                        <div className="lg:col-span-3 space-y-6">
+                          <div className="border border-white/10 bg-white/2 p-6 rounded">
+                            <h3 className="text-xs font-mono tracking-widest uppercase text-zinc-400 mb-4 flex items-center gap-2">
+                              <ClipboardList className="w-4 h-4 text-amber-400" />
+                              Active Form Elements ({selectedForm?.items?.length || 0})
+                            </h3>
+
+                            {(!selectedForm?.items || selectedForm.items.length === 0) ? (
+                              <p className="text-zinc-500 text-xs">No questions loaded. Add questions using the architect panel below.</p>
+                            ) : (
+                              <div className="space-y-4">
+                                {selectedForm.items.map((item: FormItem, idx: number) => {
+                                  const isRequired = item.questionItem?.question?.required;
+                                  const type = item.questionItem?.question?.choiceQuestion ? "RADIO" : "TEXT";
+                                  const options = item.questionItem?.question?.choiceQuestion?.options || [];
+
+                                  return (
+                                    <div key={item.itemId || idx} className="p-4 bg-white/5 border border-white/5 rounded hover:border-white/10 transition-all">
+                                      <div className="flex justify-between items-start">
+                                        <div>
+                                          <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                                            {item.title}
+                                            {isRequired && <span className="text-red-500 text-[10px] font-bold">*REQUIRED</span>}
+                                          </h4>
+                                          <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest inline-block mt-1">
+                                            Type: {type}
+                                          </span>
+                                        </div>
+                                        <span className="p-1 px-2.5 bg-white/5 rounded text-[8px] font-mono text-zinc-400 uppercase">
+                                          ID: {idx + 1}
+                                        </span>
+                                      </div>
+
+                                      {options.length > 0 && (
+                                        <div className="mt-3 pl-4 space-y-1 border-l-2 border-amber-400/20">
+                                          {options.map((opt: { value: string }, optIdx: number) => (
+                                            <div key={optIdx} className="flex items-center gap-2.5 text-xs text-zinc-400">
+                                              <div className="w-3 h-3 rounded-full border border-zinc-600 flex-shrink-0" />
+                                              <span>{opt.value}</span>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* ADD QUESTION FORM */}
+                          <div className="border border-white/10 bg-white/2 p-6 rounded">
+                            <h3 className="text-xs font-mono tracking-widest uppercase text-zinc-400 mb-4 flex items-center gap-2">
+                              <ListPlus className="w-4 h-4 text-amber-400" />
+                              Custom Question Architect
+                            </h3>
+                            <form onSubmit={handleAddQuestion} className="space-y-4">
+                              <div>
+                                <label className="block text-[8px] font-mono tracking-widest uppercase text-zinc-500 mb-2">Question Title</label>
+                                <input 
+                                  type="text"
+                                  value={newQuestionTitle}
+                                  onChange={(e) => setNewQuestionTitle(e.target.value)}
+                                  placeholder="e.g., How would you rate our flight services?"
+                                  className="w-full bg-white/5 border border-white/10 p-3 text-xs text-white focus:outline-none focus:border-amber-400 transition-colors rounded"
+                                  required
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <label className="block text-[8px] font-mono tracking-widest uppercase text-zinc-500 mb-2">Question Type</label>
+                                  <select
+                                    value={newQuestionType}
+                                    onChange={(e) => setNewQuestionType(e.target.value as 'TEXT' | 'RADIO')}
+                                    className="w-full bg-black/40 border border-white/10 p-3 text-xs text-white focus:outline-none focus:border-amber-400 transition-colors rounded"
+                                  >
+                                    <option value="TEXT">Short text input</option>
+                                    <option value="RADIO">Multiple choice (Radio)</option>
+                                  </select>
+                                </div>
+
+                                {newQuestionType === 'RADIO' && (
+                                  <div>
+                                    <label className="block text-[8px] font-mono tracking-widest uppercase text-zinc-500 mb-2">Choice Options (comma list)</label>
+                                    <input 
+                                      type="text"
+                                      value={newQuestionOptions}
+                                      onChange={(e) => setNewQuestionOptions(e.target.value)}
+                                      placeholder="Pass, Fail, Resubmit"
+                                      className="w-full bg-white/5 border border-white/10 p-3 text-xs text-white focus:outline-none focus:border-amber-400 transition-colors rounded"
+                                    />
+                                  </div>
+                                )}
+                              </div>
+
+                              <button
+                                type="submit"
+                                disabled={addingQuestion}
+                                className="w-full border border-amber-400/20 bg-amber-400/5 text-amber-400 hover:bg-amber-400 hover:text-black py-4 text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                              >
+                                {addingQuestion ? <Loader2 className="w-4 h-4 animate-spin" /> : <ListPlus className="w-4 h-4" />}
+                                Add Question Element
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+
+                        {/* RESPONSES PANEL */}
+                        <div className="lg:col-span-2 space-y-6">
+                          <div className="border border-white/10 bg-white/2 p-6 rounded">
+                            <h3 className="text-xs font-mono tracking-widest uppercase text-zinc-400 mb-4 flex items-center justify-between">
+                              <span className="flex items-center gap-2">
+                                <BarChart3 className="w-4 h-4 text-emerald-400" />
+                                Respondent Telemetry
+                              </span>
+                              <span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded">
+                                {formResponses.length} Submissions
+                              </span>
+                            </h3>
+
+                            {formResponses.length === 0 ? (
+                              <div className="py-20 text-center text-zinc-500">
+                                <CheckCircle2 className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+                                <p className="text-xs font-black uppercase tracking-widest">No submission records detected.</p>
+                                <p className="text-[10px] uppercase tracking-wider mt-1 text-zinc-600">The core responder pipeline is active and awaiting telemetry inputs.</p>
+                              </div>
+                            ) : (
+                              <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                                {formResponses.map((res: FormResponse, rIdx: number) => {
+                                  return (
+                                    <div key={res.responseId || rIdx} className="p-4 bg-black/40 border border-white/5 rounded hover:border-white/10 transition-all">
+                                      <div className="flex justify-between items-center mb-3">
+                                        <span className="text-[8px] font-mono text-zinc-500 uppercase">Timestamp</span>
+                                        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                                          {res.lastSubmittedTime ? new Date(res.lastSubmittedTime).toLocaleString() : ""}
+                                        </span>
+                                      </div>
+
+                                      <div className="space-y-2 border-t border-white/5 pt-2">
+                                        {res.answers && Object.entries(res.answers).map(([qId, ansObj]) => {
+                                          // Find question title matching qId
+                                          const questionItem = selectedForm?.items?.find((itm: FormItem) => itm.questionItem?.question?.questionId === qId);
+                                          const title = questionItem?.title || `Question ID ${qId.substring(0, 5)}...`;
+                                          const answerVal = ansObj?.textAnswers?.answers?.map((a: { value: string }) => a.value).join(", ") || "No response value";
+
+                                          return (
+                                            <div key={qId} className="text-xs">
+                                              <p className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">{title}</p>
+                                              <p className="text-white mt-0.5 font-bold uppercase tracking-wide">{answerVal}</p>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </motion.div>

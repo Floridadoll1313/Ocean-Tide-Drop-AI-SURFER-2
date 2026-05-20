@@ -15,6 +15,8 @@ googleProvider.addScope('https://www.googleapis.com/auth/presentations');
 googleProvider.addScope('https://www.googleapis.com/auth/documents');
 googleProvider.addScope('https://mail.google.com/');
 googleProvider.addScope('https://www.googleapis.com/auth/drive');
-googleProvider.addScope('https://www.googleapis.com/auth/keep');
+googleProvider.addScope('https://www.googleapis.com/auth/forms.body');
+googleProvider.addScope('https://www.googleapis.com/auth/forms.responses.readonly');
+googleProvider.addScope('https://www.googleapis.com/auth/forms');
 
 export { signInWithPopup, signOut };
