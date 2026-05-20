@@ -18,7 +18,12 @@ import {
   Presentation as PresentationIcon,
   FileText,
   Mail,
-  StickyNote
+  StickyNote,
+  Folder,
+  Search,
+  UploadCloud,
+  Trash2,
+  File
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
@@ -40,7 +45,11 @@ import {
   fetchRecentEmails,
   GmailMessage,
   fetchNotes,
-  KeepNote
+  KeepNote,
+  fetchDriveFiles,
+  deleteDriveFile,
+  uploadDriveFile,
+  DriveFile
 } from "../../services/googleWorkspaceService";
 
 export default function Workspace() {
@@ -52,7 +61,12 @@ export default function Workspace() {
   const [notes, setNotes] = useState<KeepNote[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'calendar' | 'tasks' | 'chat' | 'sheets' | 'slides' | 'docs' | 'gmail' | 'keep'>('calendar');
+  const [activeTab, setActiveTab] = useState<'calendar' | 'tasks' | 'chat' | 'sheets' | 'slides' | 'docs' | 'gmail' | 'keep' | 'drive'>('calendar');
+
+  const [driveFiles, setDriveFiles] = useState<DriveFile[]>([]);
+  const [driveSearch, setDriveSearch] = useState('');
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [newEvent, setNewEvent] = useState({
@@ -86,7 +100,7 @@ export default function Workspace() {
     setLoading(true);
     setError(null);
     try {
-      const [fetchedEvents, fetchedTasks, fetchedChat, fetchedEmails, fetchedNotes] = await Promise.all([
+      const [fetchedEvents, fetchedTasks, fetchedChat, fetchedEmails, fetchedNotes, fetchedDrive] = await Promise.all([
         fetchCalendarEvents(accessToken).catch((err: unknown) => {
           console.warn("Calendar load failed:", err);
           return [] as CalendarEvent[];
@@ -113,6 +127,10 @@ export default function Workspace() {
               updateTime: new Date().toISOString()
             }
           ] as KeepNote[];
+        }),
+        fetchDriveFiles(accessToken).catch((err: unknown) => {
+          console.warn("Drive files load failed:", err);
+          return [] as DriveFile[];
         })
       ]);
       setEvents(fetchedEvents);
@@ -120,6 +138,7 @@ export default function Workspace() {
       setChatSpaces(fetchedChat);
       setEmails(fetchedEmails);
       setNotes(fetchedNotes);
+      setDriveFiles(fetchedDrive);
     } catch (err: unknown) {
       console.error("Load Error:", err);
       setError((err as Error).message || "Failed to synchronize with Google Workspace");
@@ -252,6 +271,82 @@ export default function Workspace() {
     }
   };
 
+  const handleSearchDrive = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!accessToken) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const files = await fetchDriveFiles(accessToken, driveSearch);
+      setDriveFiles(files);
+    } catch (err: unknown) {
+      console.error("Search Drive files failed:", err);
+      setError((err as Error).message || "Failed to search Google Drive files");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteDriveFile = async (fileId: string, fileName: string) => {
+    if (!accessToken) return;
+    const confirmed = window.confirm(`Are you sure you want to permanently delete "${fileName}"? This operation is irreversible and will delete the file from Google Drive.`);
+    if (!confirmed) return;
+
+    setLoading(true);
+    setError(null);
+    try {
+      await deleteDriveFile(accessToken, fileId);
+      setDriveFiles(prev => prev.filter(f => f.id !== fileId));
+    } catch (err: unknown) {
+      console.error("Delete Drive file failed:", err);
+      setError((err as Error).message || "Failed to delete file from Google Drive");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUploadDriveFile = async (file: File) => {
+    if (!accessToken) return;
+    setUploadingFile(true);
+    setError(null);
+    try {
+      await uploadDriveFile(accessToken, file.name, file, file.type);
+      // reload files list
+      const files = await fetchDriveFiles(accessToken, driveSearch);
+      setDriveFiles(files);
+    } catch (err: unknown) {
+      console.error("Upload to Drive failed:", err);
+      setError((err as Error).message || "Failed to upload file to Google Drive");
+    } finally {
+      setUploadingFile(false);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      handleUploadDriveFile(files[0]);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleUploadDriveFile(files[0]);
+    }
+  };
+
   useEffect(() => {
     if (accessToken) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -379,6 +474,13 @@ export default function Workspace() {
           >
             <StickyNote className="w-4 h-4" />
             Keep
+          </button>
+          <button 
+            onClick={() => setActiveTab('drive')}
+            className={`flex-1 py-4 flex flex-col items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'drive' ? 'bg-cyan-400 text-black' : 'bg-black text-zinc-500 hover:text-white'}`}
+          >
+            <Folder className="w-4 h-4" />
+            Drive & Picker
           </button>
         </div>
 
@@ -914,6 +1016,123 @@ export default function Workspace() {
                         <h4 className="text-white font-bold text-lg mb-2">{note.title || "Untitled Note"}</h4>
                       </div>
                     ))}
+                  </div>
+                )}
+              </motion.div>
+            ) : activeTab === 'drive' ? (
+              <motion.div 
+                key="drive"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-8"
+              >
+                <div className="flex justify-between items-center bg-black p-6 border border-white/10 glass-card">
+                  <div>
+                    <h2 className="text-xl font-black uppercase tracking-tighter text-white">Drive Integration & Selective Picker</h2>
+                    <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mt-1">Browse, Pick, Upload and securely manage Google Drive assets.</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-6">
+                  <form onSubmit={handleSearchDrive} className="md:col-span-2 flex gap-4">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                      <input 
+                        type="text" 
+                        value={driveSearch}
+                        onChange={(e) => setDriveSearch(e.target.value)}
+                        className="w-full bg-white/5 border border-white/10 pl-14 pr-6 py-4 text-white focus:outline-none focus:border-cyan-400/50 transition-colors"
+                        placeholder="Search files in Google Drive..."
+                      />
+                    </div>
+                    <button 
+                      type="submit"
+                      disabled={loading}
+                      className="bg-cyan-400 text-black px-8 py-4 text-xs font-black uppercase tracking-[0.2em] hover:bg-white transition-all flex items-center gap-2 flex-shrink-0 disabled:opacity-50"
+                    >
+                      Search
+                    </button>
+                  </form>
+
+                  <div className="relative">
+                    <input 
+                      type="file" 
+                      id="drive-file-input"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                    <label 
+                      htmlFor="drive-file-input"
+                      className="w-full h-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 px-6 text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 cursor-pointer border-dashed min-h-[58px]"
+                    >
+                      {uploadingFile ? <Loader2 className="w-5 h-5 animate-spin text-cyan-400" /> : <UploadCloud className="w-5 h-5 text-cyan-400" />}
+                      Choose File
+                    </label>
+                  </div>
+                </div>
+
+                <div 
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  className={`border-2 border-dashed rounded-xl p-10 text-center transition-all ${isDragging ? "border-cyan-400 bg-cyan-400/10 scale-[1.01]" : "border-white/10 bg-white/2 hover:border-white/25"} flex flex-col items-center justify-center gap-4`}
+                >
+                  <UploadCloud className={`w-12 h-12 ${isDragging ? "text-cyan-400 animate-bounce" : "text-zinc-600"}`} />
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-300">Drag & Drop Secure File Loader</h3>
+                    <p className="text-zinc-500 text-xs mt-1">Upload any native resource directly into Google Drive via drag and drop.</p>
+                  </div>
+                </div>
+
+                {driveFiles.length === 0 && !loading ? (
+                  <div className="py-20 text-center glass-card border-white/5 bg-white/2">
+                    <p className="text-zinc-600 text-xs font-black uppercase tracking-widest">No resources discovered under this directory.</p>
+                  </div>
+                ) : (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {driveFiles.map((file) => {
+                      const isFolder = file.mimeType === "application/vnd.google-apps.folder";
+                      return (
+                        <div key={file.id} className="glass-card p-6 border-white/10 bg-white/5 flex flex-col justify-between hover:border-cyan-400/30 transition-all duration-500 group">
+                          <div>
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="p-2.5 bg-cyan-400/10 rounded-lg">
+                                {isFolder ? (
+                                  <Folder className="w-5 h-5 text-cyan-400" />
+                                ) : (
+                                  <File className="w-5 h-5 text-cyan-300" />
+                                )}
+                              </div>
+                              <button 
+                                onClick={() => handleDeleteDriveFile(file.id, file.name)}
+                                className="p-1 px-2.5 border border-red-500/10 hover:border-red-500/50 hover:bg-red-500/10 text-red-400 rounded transition-all text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 opacity-40 group-hover:opacity-100"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" /> Delete
+                              </button>
+                            </div>
+                            <h4 className="text-white font-bold text-sm line-clamp-2 mb-2" title={file.name}>{file.name}</h4>
+                            <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest truncate">{file.mimeType.split(".").pop()?.split("/").pop() || "Unknown File Type"}</p>
+                          </div>
+
+                          <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
+                            <span className="text-[9px] text-zinc-500 font-bold tracking-widest uppercase">
+                              {file.size ? `${(parseInt(file.size) / 1024 / 1024).toFixed(2)} MB` : isFolder ? "FOLDER" : "0.00 MB"}
+                            </span>
+                            {file.webViewLink && (
+                              <a 
+                                href={file.webViewLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="text-[10px] font-black uppercase tracking-wider text-cyan-400 hover:text-white transition-colors flex items-center gap-1.5"
+                              >
+                                Pick & View <ExternalLink className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </motion.div>
