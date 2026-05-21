@@ -137,3 +137,39 @@ html, body {
     animation: fadeIn 0.8s ease forwards;
   }
 }
+
+@keyframes waveRider {
+  0%, 100% {
+    transform: scaleY(0.1);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes progressFlow {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes textBlink {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.animate-wave-rider {
+  animation: waveRider 1.2s ease-in-out infinite;
+}
+
+.animate-progress-flow {
+  animation: progressFlow 8s linear infinite;
+}
+
+.animate-text-blink {
+  animation: textBlink 1.5s ease-in-out infinite;
+}
+

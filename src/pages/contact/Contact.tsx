@@ -20,7 +20,7 @@ export default function Contact() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           prompt: inquiry,
-          systemInstruction: "You are the AI Surfer Lead Strategist. The user is inquiring about marketing/branding services. Provide a brief, brilliant set of 'Preliminary Strategic Initializations' (immediate advice/feedback) based on their message. Be sophisticated, high-conviction, professional, and weave in subtle coastal/surfing theme language."
+          systemInstruction: "You are the AI Surfer Lead Strategist. The user is inquiring about services. Provide an extremely streamlined, concise set of 'Preliminary Strategic Initializations'. Output a highly constrained summary directly answering the prompt. Keep it professional, brief and to the point (no more than 3 bullet points)."
         }),
       });
       const reader = response.body?.getReader();
@@ -84,7 +84,7 @@ export default function Contact() {
           </h1>
 
           <p className="mt-4 text-base md:text-lg text-white/80 max-w-2xl mx-auto mb-16 underline decoration-cyan-400/40 decoration-2">
-            The AI Surfer team is here to help you ride the perfect frequency of growth. Directly operating from the wind-swept shores of the Outer Banks, NC, we're ready to architect your digital horizon.
+            The AI Surfer team is here to help you ride the perfect frequency of growth. Directly operating from the beautiful city of Charleston, South Carolina, we're ready to architect your digital horizon.
           </p>
 
           <div className="mb-20 glass-card p-10 border border-white/10 bg-black/60 backdrop-blur-md rounded-[2rem] text-left">
@@ -136,14 +136,14 @@ export default function Contact() {
           <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto text-left">
             <div className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-md accent-glow-cyan">
               <h3 className="text-[#00eaff] font-bold text-xl mb-4 font-display flex items-center gap-2 font-orbitron uppercase">
-                <Anchor className="w-5 h-5 text-cyan-400" /> Visit Us
+                <Anchor className="w-5 h-5 text-cyan-400" /> Start Your Project
               </h3>
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3 text-lg text-white/80">
                   <MapPin className="w-5 h-5 text-[#00eaff]" />
-                  <span>Salvo, Outer Banks, NC</span>
+                  <span>Charleston, South Carolina</span>
                 </div>
-                <p className="text-xs text-white/40 uppercase tracking-widest font-black font-mono">Outer Banks HQ_</p>
+                <p className="text-xs text-white/40 uppercase tracking-widest font-black font-mono">Charleston HQ_</p>
               </div>
             </div>
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Navigate } from "react-router-dom";
 import PageWrapper from "../../components/PageWrapper";
 import { useAuth } from "../../hooks/useAuth";
+import { fetchFormsFromDrive, FormFile } from "../../services/googleWorkspaceService";
 import { db } from "../../lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import ToolSelector from "../../components/ToolSelector";
@@ -344,7 +345,7 @@ const TOOLS: Record<string, ToolConfig> = {
 export default function ToolInterface() {
   const { toolId } = useParams<{ toolId: string }>();
   const navigate = useNavigate();
-  const { user, userData, loading } = useAuth();
+  const { user, userData, loading, accessToken, loginWithGoogle } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<'actions' | 'settings'>('actions');
@@ -353,6 +354,56 @@ export default function ToolInterface() {
   const [activeAction, setActiveAction] = useState<string | null>(null);
   const [promptInput, setPromptInput] = useState("");
   const [aiResult, setAiResult] = useState<string | null>(null);
+
+  // Star favorites and Google Forms integration states
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem("favoriteTools");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [googleForms, setGoogleForms] = useState<FormFile[]>([]);
+  const [loadingForms, setLoadingForms] = useState(false);
+  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+
+  const isFav = toolId ? favorites.includes(toolId) : false;
+
+  const toggleFavorite = () => {
+    if (!toolId) return;
+    let updated: string[];
+    const toolName = toolId.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    if (favorites.includes(toolId)) {
+      updated = favorites.filter(id => id !== toolId);
+      setLogs(prev => [...prev, `Removed ${toolName} from starred paths.`]);
+    } else {
+      updated = [...favorites, toolId];
+      setLogs(prev => [...prev, `Starred ${toolName} for quick access frequencies.`]);
+    }
+    setFavorites(updated);
+    localStorage.setItem("favoriteTools", JSON.stringify(updated));
+  };
+
+  // Sync Google Forms dynamically if current tool is Workflow Automator and token is active
+  useEffect(() => {
+    if (toolId === 'workflow-automator' && accessToken) {
+      setLoadingForms(true);
+      fetchFormsFromDrive(accessToken)
+        .then(forms => {
+          setGoogleForms(forms);
+          setLogs(prev => [...prev, `Successfully synchronized and mapped ${forms.length} Google Forms from Workspace Drive.`]);
+        })
+        .catch(err => {
+          console.warn("Forms load error:", err);
+          setLogs(prev => [...prev, `Error: Failed to fetch Google Forms assets. Please verify credentials.`]);
+        })
+        .finally(() => {
+          setLoadingForms(false);
+        });
+    }
+  }, [toolId, accessToken]);
 
   // Custom tool dynamic settings
   const [customSettings, setCustomSettings] = useState<Setting[]>([]);
@@ -593,9 +644,19 @@ export default function ToolInterface() {
                 {tool.icon}
               </div>
 
-              <h1 className="text-4xl font-black uppercase text-white mb-4 tracking-tighter leading-none">
-                {tool.name}
-              </h1>
+              <div className="flex items-center justify-between gap-4 mb-4">
+                <h1 className="text-4xl font-black uppercase text-white tracking-tighter leading-none">
+                  {tool.name}
+                </h1>
+                
+                <button
+                  onClick={toggleFavorite}
+                  className="p-3.5 bg-white/5 border border-white/10 hover:border-[#00eaff]/40 text-cyan-300 hover:text-white transition-all rounded shrink-0 group/fav"
+                  title={isFav ? "Remove from Starred Paths" : "Star this AI System"}
+                >
+                  <Sparkles className={`w-4 h-4 transition-transform group-hover/fav:scale-110 ${isFav ? 'text-[#00eaff] fill-current' : ''}`} />
+                </button>
+              </div>
               
               <div 
                 className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] mb-10 text-white"
@@ -706,6 +767,95 @@ export default function ToolInterface() {
 
               {activeTab === 'actions' ? (
                 <div className="flex-grow flex flex-col space-y-px bg-white/5 border border-white/10">
+                  {/* WORKFLOW AUTOMATOR - GOOGLE FORMS INTEGRATION NEXUS */}
+                  {toolId === 'workflow-automator' && (
+                    <div className="p-10 bg-zinc-950 border-b border-white/10">
+                      <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-6">
+                         <div>
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#00eaff] block mb-1">GOOGLE WORKSPACE INTEGRATION</span>
+                            <h3 className="text-xl font-black uppercase text-white tracking-tight">Active Forms Engine Nexus</h3>
+                         </div>
+                         <div className="shrink-0">
+                            {accessToken ? (
+                               <span className="text-[8px] font-mono uppercase bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded">CONNECTED</span>
+                            ) : (
+                               <span className="text-[8px] font-mono uppercase bg-amber-950/40 border border-amber-500/20 text-amber-400 px-2.5 py-1 rounded">NOT CONNECTED</span>
+                            )}
+                         </div>
+                      </div>
+
+                      {!accessToken ? (
+                         <div className="p-6 border border-dashed border-white/10 bg-white/2 rounded-md flex flex-col items-center justify-center text-center">
+                            <p className="text-zinc-500 text-xs mb-4 font-bold uppercase tracking-wider">Access to active Google Forms schemas required.</p>
+                            <button
+                               onClick={() => loginWithGoogle(true)}
+                               className="bg-amber-400 text-black px-8 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all rounded"
+                            >
+                               Link Workspace Credentials Now &rarr;
+                            </button>
+                         </div>
+                      ) : (
+                         <div className="space-y-4">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400">Select Workspace Google Form to Sync with Workflow AI:</span>
+                            
+                            {loadingForms ? (
+                               <div className="py-6 flex items-center justify-center gap-2">
+                                  <Loader2 className="w-4 h-4 text-amber-400 animate-spin" />
+                                  <span className="text-[10px] font-mono uppercase text-zinc-500">Querying your Forms assets...</span>
+                               </div>
+                            ) : googleForms.length === 0 ? (
+                               <div className="p-6 border border-dashed border-white/5 text-center bg-black/20 text-zinc-500 text-xs uppercase font-black tracking-widest">
+                                  No active Forms detected in your Google Drive. Open "Neural Sync" to create one.
+                               </div>
+                            ) : (
+                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+                                  {googleForms.map((f) => {
+                                     const isSelected = selectedFormId === f.id;
+                                     return (
+                                        <div
+                                           key={f.id}
+                                           onClick={() => {
+                                              setSelectedFormId(f.id);
+                                              setLogs(prev => [...prev, `Selected Google Form link: "${f.name}". Attachment complete.`]);
+                                              setPromptInput(`Map AI Automations for google forms content "${f.name}":\n\n1. Scan submitter details and run cognitive evaluation\n2. Filter keywords and trigger automated outreach\n3. Schedule calendar synchronization via Workspace`);
+                                           }}
+                                           className={`p-3 border rounded cursor-pointer transition-all flex flex-col justify-between ${isSelected ? 'bg-[#00eaff]/10 border-[#00eaff] text-white' : 'bg-black border-white/5 hover:border-white/20 text-zinc-400'}`}
+                                        >
+                                           <div className="flex items-center gap-2 mb-1.5">
+                                              <div className={`p-1 rounded ${isSelected ? 'bg-[#00eaff]/20 text-[#00eaff]' : 'bg-white/5 text-zinc-600'}`}>
+                                                 <FileText className="w-3.5 h-3.5" />
+                                              </div>
+                                              <span className="text-[11px] font-bold uppercase tracking-wider block truncate max-w-[170px]">{f.name}</span>
+                                           </div>
+                                           <span className="text-[7.5px] font-mono text-[#00eaff] uppercase tracking-widest">Select to Map AI Channels &rarr;</span>
+                                        </div>
+                                     );
+                                  })}
+                               </div>
+                            )}
+
+                            {selectedFormId && (
+                               <div className="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded flex items-center justify-between text-xs text-zinc-350">
+                                  <div className="flex items-center gap-2">
+                                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                                     <span>Form linked! Pre-configured parameters loaded in prompt input.</span>
+                                  </div>
+                                  <button
+                                     onClick={() => {
+                                        setSelectedFormId(null);
+                                        setLogs(prev => [...prev, `Detached and reset active Google Form.`]);
+                                     }}
+                                     className="text-[8px] font-black uppercase tracking-widest text-[#00eaff] hover:text-white transition-colors"
+                                  >
+                                     DETACH
+                                  </button>
+                                </div>
+                            )}
+                         </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* AI INPUT AREA */}
                   <div className="p-10 bg-black border-b border-white/10">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-400 mb-6">Synthesis Input</h3>
@@ -772,6 +922,56 @@ export default function ToolInterface() {
                       </button>
                     ))}
                   </div>
+
+                  {/* COGNITIVE DEPLOYMENT SEQUENCER VISUAL FEEDBACK */}
+                  {isProcessing && (
+                    <div className="p-10 bg-zinc-950 border-t border-b border-cyan-400/20 relative overflow-hidden animate-pulse">
+                      <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-400 via-purple-500 to-amber-500" />
+
+                      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+                         <div>
+                            <div className="flex items-center gap-2 mb-1">
+                               <Loader2 className="w-4 h-4 text-[#00eaff] animate-spin" />
+                               <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#00eaff]">COGNITIVE SYNTHESIS IN PROGRESS</span>
+                            </div>
+                            <h3 className="text-xl font-black uppercase text-white tracking-tight">Active Neural Processing</h3>
+                         </div>
+                         <div className="flex items-center gap-1.5 bg-cyan-950/40 px-2.5 py-1 border border-cyan-500/20 text-[#00eaff] text-[9px] font-mono tracking-widest rounded-sm">
+                            FREQUENCY MATCHING: ACTIVE
+                         </div>
+                      </div>
+
+                      {/* Waveform Visualization - CSS Animated Bars */}
+                      <div className="flex items-end justify-center gap-1 h-12 w-full max-w-xs mx-auto mb-8 bg-white/5 rounded-lg p-3 border border-white/5">
+                        {[1, 2, 3, 4, 5, 4, 3, 2, 1, 3, 5, 2, 4, 1, 5, 3, 4, 2, 1].map((val, idx) => (
+                          <div 
+                            key={idx} 
+                            style={{ 
+                              height: `${val * 20}%`,
+                              animationDelay: `${idx * 0.08}s`,
+                            }}
+                            className="bg-[#00eaff] w-1 min-h-[4px] rounded-full animate-wave-rider origin-bottom"
+                          />
+                        ))}
+                      </div>
+
+                      <div className="space-y-4 max-w-md mx-auto text-center">
+                         <div className="text-xs font-bold text-cyan-200 uppercase tracking-wider animate-text-blink">
+                            {logs.length > 0 ? logs[logs.length - 1] : "Negotiating security handshake..."}
+                         </div>
+                         
+                         <div className="w-full bg-white/5 h-1 border border-white/10 overflow-hidden relative rounded-full">
+                            <div className="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-indigo-500 rounded-full animate-progress-flow" />
+                         </div>
+
+                         <div className="grid grid-cols-3 gap-2 pt-4 text-[8px] font-mono uppercase tracking-widest text-[#00eaff]/45">
+                            <div>VECTORS: ALIGNED</div>
+                            <div>MODEL: GEMINI-2.5</div>
+                            <div>INTEGRITY: 99.8%</div>
+                         </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* AI RESULT DISPLAY */}
                   {aiResult && (

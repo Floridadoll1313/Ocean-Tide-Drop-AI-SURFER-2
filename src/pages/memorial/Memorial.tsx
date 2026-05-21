@@ -73,13 +73,13 @@ export default function Memorial() {
         <div className="flex flex-col items-center mb-20 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-black uppercase tracking-[0.3em] text-cyan-400 mb-6">
             <Anchor className="w-3 h-3" />
-            The Salvo Sanctuary
+            The Charleston Sanctuary
           </div>
           <h1 className="text-5xl md:text-8xl font-black italic uppercase text-white tracking-tighter drop-shadow-[0_0_15px_rgba(30,144,255,0.3)] font-orbitron">
             Bull's <span className="text-cyan-400">Memorial</span>
           </h1>
           <p className="mt-6 text-white/70 text-sm md:text-base uppercase tracking-[0.2em] font-medium max-w-3xl leading-relaxed">
-            Honoring the coastal legacy of <span className="text-cyan-300 font-extrabold pb-1 border-b border-cyan-400/30">Johnny Burgess Hooper ("Bull")</span> — The Master Carpenter whose legendary craftsmanship built the very skyline of Salvo, NC, and the tri-villages.
+            Honoring the coastal legacy of <span className="text-cyan-300 font-extrabold pb-1 border-b border-cyan-400/30">Johnny Burgess Hooper ("Bull")</span> — The Master Carpenter whose legendary craftsmanship built the very skyline of Charleston, South Carolina, and the surrounding barrier islands.
           </p>
         </div>
 
@@ -94,7 +94,7 @@ export default function Memorial() {
             <div className="absolute inset-0">
                <img 
                  src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000" 
-                 alt="Salvo Beach and Pamlico Sound" 
+                 alt="Charleston Beach and Harbor" 
                  className="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" 
                  referrerPolicy="no-referrer"
                />
@@ -106,10 +106,10 @@ export default function Memorial() {
             <div className="absolute bottom-12 left-12 right-12 z-20">
               <div className="flex items-center gap-3 text-cyan-400 mb-2">
                 <MapPin className="w-4 h-4 animate-bounce" />
-                <span className="text-xs font-black uppercase tracking-[0.2em] text-shadow-sm">Salvo, Outer Banks</span>
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-shadow-sm">Charleston, South Carolina</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-black italic uppercase text-white tracking-tighter">Johnny Burgess Hooper</h2>
-              <p className="text-cyan-300/80 text-sm font-black uppercase tracking-widest mt-2 font-mono">"Bull" — Anchored in Salvo soundside & shores</p>
+              <p className="text-cyan-300/80 text-sm font-black uppercase tracking-widest mt-2 font-mono">"Bull" — Anchored in Charleston harbor & shores</p>
             </div>
           </motion.div>
 
@@ -124,9 +124,9 @@ export default function Memorial() {
                 <Hammer className="w-24 h-24" />
               </div>
               <Ruler className="w-8 h-8 text-cyan-400 mb-6" />
-              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter font-orbitron">Outer Banks Masterclass Integrity</h3>
+              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter font-orbitron">Lowcountry Masterclass Integrity</h3>
               <p className="text-white/70 text-base leading-relaxed font-sans">
-                Johnny "Bull" Burgess Hooper was a cornerstone of the coastal surfer community. Operating primarily out of Salvo, NC, his master carpentry hands raised resilient beach homes and coastal landmarks engineered to stand strong against the fierce Atlantic ocean storms. Every rafter, joist, and deck he framed is a testament to honest craftsmanship.
+                Johnny "Bull" Burgess Hooper was a cornerstone of the coastal surfer community. Operating primarily out of Charleston, South Carolina, his master carpentry hands raised resilient beach homes and coastal landmarks engineered to stand strong against the fierce Atlantic ocean storms. Every rafter, joist, and deck he framed is a testament to honest craftsmanship.
               </p>
             </motion.div>
 
@@ -140,9 +140,9 @@ export default function Memorial() {
                 <Anchor className="w-24 h-24" />
               </div>
               <Waves className="w-8 h-8 text-cyan-400 mb-6" />
-              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter font-orbitron">The Wind and Sound of Salvo</h3>
+              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter font-orbitron">The Wind and Harbor of Charleston</h3>
               <p className="text-white/70 text-base leading-relaxed font-sans">
-                Like the persistent breezes blowing across the Salvo Day Use Area and the Pamlico Sound, Bull's influence lives on in the very wood and structure of our Outer Banks tri-villages. He built with heart, precision, and an unshakeable dedication. His architectural legacy remains a radiant beacon for all who treasure the ocean life and authentic quality.
+                Like the persistent breezes blowing across the Charleston Harbor, Bull's influence lives on in the very wood and structure of our coastal heritage. He built with heart, precision, and an unshakeable dedication. His architectural legacy remains a radiant beacon for all who treasure the ocean life and authentic quality.
               </p>
             </motion.div>
 
@@ -164,7 +164,7 @@ export default function Memorial() {
         </div>
 
         <div className="mt-32 pt-20 border-t border-white/5 text-center">
-          <p className="text-cyan-400/30 text-[10px] font-black uppercase tracking-[1em] mb-10 font-mono">Forever in the Waves & Wind of Salvo</p>
+          <p className="text-cyan-400/30 text-[10px] font-black uppercase tracking-[1em] mb-10 font-mono">Forever in the Waves & Wind of Charleston</p>
           <div className="flex justify-center gap-10">
              <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
              <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping delay-100" />
