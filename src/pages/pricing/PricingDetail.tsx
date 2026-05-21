@@ -48,8 +48,12 @@ export default function PricingDetail() {
   const handleSubscribe = async () => {
     if (!user) {
       // Require login before checkout
-      await loginWithGoogle();
-      // the page will reactively update state, user can then click Subscribe again.
+      try {
+        await loginWithGoogle();
+      } catch (err) {
+        console.error("Login failed", err);
+        alert("Authentication failed. If you are viewing this in the AI Studio preview, popups may be blocked. Please click the arrow/window icon at the top right to open this app in a new tab and try again.");
+      }
       return;
     }
 
