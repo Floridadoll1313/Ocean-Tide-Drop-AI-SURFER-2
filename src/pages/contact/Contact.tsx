@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import PageWrapper from "../../components/PageWrapper";
 import { Sparkles, Loader2, Send, CheckCircle2, MapPin, Mail, Phone, Anchor } from "lucide-react";
 import hatterasBg from "../../assets/images/hatteras_light_bg_1779221087362.png";
@@ -23,6 +24,13 @@ export default function Contact() {
           systemInstruction: "You are the AI Surfer Lead Strategist. The user is inquiring about services. Provide an extremely streamlined, concise set of 'Preliminary Strategic Initializations'. Output a highly constrained summary directly answering the prompt. Keep it professional, brief and to the point (no more than 3 bullet points)."
         }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        setConsultResult(errorData.error || "Failed to initialize strategy. Please check your API key in Settings > Secrets.");
+        return;
+      }
+
       const reader = response.body?.getReader();
       const decoder = new TextDecoder("utf-8");
       let fullText = "";
@@ -143,7 +151,8 @@ export default function Contact() {
                   <MapPin className="w-5 h-5 text-[#00eaff]" />
                   <span>Charleston, South Carolina</span>
                 </div>
-                <p className="text-xs text-white/40 uppercase tracking-widest font-black font-mono">Charleston HQ_</p>
+                <p className="text-xs text-white/40 uppercase tracking-widest font-black font-mono mb-4">Charleston HQ_</p>
+                <Link to="/pricing" className="inline-block px-6 py-3 bg-cyan-500/10 border border-cyan-400 text-cyan-400 text-center font-black uppercase text-[10px] tracking-widest hover:bg-cyan-400 hover:text-black transition-all">Start Your Project</Link>
               </div>
             </div>
 

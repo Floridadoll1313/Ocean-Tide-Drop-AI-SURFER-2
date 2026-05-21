@@ -21,6 +21,7 @@ export default function Gallery() {
   const [sharingId, setSharingId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isLightboxSharing, setIsLightboxSharing] = useState(false);
+  const [showProjectData, setShowProjectData] = useState(false);
 
   // Active parameter listener for real-world dynamic loading
   useEffect(() => {
@@ -100,7 +101,10 @@ export default function Gallery() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                onClick={() => setSelectedItem(item)}
+                onClick={() => {
+                  setSelectedItem(item);
+                  setShowProjectData(false);
+                }}
                 className={`group relative overflow-hidden rounded-sm border border-white/10 bg-zinc-900 cursor-pointer
                   hover:border-cyan-400/40 hover:shadow-[0_0_30px_rgba(0,234,255,0.08)] transition-all duration-700
                   ${item.size === 'large' ? 'md:row-span-2' : ''}
@@ -238,6 +242,7 @@ export default function Gallery() {
               onClick={() => {
                 setSelectedItem(null);
                 setIsLightboxSharing(false);
+                setShowProjectData(false);
               }}
               className="absolute inset-0 bg-black/95 backdrop-blur-xl"
             />
@@ -253,6 +258,7 @@ export default function Gallery() {
                 onClick={() => {
                   setSelectedItem(null);
                   setIsLightboxSharing(false);
+                  setShowProjectData(false);
                 }}
                 className="absolute top-6 right-6 z-50 p-3 bg-black/50 text-white rounded-full hover:bg-white hover:text-black transition-all"
               >
@@ -280,8 +286,8 @@ export default function Gallery() {
                  </p>
                  <div className="flex flex-col gap-4">
                     <div className="flex gap-4">
-                       <button className="flex-1 py-4 bg-white text-black text-[10px] font-black uppercase tracking-widest hover:bg-soul-gradient hover:text-white transition-all">
-                          Project Data
+                       <button onClick={() => setShowProjectData(!showProjectData)} className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest transition-all ${showProjectData ? 'bg-cyan-400 text-black' : 'bg-white text-black hover:bg-soul-gradient hover:text-white'}`}>
+                          {showProjectData ? 'Hide Data' : 'Project Data'}
                        </button>
                        <button 
                          onClick={() => setIsLightboxSharing(!isLightboxSharing)}
@@ -291,6 +297,32 @@ export default function Gallery() {
                           <Share2 className="w-4 h-4" />
                        </button>
                     </div>
+
+                    <AnimatePresence>
+                      {showProjectData && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="overflow-hidden border-t border-white/5 mt-4 pt-4 text-xs text-zinc-400"
+                        >
+                           <ul className="space-y-2">
+                             <li className="flex justify-between">
+                               <span className="uppercase tracking-widest text-[#00eaff] font-mono">Status:</span>
+                               <span className="text-white">Deployed</span>
+                             </li>
+                             <li className="flex justify-between">
+                               <span className="uppercase tracking-widest text-[#00eaff] font-mono">Category:</span>
+                               <span className="text-white">{selectedItem.category}</span>
+                             </li>
+                             <li className="flex justify-between">
+                               <span className="uppercase tracking-widest text-[#00eaff] font-mono">System ID:</span>
+                               <span className="text-white">{selectedItem.id}</span>
+                             </li>
+                           </ul>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
 
                     {/* Lightbox Inline Sharing Panel */}
                     <AnimatePresence>

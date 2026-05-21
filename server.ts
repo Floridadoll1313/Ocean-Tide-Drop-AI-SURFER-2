@@ -39,7 +39,7 @@ async function generateAIContent(req: express.Request, res: express.Response) {
     console.log("🤖 Generating AI content for prompt:", prompt);
     
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash",
       contents: prompt,
       config: {
         systemInstruction: systemInstruction || "You are an expert creative assistant for an agency called AI Surfer. Provide punchy, high-frequency, professional output.",
@@ -85,7 +85,7 @@ async function generateAIContentStream(req: express.Request, res: express.Respon
     res.setHeader("Connection", "keep-alive");
     
     const responseStream = await ai.models.generateContentStream({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash",
       contents: prompt,
       config: {
         systemInstruction: systemInstruction || "You are an expert creative assistant for an agency called AI Surfer. Provide punchy, high-frequency, professional output.",
