@@ -50,80 +50,83 @@ export default function PageWrapper({
   return (
     <div className="min-h-screen bg-transparent text-white flex flex-col relative overflow-x-hidden">
       {/* NAVBAR */}
-      <header className="w-full fixed top-0 left-0 z-50 backdrop-blur-xl bg-black/40 border-b border-white/10 navbar-glow">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <header className="w-full fixed top-4 left-0 z-50 flex justify-center px-4">
+        <div className="w-full max-w-6xl backdrop-blur-xl bg-black/50 border border-white/10 rounded-full flex items-center justify-between px-6 py-3 shadow-[0_0_30px_rgba(0,0,0,0.5)] navbar-glow">
           <Link to="/" className="flex items-center gap-3 relative z-[60]">
-            <div className="w-12 h-12 flex items-center justify-center rounded-sm">
-              <img src="/logo.svg" alt="AI Surfer Logo" className="w-full h-full object-contain" />
+            <div className="w-10 h-10 flex items-center justify-center rounded-sm">
+              <img src="/logo.svg" alt="AI Surfer Logo" className="w-full h-full object-contain drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]" />
             </div>
-            <span className="text-xl font-black tracking-tighter uppercase text-white">
+            <span className="text-xl font-black tracking-tighter uppercase text-white hidden lg:block">
               <span className="text-soul-gradient italic font-serif">AI Surfer</span>
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex gap-8 text-[11px] font-bold uppercase tracking-[0.15em] items-center text-cyan-200">
+          <nav className="hidden md:flex gap-1 bg-white/5 rounded-full p-1 border border-white/5 items-center">
             {navLinks.map((link) => (
               <Link 
                 key={link.to}
-                className={`transition-all flex flex-col items-center gap-1 group relative ${isActive(link.to) ? 'text-white' : 'hover:text-white'}`} 
+                className={`transition-all px-4 py-2 rounded-full flex items-center gap-2 group relative ${isActive(link.to) ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`} 
                 to={link.to}
               >
-                <div className="flex items-center gap-2">
-                  <link.icon className={`w-3.5 h-3.5 ${link.color} group-hover:scale-110 transition-transform ${isActive(link.to) ? 'scale-110' : ''}`} />
+                <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em]">
+                  <link.icon className={`w-3 h-3 ${link.color} group-hover:scale-110 transition-transform ${isActive(link.to) ? 'scale-110' : ''}`} />
                   <span>{link.label}</span>
                 </div>
                 {isActive(link.to) && (
                   <motion.div 
                     layoutId="activeNav"
-                    className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+                    className="absolute inset-x-4 -bottom-1 h-px bg-cyan-400 shadow-[0_0_10px_rgba(0,234,255,0.8)]"
                   />
                 )}
               </Link>
             ))}
-            
-            <div className="pl-6 border-l border-white/10 flex items-center gap-6">
-              <button onClick={toggleTheme} className="text-zinc-400 hover:text-white flex items-center" title="Toggle Theme">
-                {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-              </button>
-              {loading ? (
-                <div className="w-4 h-4 rounded-full border border-white/20 border-t-white animate-spin"></div>
-              ) : user ? (
-                <div className="flex items-center gap-3">
-                  <Link to="/members" className={`flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-sm group transition-all ${isActive('/members') && !isActive('/members/sync') ? 'border-white/30 bg-white/10' : ''}`}>
-                    <LayoutDashboard className="w-3.5 h-3.5 text-cyan-400 group-hover:rotate-12 transition-transform" />
-                    <span className={isActive('/members') && !isActive('/members/sync') ? 'text-white' : ''}>Dashboard</span>
-                  </Link>
-                  <Link to="/members/sync" className={`flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-sm group ml-2 transition-all ${isActive('/members/sync') ? 'border-white/30 bg-white/10' : ''}`}>
-                    <CalendarIcon className="w-3.5 h-3.5 text-emerald-400 group-hover:rotate-12 transition-transform" />
-                    <span className={isActive('/members/sync') ? 'text-white' : ''}>Neural Sync</span>
-                  </Link>
-                  <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity ml-2">
-                    {user.photoURL ? (
-                       <img src={user.photoURL} alt={user.displayName || "User"} className={`w-6 h-6 rounded-full border transition-all ${isActive('/profile') ? 'border-white scale-110' : 'border-white/20'}`} />
-                    ) : (
-                       <div className={`w-6 h-6 rounded-full bg-white/10 border flex items-center justify-center text-[8px] text-white transition-all ${isActive('/profile') ? 'border-white scale-110' : 'border-white/20'}`}>
-                         {user.email?.[0].toUpperCase()}
-                       </div>
-                    )}
-                  </Link>
-                  <button 
-                    onClick={logout}
-                    className="text-[8px] hover:text-white transition-colors"
-                  >
-                    Out
-                  </button>
-                </div>
-              ) : (
-                <button 
-                  onClick={() => loginWithGoogle(false)}
-                  className="px-5 py-2 bg-white text-black hover:bg-zinc-200 transition-all text-[10px] font-black uppercase tracking-widest"
-                >
-                  Join
-                </button>
-              )}
-            </div>
           </nav>
+            
+          <div className="hidden md:flex items-center gap-4">
+            <button onClick={toggleTheme} className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors" title="Toggle Theme">
+              {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            </button>
+            {loading ? (
+              <div className="w-4 h-4 rounded-full border border-white/20 border-t-white animate-spin"></div>
+            ) : user ? (
+              <div className="flex items-center gap-2">
+                <Link to="/members" className={`flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-full group transition-all hover:bg-cyan-500 hover:text-black ${isActive('/members') && !isActive('/members/sync') ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.5)]' : ''}`}>
+                  <LayoutDashboard className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+                  <span className="text-[10px] font-black uppercase tracking-widest hidden lg:block">Dashboard</span>
+                </Link>
+                <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity ml-1">
+                  {user.photoURL ? (
+                     <img src={user.photoURL} alt={user.displayName || "User"} className={`w-8 h-8 rounded-full border-2 transition-all ${isActive('/profile') ? 'border-cyan-400 scale-110' : 'border-white/20'}`} />
+                  ) : (
+                     <div className={`w-8 h-8 rounded-full bg-white/10 border-2 flex items-center justify-center text-[10px] font-bold text-white transition-all ${isActive('/profile') ? 'border-cyan-400 scale-110' : 'border-white/20'}`}>
+                       {user.email?.[0].toUpperCase()}
+                     </div>
+                  )}
+                </Link>
+                <button 
+                  onClick={logout}
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-colors ml-1"
+                  title="Sign Out"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <button 
+                onClick={async () => {
+                  try {
+                    await loginWithGoogle(false);
+                  } catch {
+                    alert("Authentication failed. If you are viewing this in the AI Studio preview, popups may be blocked. Please click the arrow/window icon at the top right to open this app in a new tab and try again.");
+                  }
+                }}
+                className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-cyan-400 transition-colors text-[10px] font-black uppercase tracking-widest"
+              >
+                Join
+              </button>
+            )}
+          </div>
 
           {/* Mobile Theme & Menu Button */}
           <div className="md:hidden flex items-center gap-2 relative z-[60]">
@@ -202,7 +205,14 @@ export default function PageWrapper({
                   </>
                 ) : (
                   <button 
-                    onClick={() => { loginWithGoogle(false); toggleMenu(); }}
+                    onClick={async () => { 
+                      try {
+                        await loginWithGoogle(false); 
+                        toggleMenu(); 
+                      } catch {
+                        alert("Authentication failed. If you are viewing this in the AI Studio preview, popups may be blocked. Please click the arrow/window icon at the top right to open this app in a new tab and try again.");
+                      }
+                    }}
                     className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase text-xs tracking-widest"
                   >
                     Sign In With Google
