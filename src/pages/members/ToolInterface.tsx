@@ -1120,7 +1120,7 @@ export default function ToolInterface() {
                           </div>
                           <div className="flex items-center gap-4">
                             <span className="text-[10px] font-black text-white bg-white/10 px-3 py-1 uppercase tracking-widest">
-                              {setting.type === 'toggle' ? (toolSettings[setting.id] ? 'Active' : 'Halted') : toolSettings[setting.id]}
+                              {setting.type === 'toggle' ? (toolSettings[setting.id] ? 'Active' : 'Halted') : String(toolSettings[setting.id])}
                             </span>
                             {isCustom && (
                               <button

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star } from "lucide-react";
+import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star, Moon, Sun } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import AIAssistant from "./AIAssistant";
 
 export default function PageWrapper({ 
   children, 
@@ -15,7 +16,18 @@ export default function PageWrapper({
 }) {
   const { user, loading, loginWithGoogle, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const location = useLocation();
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    if (newTheme === 'light') {
+      document.documentElement.style.filter = "invert(1) hue-rotate(180deg)";
+    } else {
+      document.documentElement.style.filter = "";
+    }
+  };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -71,6 +83,9 @@ export default function PageWrapper({
             ))}
             
             <div className="pl-6 border-l border-white/10 flex items-center gap-6">
+              <button onClick={toggleTheme} className="text-zinc-400 hover:text-white flex items-center" title="Toggle Theme">
+                {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+              </button>
               {loading ? (
                 <div className="w-4 h-4 rounded-full border border-white/20 border-t-white animate-spin"></div>
               ) : user ? (
@@ -110,13 +125,18 @@ export default function PageWrapper({
             </div>
           </nav>
 
-          {/* Mobile Menu Button */}
-          <button 
-            onClick={toggleMenu}
-            className="md:hidden p-2 text-white relative z-[60]"
-          >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile Theme & Menu Button */}
+          <div className="md:hidden flex items-center gap-2 relative z-[60]">
+            <button onClick={toggleTheme} className="p-2 text-zinc-400 hover:text-white flex items-center" title="Toggle Theme">
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+            <button 
+              onClick={toggleMenu}
+              className="p-2 text-white"
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -261,6 +281,7 @@ export default function PageWrapper({
           © {new Date().getFullYear()} AI Surfer Marketing Agency — Peak Frequency.
         </div>
       </footer>
+      <AIAssistant />
     </div>
   );
 }

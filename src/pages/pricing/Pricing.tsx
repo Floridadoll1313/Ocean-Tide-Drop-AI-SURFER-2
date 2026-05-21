@@ -261,6 +261,7 @@ export default function Pricing() {
         await loginWithGoogle();
       } catch (err) {
         console.error("Login failed:", err);
+        alert("Authentication failed. If you are viewing this in the AI Studio preview, popups may be blocked. Please click the arrow/window icon at the top right to open this app in a new tab and try again.");
         return;
       }
     }
