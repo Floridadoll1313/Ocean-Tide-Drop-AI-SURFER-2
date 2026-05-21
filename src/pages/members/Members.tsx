@@ -7,7 +7,7 @@ import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp,
 import PageWrapper from "../../components/PageWrapper";
 import Chat from "../../components/Chat";
 import ToolSelector from "../../components/ToolSelector";
-import { Loader2, Zap, Rocket, Terminal, BarChart3, Users, Globe, Cpu, Activity, LayoutDashboard, Settings, Bell, Sparkles, DollarSign, Calendar, FileText } from "lucide-react";
+import { Loader2, Zap, Rocket, Terminal, BarChart3, Users, Globe, Cpu, Activity, LayoutDashboard, Settings, Bell, Sparkles, DollarSign, Calendar, FileText, Clock } from "lucide-react";
 
 interface ToolWork {
   id: string;
@@ -22,6 +22,37 @@ export default function Members() {
   const navigate = useNavigate();
   const [isDemoSession, setIsDemoSession] = useState(false);
   const [demoTier, setDemoTier] = useState<'basic' | 'premium' | 'enterprise'>('premium');
+
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem("favoriteTools");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [recentlyUsed, setRecentlyUsed] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem("recentlyUsedTools");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const toggleFavorite = (toolId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    let updated: string[];
+    if (favorites.includes(toolId)) {
+      updated = favorites.filter(id => id !== toolId);
+    } else {
+      updated = [...favorites, toolId];
+    }
+    setFavorites(updated);
+    localStorage.setItem("favoriteTools", JSON.stringify(updated));
+  };
   
   const [launchingTool, setLaunchingTool] = useState<string | null>(null);
   const [recentWork, setRecentWork] = useState<ToolWork[]>([]);
@@ -133,6 +164,15 @@ export default function Members() {
     { name: "Custom Tool Builder", minTier: 'enterprise', icon: <Settings className="w-6 h-6 text-purple-400" />, description: "Deploy bespoke custom AI engines engineered specifically to your company API." }
   ];
 
+  const favoriteToolsList = TOOLS.filter(t => {
+    const tId = t.name.toLowerCase().replace(/ /g, '-');
+    return favorites.includes(tId);
+  });
+
+  const recentToolsList = recentlyUsed
+    .map(rId => TOOLS.find(t => t.name.toLowerCase().replace(/ /g, '-') === rId))
+    .filter((t): t is typeof TOOLS[0] => !!t);
+
   const hasAccess = (minTier: string) => {
     if (userTier === 'enterprise') return true;
     if (userTier === 'premium') return minTier !== 'enterprise';
@@ -164,6 +204,17 @@ export default function Members() {
     if (!activeUser) return;
     const toolId = toolName.toLowerCase().replace(/ /g, '-');
     setLaunchingTool(toolName);
+
+    // Save under recentlyUsed list
+    try {
+      const storedRecents = localStorage.getItem("recentlyUsedTools");
+      let recents: string[] = storedRecents ? JSON.parse(storedRecents) : [];
+      recents = [toolId, ...recents.filter(id => id !== toolId)].slice(0, 4);
+      localStorage.setItem("recentlyUsedTools", JSON.stringify(recents));
+      setRecentlyUsed(recents);
+    } catch (e) {
+      console.warn("localStorage error:", e);
+    }
     
     // Persist the launch as "Work"
     try {
@@ -404,6 +455,103 @@ export default function Members() {
         <div className="grid lg:grid-cols-3 gap-12">
           {/* LEFT: PRIMARY TOOLS */}
           <div className="lg:col-span-2 space-y-12">
+            {/* FAVORITE & RECENT SECTIONS */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-zinc-950/40 p-6 rounded-2xl border border-cyan-500/10 mb-8">
+               {/* FAVORITE SYSTEMS */}
+               <div className="space-y-4">
+                  <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                     <h3 className="text-xs font-black uppercase tracking-widest text-[#00eaff] flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        Starred AI Systems
+                     </h3>
+                     <span className="text-[9px] font-bold text-zinc-500 font-mono">PINNED</span>
+                  </div>
+                  
+                  {favoriteToolsList.length === 0 ? (
+                     <div className="p-8 text-center border border-dashed border-white/5 rounded bg-black/25 flex flex-col items-center justify-center min-h-[140px]">
+                        <p className="text-zinc-650 text-[10px] uppercase font-black tracking-wider leading-relaxed">No pinned tools.</p>
+                        <p className="text-zinc-600 text-[9px] uppercase tracking-wider mt-1 text-center">Star custom agency tools below to pin them for faster access frequencies.</p>
+                     </div>
+                  ) : (
+                     <div className="space-y-2">
+                        {favoriteToolsList.map((tool) => {
+                           const accessible = hasAccess(tool.minTier);
+                           const toolId = tool.name.toLowerCase().replace(/ /g, '-');
+                           return (
+                              <div 
+                                key={toolId}
+                                onClick={() => accessible ? handleLaunch(tool.name) : navigate('/pricing')}
+                                className="p-3 bg-black border border-cyan-500/10 hover:border-[#00eaff]/45 transition-all rounded flex items-center justify-between group cursor-pointer"
+                              >
+                                 <div className="flex items-center gap-3 min-w-0">
+                                    <div className="p-2 bg-[#00eaff]/5 border border-[#00eaff]/10 rounded group-hover:bg-[#00eaff]/10 transition-all shrink-0">
+                                       {tool.icon}
+                                    </div>
+                                    <div className="truncate">
+                                       <span className="text-[11px] font-black uppercase text-white tracking-wider block truncate">{tool.name}</span>
+                                       <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest">{tool.minTier} tier</span>
+                                    </div>
+                                 </div>
+                                 
+                                 <button
+                                    onClick={(e) => toggleFavorite(toolId, e)}
+                                    className="p-1.5 text-[#00eaff] hover:text-zinc-400 transition-colors shrink-0"
+                                    title="Unstar System"
+                                 >
+                                    <Sparkles className="w-3.5 h-3.5 fill-current" />
+                                 </button>
+                              </div>
+                           );
+                        })}
+                     </div>
+                  )}
+               </div>
+
+               {/* RECENTLY LAUNCHED */}
+               <div className="space-y-4">
+                  <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                     <h3 className="text-xs font-black uppercase tracking-widest text-purple-400 flex items-center gap-2">
+                        <Clock className="w-3.5 h-3.5" />
+                        Recently Used
+                     </h3>
+                     <span className="text-[9px] font-bold text-zinc-500 font-mono">TELEMETRY</span>
+                  </div>
+
+                  {recentToolsList.length === 0 ? (
+                     <div className="p-8 text-center border border-dashed border-white/5 rounded bg-black/25 flex flex-col items-center justify-center min-h-[140px]">
+                        <p className="text-zinc-650 text-[10px] uppercase font-black tracking-wider leading-relaxed">System queue empty.</p>
+                        <p className="text-zinc-600 text-[9px] uppercase tracking-wider mt-1 text-center">Your recently launched dynamic AI nodes will register here in realtime.</p>
+                     </div>
+                  ) : (
+                     <div className="space-y-2">
+                        {recentToolsList.map((tool) => {
+                           const accessible = hasAccess(tool.minTier);
+                           const toolId = tool.name.toLowerCase().replace(/ /g, '-');
+                           return (
+                              <div 
+                                key={toolId}
+                                onClick={() => accessible ? handleLaunch(tool.name) : navigate('/pricing')}
+                                className="p-3 bg-black border border-white/10 hover:border-purple-400/40 transition-all rounded flex items-center justify-between group cursor-pointer"
+                              >
+                                 <div className="flex items-center gap-3 min-w-0">
+                                    <div className="p-2 bg-white/5 border border-white/10 rounded group-hover:bg-purple-950/20 transition-all shrink-0">
+                                       {tool.icon}
+                                    </div>
+                                    <div className="truncate">
+                                       <span className="text-[11px] font-black uppercase text-white tracking-wider block truncate">{tool.name}</span>
+                                       <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest">ready frequency</span>
+                                    </div>
+                                 </div>
+                                 
+                                 <span className="text-[8px] font-black uppercase tracking-widest text-zinc-600 px-2 py-1 bg-white/5 border border-white/5 rounded shrink-0">LAUNCH &rarr;</span>
+                              </div>
+                           );
+                        })}
+                     </div>
+                  )}
+               </div>
+            </div>
+
             <div className="space-y-20">
               {[
                 { 
@@ -430,8 +578,10 @@ export default function Members() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-cyan-500/10 border border-cyan-500/10">
                     {group.tools.map((tool, idx) => {
                       const accessible = hasAccess(tool.minTier);
+                      const tId = tool.name.toLowerCase().replace(/ /g, '-');
+                      const isFav = favorites.includes(tId);
                       return (
-                        <button 
+                        <div 
                           key={idx} 
                           onClick={() => accessible ? handleLaunch(tool.name) : navigate('/pricing')}
                           className={`bg-black p-10 flex flex-col items-start text-left group transition-all duration-500 overflow-hidden relative ${!accessible ? 'opacity-40 grayscale cursor-default hover:bg-zinc-950' : 'hover:bg-zinc-900 cursor-pointer'}`}
@@ -442,6 +592,17 @@ export default function Members() {
                                <span className="text-[8px] font-black uppercase text-[#00eaff] tracking-widest">Locked</span>
                             </div>
                           )}
+
+                          {accessible && (
+                             <button
+                               onClick={(e) => toggleFavorite(tId, e)}
+                               className="absolute top-4 right-4 p-2 bg-white/5 border border-white/10 text-cyan-300 hover:text-[#00eaff] hover:border-[#00eaff]/30 transition-all rounded z-10 group/starred"
+                               title={isFav ? "Unstar System" : "Star System"}
+                             >
+                               <Sparkles className={`w-3.5 h-3.5 transition-transform group-hover/starred:scale-110 ${isFav ? 'text-[#00eaff] fill-current' : ''}`} />
+                             </button>
+                          )}
+
                           <div className="mb-8 transition-colors duration-500">
                             {tool.icon}
                           </div>
@@ -453,7 +614,7 @@ export default function Members() {
                               {accessible ? 'Launch Module →' : 'Upgrade your wave to Unlock →'}
                             </span>
                           </div>
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
