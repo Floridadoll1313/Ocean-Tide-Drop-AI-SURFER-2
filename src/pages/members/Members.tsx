@@ -18,7 +18,7 @@ interface ToolWork {
 }
 
 export default function Members() {
-  const { user, userData, loading, loginWithGoogle } = useAuth();
+  const { user, userData, loading, error, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [isDemoSession, setIsDemoSession] = useState(false);
   const [demoTier, setDemoTier] = useState<'basic' | 'premium' | 'enterprise'>('premium');
@@ -236,9 +236,24 @@ export default function Members() {
             </div>
           )}
 
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-6 rounded-xl mb-10 max-w-lg mx-auto text-xs font-semibold z-10 text-left">
+              <div className="font-bold uppercase tracking-widest text-red-400 mb-2 flex items-center gap-2">
+                <span>⚠️ SIGN IN ERROR DETECTED</span>
+              </div>
+              <p className="mb-2 text-zinc-200">The authentication attempt failed with the following details:</p>
+              <code className="block bg-black/60 border border-white/10 p-3 rounded-lg font-mono text-cyan-200 break-all select-all">
+                {error}
+              </code>
+              <p className="mt-3 text-zinc-300">
+                If the error mentions an <strong>unauthorized domain</strong>, please ensure that this URL is added to your Firebase project's Authorized Domains list in the Firebase Console (under Authentication &gt; Settings &gt; Authorized domains).
+              </p>
+            </div>
+          )}
+
           <div className="flex flex-col sm:flex-row gap-4 w-full justify-center px-6 z-10">
             <button 
-              onClick={loginWithGoogle}
+              onClick={() => loginWithGoogle(false)}
               className="px-8 py-4 bg-white text-black hover:bg-cyan-400 hover:text-black font-black uppercase text-xs tracking-[0.2em] transition-all transform hover:scale-105 shadow-[0_4px_25px_rgba(255,255,255,0.15)] hover:shadow-cyan-400/20"
             >
               🔒 Sign In With Google

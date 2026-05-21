@@ -101,7 +101,7 @@ export default function PageWrapper({
                 </div>
               ) : (
                 <button 
-                  onClick={loginWithGoogle}
+                  onClick={() => loginWithGoogle(false)}
                   className="px-5 py-2 bg-white text-black hover:bg-zinc-200 transition-all text-[10px] font-black uppercase tracking-widest"
                 >
                   Join
@@ -182,7 +182,7 @@ export default function PageWrapper({
                   </>
                 ) : (
                   <button 
-                    onClick={() => { loginWithGoogle(); toggleMenu(); }}
+                    onClick={() => { loginWithGoogle(false); toggleMenu(); }}
                     className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase text-xs tracking-widest"
                   >
                     Sign In With Google

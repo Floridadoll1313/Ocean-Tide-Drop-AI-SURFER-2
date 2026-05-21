@@ -1,7 +1,7 @@
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { User, onAuthStateChanged, signInWithPopup, signOut, GoogleAuthProvider } from 'firebase/auth';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { auth, db, googleProvider } from '../lib/firebase';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { auth, db } from '../lib/firebase';
 
 interface UserData {
   uid: string;
@@ -18,7 +18,9 @@ interface AuthContextType {
   userData: UserData | null;
   accessToken: string | null;
   loading: boolean;
-  loginWithGoogle: () => Promise<void>;
+  error: string | null;
+  setError: (error: string | null) => void;
+  loginWithGoogle: (requestWorkspaceScopes?: boolean) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -27,6 +29,8 @@ const AuthContext = createContext<AuthContextType>({
   userData: null,
   accessToken: null,
   loading: true,
+  error: null,
+  setError: () => {},
   loginWithGoogle: async () => {},
   logout: async () => {}
 });
@@ -36,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let unsubscribeFirestore: (() => void) | undefined;
@@ -54,22 +59,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         // Listen to user document in Firestore
         const userDocRef = doc(db, 'users', currentUser.uid);
-        unsubscribeFirestore = onSnapshot(userDocRef, (docSnap) => {
+        unsubscribeFirestore = onSnapshot(userDocRef, async (docSnap) => {
           if (docSnap.exists()) {
             setUserData(docSnap.data() as UserData);
+            setLoading(false);
           } else {
             // Default userData if document doesn't exist yet
-            setUserData({
+            const defaultUser: UserData = {
               uid: currentUser.uid,
               email: currentUser.email || '',
               displayName: currentUser.displayName || '',
               photoURL: currentUser.photoURL || '',
-              subscriptionStatus: 'none'
-            });
+              subscriptionStatus: 'none',
+              role: 'user', // required by rules
+              tier: 'basic'
+            };
+            try {
+              await setDoc(userDocRef, defaultUser);
+            } catch (err: unknown) {
+              console.error("Error creating default user doc in firestore:", err);
+              // Fallback to setting local state if write fails or isn't completed yet
+              setUserData(defaultUser);
+              setLoading(false);
+            }
           }
-          setLoading(false);
-        }, (error) => {
-          console.error("Error listening to user doc:", error);
+        }, (err) => {
+          console.error("Error listening to user doc:", err);
+          setError(err.message);
           setLoading(false);
         });
       }
@@ -81,16 +97,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = async (requestWorkspaceScopes = false) => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
+      setError(null);
+      const provider = new GoogleAuthProvider();
+      const shouldRequestWorkspace = requestWorkspaceScopes === true;
+      if (shouldRequestWorkspace) {
+        provider.addScope('https://www.googleapis.com/auth/calendar');
+        provider.addScope('https://www.googleapis.com/auth/tasks');
+        provider.addScope('https://www.googleapis.com/auth/chat');
+        provider.addScope('https://www.googleapis.com/auth/spreadsheets');
+        provider.addScope('https://www.googleapis.com/auth/presentations');
+        provider.addScope('https://www.googleapis.com/auth/documents');
+        provider.addScope('https://mail.google.com/');
+        provider.addScope('https://www.googleapis.com/auth/drive');
+        provider.addScope('https://www.googleapis.com/auth/forms.body');
+        provider.addScope('https://www.googleapis.com/auth/forms.responses.readonly');
+        provider.addScope('https://www.googleapis.com/auth/forms');
+      }
+      const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
       if (credential?.accessToken) {
         setAccessToken(credential.accessToken);
       }
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-      throw error;
+    } catch (err: unknown) {
+      console.error("Error signing in with Google:", err);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
+      throw err;
     }
   };
 
@@ -98,14 +132,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await signOut(auth);
       setAccessToken(null);
-    } catch (error) {
-      console.error("Error signing out:", error);
-      throw error;
+      setError(null);
+    } catch (err: unknown) {
+      console.error("Error signing out:", err);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
+      throw err;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, userData, accessToken, loading, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, userData, accessToken, loading, error, setError, loginWithGoogle, logout }}>
       {children}
     </AuthContext.Provider>
   );

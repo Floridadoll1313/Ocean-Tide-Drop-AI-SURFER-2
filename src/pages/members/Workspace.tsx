@@ -471,7 +471,7 @@ export default function Workspace() {
           <h1 className="text-4xl font-black uppercase tracking-tighter text-white mb-4">Authorization Required</h1>
           <p className="text-zinc-400 mb-10 max-w-md">Access to the Neural Workspace requires high-level clearance. Please sign in to synchronize.</p>
           <button 
-            onClick={loginWithGoogle}
+            onClick={() => loginWithGoogle(true)}
             className="bg-white text-black px-12 py-4 text-xs font-black uppercase tracking-[0.3em] hover:bg-soul-gradient hover:text-white transition-all duration-500"
           >
             Authenticate Identity
@@ -489,7 +489,7 @@ export default function Workspace() {
           <h1 className="text-4xl font-black uppercase tracking-tighter text-white mb-4">Connect Workspace</h1>
           <p className="text-zinc-400 mb-10 max-w-md">Link your Google Calendar and Tasks to enable full neural synchronization within the AI Surfer ecosystem.</p>
           <button 
-            onClick={loginWithGoogle}
+            onClick={() => loginWithGoogle(true)}
             className="bg-white text-black px-12 py-4 text-xs font-black uppercase tracking-[0.3em] hover:bg-[#00eaff] transition-all duration-500"
           >
             Synchronize Now
