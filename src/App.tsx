@@ -23,6 +23,7 @@ import Diary from './pages/diary/Diary';
 import Shop from './pages/shop/Shop';
 import Memorial from './pages/memorial/Memorial';
 import Reviews from './pages/reviews/Reviews';
+import TipJar from './pages/tipjar/TipJar';
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/memorial" element={<Memorial />} />
           <Route path="/reviews" element={<Reviews />} />
+          <Route path="/tip-jar" element={<TipJar />} />
           <Route path="/mcp" element={<Mcp />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
