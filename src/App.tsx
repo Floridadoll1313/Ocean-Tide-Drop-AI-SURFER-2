@@ -32,7 +32,8 @@ function App() {
       <Router>
         <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<AiSurferOceanTideDrop />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/ai-surfer-ocean-tide-drop" element={<AiSurferOceanTideDrop />} />
           <Route path="/ai-surfer" element={<AiSurferOceanTideDrop />} />
           <Route path="/contact" element={<Contact />} />
