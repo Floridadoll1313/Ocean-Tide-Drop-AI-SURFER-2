@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star, Moon, Sun, HeartHandshake } from "lucide-react";
+import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star, Moon, Sun, HeartHandshake, Activity } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import AIAssistant from "./AIAssistant";
 
@@ -38,6 +38,7 @@ export default function PageWrapper({
 
   const navLinks = [
     { to: "/", label: "Home", icon: HomeIcon, color: "text-yellow-500" },
+    { to: "/ai-surfer-ocean-tide-drop", label: "AI Surfer", icon: Activity, color: "text-cyan-300" },
     { to: "/gallery", label: "Work", icon: Briefcase, color: "text-blue-500" },
     { to: "/services", label: "Services", icon: Layers, color: "text-purple-500" },
     { to: "/members", label: "Members", icon: LayoutDashboard, color: "text-cyan-400" },
@@ -269,11 +270,12 @@ export default function PageWrapper({
            <div>
               <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Capabilities</h4>
               <ul className="flex flex-col gap-4 text-xs font-bold text-white/90">
+                 <li><Link to="/ai-surfer-ocean-tide-drop" className="hover:text-white transition-colors">AI Surfer Live Page</Link></li>
                  <li><Link to="/services" className="hover:text-white transition-colors">Brand Identity</Link></li>
                  <li><Link to="/services" className="hover:text-white transition-colors">AI Integration</Link></li>
                  <li><Link to="/services" className="hover:text-white transition-colors">Growth Design</Link></li>
                  <li><Link to="/founders" className="hover:text-white transition-colors">Founders Society</Link></li>
-                 <li><Link to="/tip-jar" className="hover:text-white transition-colors">Support / Tip Jar</Link></li>
+                 <li><Link to="/tip-jar" className="hover:text-white transition-colors">Support / PayPal Tip Jar</Link></li>
               </ul>
            </div>
            <div>
