@@ -24,6 +24,7 @@ import Shop from './pages/shop/Shop';
 import Memorial from './pages/memorial/Memorial';
 import Reviews from './pages/reviews/Reviews';
 import TipJar from './pages/tipjar/TipJar';
+import AiSurferOceanTideDrop from './pages/aiSurferOceanTideDrop/AiSurferOceanTideDrop';
 
 function App() {
   return (
@@ -32,6 +33,8 @@ function App() {
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/ai-surfer-ocean-tide-drop" element={<AiSurferOceanTideDrop />} />
+          <Route path="/ai-surfer" element={<AiSurferOceanTideDrop />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services" element={<Services />} />
           <Route path="/pricing" element={<Pricing />} />
