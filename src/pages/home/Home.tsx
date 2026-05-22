@@ -7,11 +7,40 @@ import {
   Globe, Palette, Smartphone, Search,
   TrendingUp, Database, Mail, Zap,
   Activity, Rocket,
-  CheckCircle2, ArrowRight, Star
+  CheckCircle2, ArrowRight, Star,
+  HeartHandshake, QrCode
 } from "lucide-react";
 import cyberSurferWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
 
+const oceanTideLogoImage = "https://gw-tk.tanka.ai/npc/v2/file/df2c3bd0-9421-4c40-910a-6a62f3cdf44f";
+const paddleboardFounderImage = "https://gw-tk.tanka.ai/npc/v2/file/615b8793-aca4-47c7-94ce-0fb6c49e1590";
+const paypalTipJarQrImage = "https://gw-tk.tanka.ai/npc/v2/file/8b0980ac-1b1d-4e0d-8fde-c2ba03c2a0ea";
+
 export default function Home() {
+  const homeFeatureImages = [
+    {
+      src: oceanTideLogoImage,
+      alt: "Ocean Tide Drop AI Surfer logo",
+      label: "Ocean Tide Drop",
+      title: "AI Surfer Brand",
+      icon: Waves,
+    },
+    {
+      src: paddleboardFounderImage,
+      alt: "Founder paddleboarding in a calm tropical setting",
+      label: "Founder Energy",
+      title: "The Human Behind The Wave",
+      icon: HeartHandshake,
+    },
+    {
+      src: paypalTipJarQrImage,
+      alt: "PayPal QR code for Ocean Tide Drop AI Surfer tip jar",
+      label: "Support The Build",
+      title: "Tip Jar QR",
+      icon: QrCode,
+    },
+  ];
+
   return (
     <PageWrapper maxWidth="max-w-screen-2xl" showHero={false}>
       {/* 🌊 HERO SECTION */}
@@ -87,6 +116,38 @@ export default function Home() {
               referrerPolicy="no-referrer"
             />
           </motion.div>
+        </motion.div>
+
+        {/* Ocean Tide Drop brand pictures */}
+        <motion.div
+          initial={{ opacity: 0, y: 35 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.55 }}
+          className="relative z-10 mt-12 w-full max-w-5xl rounded-[2rem] border border-cyan-400/20 bg-black/60 p-4 shadow-[0_0_50px_rgba(34,211,238,0.12)] backdrop-blur-xl"
+        >
+          <div className="mb-5 flex flex-col items-center gap-2 text-center">
+            <span className="text-[10px] font-black uppercase tracking-[0.45em] text-cyan-300">Ocean Tide Drop AI Surfer</span>
+            <h2 className="font-orbitron text-2xl font-black uppercase tracking-tight text-white md:text-3xl">Brand, Founder, and Tip Jar</h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {homeFeatureImages.map((image) => (
+              <Link key={image.title} to={image.title === "Tip Jar QR" ? "/tip-jar" : "/founders"} className="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] text-left transition-all hover:-translate-y-1 hover:border-cyan-300/60 hover:bg-white/[0.07]">
+                <div className="relative aspect-[4/3] overflow-hidden bg-zinc-950">
+                  <img src={image.src} alt={image.alt} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" referrerPolicy="no-referrer" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-400 text-black shadow-[0_0_25px_rgba(34,211,238,0.45)]">
+                      <image.icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-cyan-200">{image.label}</p>
+                      <h3 className="text-sm font-black uppercase tracking-tight text-white">{image.title}</h3>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </motion.div>
       </div>
 
@@ -332,4 +393,3 @@ export default function Home() {
     </PageWrapper>
   );
 }
-
