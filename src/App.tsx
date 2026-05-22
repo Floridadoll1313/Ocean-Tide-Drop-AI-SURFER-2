@@ -25,6 +25,7 @@ import Memorial from './pages/memorial/Memorial';
 import Reviews from './pages/reviews/Reviews';
 import TipJar from './pages/tipjar/TipJar';
 import AiSurferOceanTideDrop from './pages/aiSurferOceanTideDrop/AiSurferOceanTideDrop';
+import DashboardMvp from './pages/dashboard/DashboardMvp';
 
 function App() {
   return (
@@ -36,6 +37,9 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/ai-surfer-ocean-tide-drop" element={<AiSurferOceanTideDrop />} />
           <Route path="/ai-surfer" element={<AiSurferOceanTideDrop />} />
+          <Route path="/dashboard" element={<DashboardMvp />} />
+          <Route path="/ai-dashboard" element={<DashboardMvp />} />
+          <Route path="/oas-6" element={<DashboardMvp />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services" element={<Services />} />
           <Route path="/pricing" element={<Pricing />} />
