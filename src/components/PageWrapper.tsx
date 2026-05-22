@@ -52,9 +52,9 @@ export default function PageWrapper({
   return (
     <div className="min-h-screen bg-transparent text-white flex flex-col relative overflow-x-hidden">
       {/* TOP BAR */}
-      <header className="w-full fixed top-4 left-0 z-50 flex justify-center px-4 md:pl-28">
-        <div className="w-full max-w-6xl backdrop-blur-xl bg-black/50 border border-white/10 rounded-full flex items-center justify-between px-6 py-3 shadow-[0_0_30px_rgba(0,0,0,0.5)] navbar-glow">
-          <Link to="/" className="flex items-center gap-3 relative z-[60]">
+      <header className="w-full fixed top-4 left-0 z-[70] flex justify-center px-4 md:pl-28">
+        <div className="relative z-[80] w-full max-w-6xl backdrop-blur-xl bg-black/50 border border-white/10 rounded-full flex items-center justify-between px-6 py-3 shadow-[0_0_30px_rgba(0,0,0,0.5)] navbar-glow">
+          <Link to="/" className="flex items-center gap-3 relative z-[90]">
             <div className="w-10 h-10 flex items-center justify-center rounded-sm">
               <img src="/logo.svg" alt="AI Surfer Logo" className="w-full h-full object-contain drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]" />
             </div>
@@ -63,7 +63,7 @@ export default function PageWrapper({
             </span>
           </Link>
             
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4 relative z-[90]">
             <button onClick={toggleTheme} className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors" title="Toggle Theme">
               {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
             </button>
@@ -93,23 +93,17 @@ export default function PageWrapper({
                 </button>
               </div>
             ) : (
-              <button 
-                onClick={async () => {
-                  try {
-                    await loginWithGoogle(false);
-                  } catch {
-                    alert("Authentication failed. If you are viewing this in the AI Studio preview, popups may be blocked. Please click the arrow/window icon at the top right to open this app in a new tab and try again.");
-                  }
-                }}
+              <Link 
+                to="/members"
                 className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-cyan-400 transition-colors text-[10px] font-black uppercase tracking-widest"
               >
                 Join
-              </button>
+              </Link>
             )}
           </div>
 
           {/* Mobile Theme & Menu Button */}
-          <div className="md:hidden flex items-center gap-2 relative z-[60]">
+          <div className="md:hidden flex items-center gap-2 relative z-[90]">
             <button onClick={toggleTheme} className="p-2 text-zinc-400 hover:text-white flex items-center" title="Toggle Theme">
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
@@ -124,7 +118,7 @@ export default function PageWrapper({
       </header>
 
       {/* DESKTOP SIDE NAV */}
-      <aside className="hidden md:flex fixed left-4 top-1/2 -translate-y-1/2 z-50 flex-col items-center gap-3 rounded-[2rem] border border-cyan-400/20 bg-black/65 px-3 py-5 shadow-[0_0_35px_rgba(34,211,238,0.18)] backdrop-blur-2xl">
+      <aside className="hidden md:flex fixed left-4 top-1/2 -translate-y-1/2 z-40 flex-col items-center gap-3 rounded-[2rem] border border-cyan-400/20 bg-black/65 px-3 py-5 shadow-[0_0_35px_rgba(34,211,238,0.18)] backdrop-blur-2xl">
         <div className="mb-2 h-10 w-10 rounded-2xl border border-white/10 bg-white/5 p-2 shadow-[0_0_20px_rgba(34,211,238,0.2)]">
           <img src="/logo.svg" alt="AI Surfer" className="h-full w-full object-contain" />
         </div>
