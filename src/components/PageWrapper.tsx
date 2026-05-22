@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star, Moon, Sun } from "lucide-react";
+import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star, Moon, Sun, HeartHandshake } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import AIAssistant from "./AIAssistant";
 
@@ -44,6 +44,7 @@ export default function PageWrapper({
     { to: "/reviews", label: "Reviews", icon: Star, color: "text-yellow-400" },
     { to: "/founders", label: "Founders", icon: Users, color: "text-emerald-500" },
     { to: "/memorial", label: "Bull's Memorial", icon: Anchor, color: "text-orange-500" },
+    { to: "/tip-jar", label: "Tip Jar", icon: HeartHandshake, color: "text-pink-400" },
     { to: "/contact", label: "Contact", icon: MessageSquare, color: "text-green-500" },
   ];
 
@@ -272,6 +273,7 @@ export default function PageWrapper({
                  <li><Link to="/services" className="hover:text-white transition-colors">AI Integration</Link></li>
                  <li><Link to="/services" className="hover:text-white transition-colors">Growth Design</Link></li>
                  <li><Link to="/founders" className="hover:text-white transition-colors">Founders Society</Link></li>
+                 <li><Link to="/tip-jar" className="hover:text-white transition-colors">Support / Tip Jar</Link></li>
               </ul>
            </div>
            <div>
