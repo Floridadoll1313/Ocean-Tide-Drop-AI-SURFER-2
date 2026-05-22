@@ -51,39 +51,17 @@ export default function PageWrapper({
 
   return (
     <div className="min-h-screen bg-transparent text-white flex flex-col relative overflow-x-hidden">
-      {/* NAVBAR */}
-      <header className="w-full fixed top-4 left-0 z-50 flex justify-center px-4">
+      {/* TOP BAR */}
+      <header className="w-full fixed top-4 left-0 z-50 flex justify-center px-4 md:pl-28">
         <div className="w-full max-w-6xl backdrop-blur-xl bg-black/50 border border-white/10 rounded-full flex items-center justify-between px-6 py-3 shadow-[0_0_30px_rgba(0,0,0,0.5)] navbar-glow">
           <Link to="/" className="flex items-center gap-3 relative z-[60]">
             <div className="w-10 h-10 flex items-center justify-center rounded-sm">
               <img src="/logo.svg" alt="AI Surfer Logo" className="w-full h-full object-contain drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]" />
             </div>
-            <span className="text-xl font-black tracking-tighter uppercase text-white hidden lg:block">
+            <span className="text-xl font-black tracking-tighter uppercase text-white hidden sm:block">
               <span className="text-soul-gradient italic font-serif">AI Surfer</span>
             </span>
           </Link>
-
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex gap-1 bg-white/5 rounded-full p-1 border border-white/5 items-center">
-            {navLinks.map((link) => (
-              <Link 
-                key={link.to}
-                className={`transition-all px-4 py-2 rounded-full flex items-center gap-2 group relative ${isActive(link.to) ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`} 
-                to={link.to}
-              >
-                <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em]">
-                  <link.icon className={`w-3 h-3 ${link.color} group-hover:scale-110 transition-transform ${isActive(link.to) ? 'scale-110' : ''}`} />
-                  <span>{link.label}</span>
-                </div>
-                {isActive(link.to) && (
-                  <motion.div 
-                    layoutId="activeNav"
-                    className="absolute inset-x-4 -bottom-1 h-px bg-cyan-400 shadow-[0_0_10px_rgba(0,234,255,0.8)]"
-                  />
-                )}
-              </Link>
-            ))}
-          </nav>
             
           <div className="hidden md:flex items-center gap-4">
             <button onClick={toggleTheme} className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors" title="Toggle Theme">
@@ -144,6 +122,44 @@ export default function PageWrapper({
           </div>
         </div>
       </header>
+
+      {/* DESKTOP SIDE NAV */}
+      <aside className="hidden md:flex fixed left-4 top-1/2 -translate-y-1/2 z-50 flex-col items-center gap-3 rounded-[2rem] border border-cyan-400/20 bg-black/65 px-3 py-5 shadow-[0_0_35px_rgba(34,211,238,0.18)] backdrop-blur-2xl">
+        <div className="mb-2 h-10 w-10 rounded-2xl border border-white/10 bg-white/5 p-2 shadow-[0_0_20px_rgba(34,211,238,0.2)]">
+          <img src="/logo.svg" alt="AI Surfer" className="h-full w-full object-contain" />
+        </div>
+        <nav className="flex flex-col items-center gap-2">
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              aria-label={link.label}
+              title={link.label}
+              className={`group relative flex h-12 w-12 items-center justify-center rounded-2xl border transition-all duration-300 ${isActive(link.to) ? 'border-cyan-300 bg-cyan-400/15 text-white shadow-[0_0_22px_rgba(34,211,238,0.45)]' : 'border-white/10 bg-white/[0.04] text-zinc-400 hover:border-white/30 hover:bg-white/10 hover:text-white'}`}
+            >
+              <link.icon className={`h-5 w-5 ${link.color} transition-all duration-300 group-hover:scale-110 ${isActive(link.to) ? 'scale-110' : ''}`} />
+              <span className="pointer-events-none absolute left-14 scale-95 whitespace-nowrap rounded-full border border-white/10 bg-black/90 px-4 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-white opacity-0 shadow-[0_0_20px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-all duration-300 group-hover:translate-x-1 group-hover:scale-100 group-hover:opacity-100">
+                {link.label}
+              </span>
+              {isActive(link.to) && (
+                <span className="absolute -right-1 h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,1)]" />
+              )}
+            </Link>
+          ))}
+        </nav>
+        <div className="mt-2 h-px w-8 bg-white/10" />
+        <Link
+          to="/tip-jar"
+          aria-label="PayPal Tip Jar"
+          title="PayPal Tip Jar"
+          className="group relative flex h-12 w-12 items-center justify-center rounded-2xl border border-pink-300/40 bg-pink-500/10 text-pink-200 shadow-[0_0_24px_rgba(244,114,182,0.25)] transition-all duration-300 hover:bg-pink-500/20 hover:shadow-[0_0_30px_rgba(244,114,182,0.45)]"
+        >
+          <HeartHandshake className="h-5 w-5 text-pink-300 transition-transform duration-300 group-hover:scale-110" />
+          <span className="pointer-events-none absolute left-14 scale-95 whitespace-nowrap rounded-full border border-pink-300/20 bg-black/90 px-4 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-pink-100 opacity-0 shadow-[0_0_20px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-all duration-300 group-hover:translate-x-1 group-hover:scale-100 group-hover:opacity-100">
+            PayPal Tip Jar
+          </span>
+        </Link>
+      </aside>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
@@ -227,7 +243,7 @@ export default function PageWrapper({
       </AnimatePresence>
 
       {/* CONTENT */}
-      <main className="flex-1 pt-32 pb-20 relative flex flex-col items-center fade-in">
+      <main className="flex-1 pt-32 pb-20 relative flex flex-col items-center fade-in md:pl-24">
         <div className={`relative ${maxWidth} mx-auto px-6 z-10 w-full`}>
           {showHero && (
             <div className="text-center mb-12">
@@ -239,7 +255,7 @@ export default function PageWrapper({
       </main>
 
       {/* FOOTER */}
-      <footer className="relative pt-32 pb-20 text-center text-cyan-200/90 text-sm z-10 shrink-0 mt-auto bg-black">
+      <footer className="relative pt-32 pb-20 text-center text-cyan-200/90 text-sm z-10 shrink-0 mt-auto bg-black md:pl-24">
         {/* WAVE DIVIDER */}
         <div className="absolute top-0 left-0 w-full overflow-hidden leading-none transform -translate-y-full">
             <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-[calc(100%+1.3px)] h-[50px] relative block">
