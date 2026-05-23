@@ -59,6 +59,21 @@ export default function Gallery() {
 
   return (
     <PageWrapper maxWidth="max-w-7xl" showHero={false}>
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {copiedId && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] bg-zinc-900 border border-emerald-500/50 text-white px-6 py-3 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center gap-3 backdrop-blur-md"
+          >
+            <Check className="w-5 h-5 text-emerald-400" />
+            <span className="text-sm font-bold uppercase tracking-widest">Link Copied to Clipboard</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="w-full px-6 py-10">
         <div className="flex flex-col items-center text-center mb-24 max-w-3xl mx-auto">
           <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-500 mb-6">Master Portfolio</span>

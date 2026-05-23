@@ -8,6 +8,7 @@ export default function AIAssistant() {
     { role: 'assistant', content: "Hello! I am your AI Surfer guide. How can I help you ride the next wave?" }
   ]);
   const [input, setInput] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,10 +16,12 @@ export default function AIAssistant() {
     
     setMessages(prev => [...prev, { role: 'user', content: input }]);
     setInput('');
+    setIsThinking(true);
     
     setTimeout(() => {
+      setIsThinking(false);
       setMessages(prev => [...prev, { role: 'assistant', content: "I'm a local AI assistant. I've noted your inquiry and our elite strategists will integrate this into your growth architecture soon." }]);
-    }, 1000);
+    }, 1500);
   };
 
   return (
@@ -56,6 +59,15 @@ export default function AIAssistant() {
                     </div>
                  </div>
                ))}
+               {isThinking && (
+                 <div className="flex justify-start">
+                    <div className="bg-white/5 border border-white/10 text-white p-4 rounded-2xl rounded-tl-none flex items-center gap-2">
+                       <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                       <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                       <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
+                 </div>
+               )}
             </div>
 
             <form onSubmit={handleSend} className="p-4 bg-black border-t border-white/10 flex gap-2">

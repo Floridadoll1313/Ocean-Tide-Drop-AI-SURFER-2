@@ -42,9 +42,56 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <PageWrapper>
-        <div className="flex justify-center items-center h-64">
-          <div className="w-12 h-12 rounded-full border-4 border-[#00eaff] border-t-transparent animate-spin"></div>
+      <PageWrapper maxWidth="max-w-7xl" showHero={false}>
+        <div className="w-full text-left py-10 px-6 animate-pulse">
+          <div className="h-16 w-64 bg-cyan-400/20 rounded-md mb-12"></div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="md:col-span-2 space-y-8">
+              <div className="glass-card p-8 rounded-3xl border border-cyan-400/10 bg-white/5">
+                <div className="flex items-center gap-6 mb-8 pb-8 border-b border-white/5">
+                  <div className="w-24 h-24 rounded-full bg-cyan-400/20"></div>
+                  <div className="space-y-4">
+                    <div className="h-8 w-48 bg-white/10 rounded-md"></div>
+                    <div className="h-4 w-32 bg-white/5 rounded-md"></div>
+                    <div className="h-6 w-24 bg-cyan-400/10 rounded-full"></div>
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-8">
+                  <div>
+                    <div className="h-4 w-24 bg-white/5 rounded-md mb-2"></div>
+                    <div className="h-12 w-full bg-white/5 rounded-lg"></div>
+                  </div>
+                  <div>
+                    <div className="h-4 w-24 bg-white/5 rounded-md mb-2"></div>
+                    <div className="h-12 w-full bg-white/5 rounded-lg"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass-card p-8 rounded-3xl border border-white/5 bg-white/5">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-6 h-6 rounded-md bg-cyan-400/20"></div>
+                  <div className="h-6 w-40 bg-white/10 rounded-md"></div>
+                </div>
+                <div className="space-y-4">
+                  <div className="h-16 w-full bg-white/5 rounded-xl"></div>
+                  <div className="h-16 w-full bg-white/5 rounded-xl"></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-8">
+              <div className="glass-card p-8 rounded-3xl border border-white/5 bg-white/5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-6 h-6 rounded-md bg-cyan-400/20"></div>
+                  <div className="h-6 w-32 bg-white/10 rounded-md"></div>
+                </div>
+                <div className="h-24 w-full bg-cyan-400/10 rounded-2xl mb-8"></div>
+                <div className="h-12 w-full bg-cyan-400/20 rounded-full"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </PageWrapper>
     );
