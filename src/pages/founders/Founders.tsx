@@ -3,6 +3,8 @@ import PageWrapper from "../../components/PageWrapper";
 import { motion } from "motion/react";
 import { Users, Sparkles, Heart, Shield, Zap, Anchor, Compass } from "lucide-react";
 
+const victoriaImage = "https://gw-tk.tanka.ai/npc/v2/file/8af5f275-6fed-4cf5-a80b-318b4c5343c6";
+
 export default function Founders() {
   return (
     <PageWrapper maxWidth="max-w-7xl" showHero={false}>
@@ -78,17 +80,16 @@ export default function Founders() {
           >
             <div className="relative aspect-[4/5] bg-white/5 border border-white/10 rounded-sm overflow-hidden group accent-glow-purple">
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10"></div>
+              {/* Victoria's photo */}
+              <img
+                src={victoriaImage}
+                alt="Victoria — Co-Founder"
+                className="absolute inset-0 w-full h-full object-cover object-top"
+              />
               <div className="absolute bottom-8 left-8 z-20">
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-400 mb-2 block">Co-Founder & Strategist</span>
                 <h2 className="text-4xl font-black uppercase text-white tracking-tighter">Victoria</h2>
               </div>
-              <motion.div 
-                className="absolute inset-0 flex items-center justify-center"
-                whileHover={{ scale: 1.1, rotate: 2 }}
-                transition={{ type: "spring", stiffness: 200 }}
-              >
-                <Anchor className="w-32 h-32 text-white/5 group-hover:text-purple-500/10 transition-colors duration-1000" />
-              </motion.div>
             </div>
             <div className="space-y-6 text-cyan-100 leading-relaxed font-semibold">
               <p>
