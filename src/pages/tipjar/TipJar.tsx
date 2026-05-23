@@ -5,6 +5,7 @@ import { ArrowLeft, Heart, QrCode, Waves } from "lucide-react";
 
 const logoImage = "https://gw-tk.tanka.ai/npc/v2/file/df2c3bd0-9421-4c40-910a-6a62f3cdf44f";
 const paddleboardImage = "https://gw-tk.tanka.ai/npc/v2/file/615b8793-aca4-47c7-94ce-0fb6c49e1590";
+const victoriaImage = "https://gw-tk.tanka.ai/npc/v2/file/8af5f275-6fed-4cf5-a80b-318b4c5343c6";
 const paypalQrImage = "https://gw-tk.tanka.ai/npc/v2/file/8b0980ac-1b1d-4e0d-8fde-c2ba03c2a0ea";
 
 export default function TipJar() {
@@ -35,16 +36,41 @@ export default function TipJar() {
               ))}
             </div>
           </div>
-          <div className="grid gap-6">
-            <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-zinc-950 shadow-2xl">
-              <img src={paddleboardImage} alt="Founder paddleboarding in a calm tropical setting" className="h-[360px] w-full object-cover object-center md:h-[440px]" />
-              <div className="border-t border-white/10 bg-black/70 p-5"><p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-300">A little bit of the human behind the wave</p></div>
+
+          {/* FOUNDER PHOTOS — side by side */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Shannon */}
+            <div className="overflow-hidden rounded-[1.5rem] border border-cyan-400/20 bg-zinc-950 shadow-2xl">
+              <img
+                src={paddleboardImage}
+                alt="Shannon — Founder"
+                className="h-[280px] w-full object-cover object-center md:h-[360px]"
+              />
+              <div className="border-t border-white/10 bg-black/70 px-4 py-3">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-300">Founder</p>
+                <p className="mt-0.5 text-sm font-black uppercase text-white">Shannon</p>
+              </div>
+            </div>
+            {/* Victoria */}
+            <div className="overflow-hidden rounded-[1.5rem] border border-purple-400/20 bg-zinc-950 shadow-2xl">
+              <img
+                src={victoriaImage}
+                alt="Victoria — Co-Founder"
+                className="h-[280px] w-full object-cover object-top md:h-[360px]"
+              />
+              <div className="border-t border-white/10 bg-black/70 px-4 py-3">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-purple-400">Co-Founder</p>
+                <p className="mt-0.5 text-sm font-black uppercase text-white">Victoria</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
       <section className="mx-auto mt-12 grid max-w-5xl gap-8 rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 md:grid-cols-[0.9fr_1.1fr] md:p-10">
-        <div className="flex items-center justify-center rounded-[1.5rem] bg-white p-5"><img src={paypalQrImage} alt="PayPal QR code for Ocean Tide Drop AI Surfer tip jar" className="w-full max-w-sm rounded-xl" /></div>
+        <div className="flex items-center justify-center rounded-[1.5rem] bg-white p-5">
+          <img src={paypalQrImage} alt="PayPal QR code for Ocean Tide Drop AI Surfer tip jar" className="w-full max-w-sm rounded-xl" />
+        </div>
         <div className="flex flex-col justify-center">
           <div className="mb-5 flex items-center gap-3 text-cyan-300"><QrCode className="h-6 w-6" /><span className="text-[10px] font-black uppercase tracking-[0.4em]">PayPal QR Code</span></div>
           <h2 className="text-3xl font-black uppercase tracking-tight text-white md:text-5xl">Scan. Pay. Go.</h2>
