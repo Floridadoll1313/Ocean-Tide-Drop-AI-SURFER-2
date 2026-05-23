@@ -1,17 +1,5 @@
-# Dependencies and builds
 node_modules
-dist
 dist-ssr
-coverage
-
-# Environment files and local secrets
-.env
-.env.*
-!.env.example
-!.env.sample
-.dev.vars
-.dev.vars.*
-!.dev.vars.example
 *.local
 
 # Sync .project/sourceTexts/ folder (source text files)

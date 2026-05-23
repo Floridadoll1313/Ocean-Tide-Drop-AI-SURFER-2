@@ -718,7 +718,17 @@ export default function Workspace() {
                   </div>
                 )}
 
-                {events.length === 0 && !loading ? (
+                {loading && events.length === 0 ? (
+                  <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {[1, 2, 3].map(i => (
+                       <div key={i} className="glass-card p-8 border-white/10 bg-white/5 animate-pulse">
+                         <div className="h-10 w-10 bg-white/10 rounded-lg mb-6"></div>
+                         <div className="h-4 w-3/4 bg-white/10 rounded mb-4"></div>
+                         <div className="h-3 w-1/2 bg-white/5 rounded"></div>
+                       </div>
+                    ))}
+                  </div>
+                ) : events.length === 0 && !loading ? (
                   <div className="py-20 text-center glass-card border-white/5 bg-white/2">
                     <p className="text-zinc-600 text-xs font-black uppercase tracking-widest">No forthcoming events detected.</p>
                   </div>
@@ -756,7 +766,19 @@ export default function Workspace() {
                 exit={{ opacity: 0, y: -20 }}
                 className="space-y-4"
               >
-                {tasks.length === 0 && !loading ? (
+                {loading && tasks.length === 0 ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map(i => (
+                       <div key={i} className="glass-card p-6 border-white/10 bg-white/5 animate-pulse flex gap-4">
+                         <div className="w-6 h-6 bg-white/10 rounded shrink-0"></div>
+                         <div className="flex-1">
+                           <div className="h-4 w-1/3 bg-white/10 rounded mb-2"></div>
+                           <div className="h-3 w-1/4 bg-white/5 rounded"></div>
+                         </div>
+                       </div>
+                    ))}
+                  </div>
+                ) : tasks.length === 0 && !loading ? (
                   <div className="py-20 text-center glass-card border-white/5 bg-white/2">
                     <p className="text-zinc-600 text-xs font-black uppercase tracking-widest">No active tasks in current queue.</p>
                   </div>
@@ -846,7 +868,19 @@ export default function Workspace() {
                 exit={{ opacity: 0, y: -20 }}
                 className="space-y-4"
               >
-                {chatSpaces.length === 0 && !loading ? (
+                {loading && chatSpaces.length === 0 ? (
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {[1, 2, 3, 4].map(i => (
+                       <div key={i} className="glass-card p-6 border border-white/10 bg-black animate-pulse flex flex-col justify-between h-32">
+                         <div className="flex items-center gap-3 mb-4">
+                           <div className="w-8 h-8 bg-white/10 rounded-full shrink-0"></div>
+                           <div className="h-4 w-1/2 bg-white/10 rounded"></div>
+                         </div>
+                         <div className="h-4 w-16 bg-white/5 rounded mt-auto"></div>
+                       </div>
+                    ))}
+                  </div>
+                ) : chatSpaces.length === 0 && !loading ? (
                   <div className="py-20 text-center glass-card border-white/5 bg-white/2">
                     <p className="text-zinc-600 text-xs font-black uppercase tracking-widest">No accessible chat spaces found.</p>
                   </div>
@@ -1078,7 +1112,20 @@ export default function Workspace() {
                 exit={{ opacity: 0, y: -20 }}
                 className="space-y-4"
               >
-                {emails.length === 0 && !loading ? (
+                {loading && emails.length === 0 ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map(i => (
+                       <div key={i} className="glass-card p-6 border-white/10 bg-white/5 animate-pulse flex flex-col gap-3">
+                         <div className="flex justify-between">
+                           <div className="h-4 w-1/4 bg-white/10 rounded"></div>
+                           <div className="h-3 w-16 bg-white/10 rounded"></div>
+                         </div>
+                         <div className="h-4 w-3/4 bg-white/10 rounded"></div>
+                         <div className="h-3 w-full bg-white/5 rounded"></div>
+                       </div>
+                    ))}
+                  </div>
+                ) : emails.length === 0 && !loading ? (
                   <div className="py-20 text-center glass-card border-white/5 bg-white/2">
                     <p className="text-zinc-600 text-xs font-black uppercase tracking-widest">No recent emails discovered.</p>
                   </div>
@@ -1112,7 +1159,17 @@ export default function Workspace() {
                 exit={{ opacity: 0, y: -20 }}
                 className="space-y-4"
               >
-                {notes.length === 0 && !loading ? (
+                {loading && notes.length === 0 ? (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[1, 2, 3].map(i => (
+                       <div key={i} className="glass-card p-6 border-white/10 bg-white/5 animate-pulse h-32 flex flex-col space-y-3">
+                         <div className="h-4 w-1/2 bg-white/10 rounded"></div>
+                         <div className="h-3 w-full bg-white/5 rounded"></div>
+                         <div className="h-3 w-2/3 bg-white/5 rounded"></div>
+                       </div>
+                    ))}
+                  </div>
+                ) : notes.length === 0 && !loading ? (
                   <div className="py-20 text-center glass-card border-white/5 bg-white/2">
                     <p className="text-zinc-600 text-xs font-black uppercase tracking-widest">No Keep notes found.</p>
                   </div>
@@ -1202,7 +1259,21 @@ export default function Workspace() {
                   </div>
                 </div>
 
-                {driveFiles.length === 0 && !loading ? (
+                {loading && driveFiles.length === 0 ? (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[1, 2, 3, 4, 5, 6].map(i => (
+                      <div key={i} className="glass-card p-6 border-white/10 bg-white/5 hover:border-cyan-400/30 transition-all group animate-pulse h-40">
+                         <div className="flex items-start gap-4 mb-4">
+                           <div className="w-12 h-12 bg-white/10 rounded-lg shrink-0"></div>
+                           <div className="flex-1">
+                             <div className="h-4 w-3/4 bg-white/10 rounded mb-2"></div>
+                             <div className="h-3 w-1/2 bg-white/5 rounded"></div>
+                           </div>
+                         </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : driveFiles.length === 0 && !loading ? (
                   <div className="py-20 text-center glass-card border-white/5 bg-white/2">
                     <p className="text-zinc-600 text-xs font-black uppercase tracking-widest">No resources discovered under this directory.</p>
                   </div>

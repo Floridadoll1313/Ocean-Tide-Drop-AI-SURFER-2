@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/purity */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
@@ -248,9 +247,19 @@ export default function Members() {
 
   if (loading) {
     return (
-      <PageWrapper>
-        <div className="flex justify-center items-center h-64">
-          <div className="w-12 h-12 rounded-full border-4 border-white border-t-transparent animate-spin"></div>
+      <PageWrapper maxWidth="max-w-7xl" showHero={false}>
+        <div className="w-full text-left py-10 px-6 animate-pulse">
+          <div className="h-16 w-64 bg-cyan-400/20 rounded-md mb-12"></div>
+          <div className="flex gap-4 mb-12">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="h-10 w-24 bg-white/5 rounded-full"></div>
+            ))}
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="h-64 bg-white/5 rounded-3xl border border-white/5"></div>
+            ))}
+          </div>
         </div>
       </PageWrapper>
     );

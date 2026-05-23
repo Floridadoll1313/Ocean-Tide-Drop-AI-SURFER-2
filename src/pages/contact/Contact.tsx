@@ -141,7 +141,7 @@ export default function Contact() {
             )}
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto text-left">
+          <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto text-left mb-16">
             <div className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-md accent-glow-cyan">
               <h3 className="text-[#00eaff] font-bold text-xl mb-4 font-display flex items-center gap-2 font-orbitron uppercase">
                 <Anchor className="w-5 h-5 text-cyan-400" /> Start Your Project
@@ -165,6 +165,27 @@ export default function Contact() {
                 <a href="tel:8432177075" className="text-xs hover:text-white transition-colors flex items-center gap-2">
                   <Phone className="w-3 h-3 text-purple-400" /> (843) 217-7075
                 </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="max-w-3xl mx-auto text-left mt-16 pb-10">
+            <h3 className="text-2xl font-black uppercase tracking-tighter text-white mb-8 border-b border-white/10 pb-4">Frequently Asked Questions</h3>
+            
+            <div className="space-y-6">
+              <div className="bg-white/5 border border-white/10 p-6 rounded-xl">
+                <h4 className="text-cyan-400 font-bold mb-2">How long does a typical project iteration take?</h4>
+                <p className="text-sm text-white/70">Initial diagnostics and strategy take 2-4 days. Full deployment cycles depend on the wave, but typically range from 2 to 6 weeks for core infrastructure.</p>
+              </div>
+
+              <div className="bg-white/5 border border-white/10 p-6 rounded-xl">
+                <h4 className="text-cyan-400 font-bold mb-2">Do you provide ongoing maintenance and monitoring?</h4>
+                <p className="text-sm text-white/70">Yes, our Neural Sync platform allows continuous real-time telemetry and updates. Subscribers to our upper tier plans get priority AI-driven analytics.</p>
+              </div>
+
+              <div className="bg-white/5 border border-white/10 p-6 rounded-xl">
+                <h4 className="text-cyan-400 font-bold mb-2">What happens after I initialize a strategy above?</h4>
+                <p className="text-sm text-white/70">The AI model provides preliminary guidance. Our lead strategist reviews your log and will reach out via email or phone to architect a specific project roadmap.</p>
               </div>
             </div>
           </div>

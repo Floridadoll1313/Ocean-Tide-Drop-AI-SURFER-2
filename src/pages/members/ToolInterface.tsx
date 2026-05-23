@@ -25,8 +25,10 @@ import {
   Users,
   Trash2,
   Plus,
-  Globe
+  Globe,
+  Download
 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 interface Setting {
   id: string;
@@ -464,6 +466,35 @@ export default function ToolInterface() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toolId]); // Use toolId to trigger re-initialization
 
+  const [historyDocs, setHistoryDocs] = useState<{id: string, action: string, result: string, timestamp: { toMillis?: () => number } | number | null}[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
+  useEffect(() => {
+    if (user && tool) {
+      setLoadingHistory(true);
+      import("firebase/firestore").then(({ query, collection, where, orderBy, getDocs, limit }) => {
+        const q = query(
+          collection(db, "users", user.uid, "work"),
+          where("toolName", "==", tool.name),
+          orderBy("timestamp", "desc"),
+          limit(5)
+        );
+        getDocs(q).then((snap) => {
+          setHistoryDocs(snap.docs.map(d => {
+            const data = d.data();
+            return {
+              id: d.id,
+              action: typeof data.action === 'string' ? data.action : 'Action',
+              result: typeof data.result === 'string' ? data.result : 'Result',
+              timestamp: data.timestamp
+            };
+          }));
+        }).catch(err => console.error("Error loading history:", err))
+          .finally(() => setLoadingHistory(false));
+      });
+    }
+  }, [user, tool, aiResult]);
+
   if (loading) return null;
   if (!user) return <Navigate to="/members" replace />;
   if (!tool) return <Navigate to="/members" replace />;
@@ -708,14 +739,32 @@ export default function ToolInterface() {
                   <Terminal className="w-4 h-4" />
                   Execution Logs
                 </h3>
-                <button 
-                  onClick={handleRefresh}
-                  disabled={isRefreshing || isProcessing}
-                  className={`p-2 bg-white/5 border border-white/10 text-cyan-400 hover:text-white transition-all ${isRefreshing ? 'animate-spin text-white' : ''}`}
-                  title="Manual Refresh"
-                >
-                  <RefreshCcw className="w-3 h-3" />
-                </button>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => {
+                      const blob = new Blob([logs.join('\n')], { type: 'text/plain' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `${tool.id}-execution-logs.txt`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                      setLogs(prev => [...prev, "Log file exported successfully."]);
+                    }}
+                    className="p-2 bg-white/5 border border-white/10 text-cyan-400 hover:text-white transition-all"
+                    title="Export Output Log"
+                  >
+                    <Download className="w-3 h-3" />
+                  </button>
+                  <button 
+                    onClick={handleRefresh}
+                    disabled={isRefreshing || isProcessing}
+                    className={`p-2 bg-white/5 border border-white/10 text-cyan-400 hover:text-white transition-all ${isRefreshing ? 'animate-spin text-white' : ''}`}
+                    title="Manual Refresh"
+                  >
+                    <RefreshCcw className="w-3 h-3" />
+                  </button>
+                </div>
               </div>
               <div className="font-mono text-[10px] space-y-4 h-64 overflow-y-auto custom-scrollbar pr-2">
                 {logs.map((log, i) => (
@@ -924,54 +973,85 @@ export default function ToolInterface() {
                   </div>
 
                   {/* COGNITIVE DEPLOYMENT SEQUENCER VISUAL FEEDBACK */}
-                  {isProcessing && (
-                    <div className="p-10 bg-zinc-950 border-t border-b border-cyan-400/20 relative overflow-hidden animate-pulse">
-                      <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-400 via-purple-500 to-amber-500" />
+                  <AnimatePresence>
+                    {isProcessing && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="p-10 bg-zinc-950 border-t border-b border-cyan-400/20 relative overflow-hidden"
+                      >
+                        <motion.div 
+                          initial={{ x: '-100%' }}
+                          animate={{ x: '100%' }}
+                          transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                          className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent w-full" 
+                        />
 
-                      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
-                         <div>
-                            <div className="flex items-center gap-2 mb-1">
-                               <Loader2 className="w-4 h-4 text-[#00eaff] animate-spin" />
-                               <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#00eaff]">COGNITIVE SYNTHESIS IN PROGRESS</span>
-                            </div>
-                            <h3 className="text-xl font-black uppercase text-white tracking-tight">Active Neural Processing</h3>
-                         </div>
-                         <div className="flex items-center gap-1.5 bg-cyan-950/40 px-2.5 py-1 border border-cyan-500/20 text-[#00eaff] text-[9px] font-mono tracking-widest rounded-sm">
-                            FREQUENCY MATCHING: ACTIVE
-                         </div>
-                      </div>
+                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+                           <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                 <Loader2 className="w-4 h-4 text-[#00eaff] animate-spin" />
+                                 <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#00eaff]">COGNITIVE SYNTHESIS IN PROGRESS</span>
+                              </div>
+                              <h3 className="text-xl font-black uppercase text-white tracking-tight">Active Neural Processing</h3>
+                           </div>
+                           <motion.div 
+                             animate={{ opacity: [0.5, 1, 0.5] }}
+                             transition={{ repeat: Infinity, duration: 2 }}
+                             className="flex items-center gap-1.5 bg-cyan-950/40 px-2.5 py-1 border border-cyan-500/20 text-[#00eaff] text-[9px] font-mono tracking-widest rounded-sm"
+                           >
+                              FREQUENCY MATCHING: ACTIVE
+                           </motion.div>
+                        </div>
 
-                      {/* Waveform Visualization - CSS Animated Bars */}
-                      <div className="flex items-end justify-center gap-1 h-12 w-full max-w-xs mx-auto mb-8 bg-white/5 rounded-lg p-3 border border-white/5">
-                        {[1, 2, 3, 4, 5, 4, 3, 2, 1, 3, 5, 2, 4, 1, 5, 3, 4, 2, 1].map((val, idx) => (
-                          <div 
-                            key={idx} 
-                            style={{ 
-                              height: `${val * 20}%`,
-                              animationDelay: `${idx * 0.08}s`,
-                            }}
-                            className="bg-[#00eaff] w-1 min-h-[4px] rounded-full animate-wave-rider origin-bottom"
-                          />
-                        ))}
-                      </div>
+                        {/* Framer Motion Waveform Visualization */}
+                        <div className="flex items-end justify-center gap-1 h-12 w-full max-w-xs mx-auto mb-8 bg-white/5 rounded-lg p-3 border border-white/5">
+                          {[1, 2, 3, 4, 5, 4, 3, 2, 1, 3, 5, 2, 4, 1, 5, 3, 4, 2, 1].map((val, idx) => (
+                            <motion.div 
+                              key={idx} 
+                              animate={{ 
+                                height: [`${val * 10}%`, `${val * 20}%`, `${val * 10}%`] 
+                              }}
+                              transition={{ 
+                                repeat: Infinity, 
+                                duration: 1, 
+                                delay: idx * 0.1,
+                                ease: "easeInOut"
+                              }}
+                              className="bg-[#00eaff] w-1 min-h-[4px] rounded-full origin-bottom shadow-[0_0_8px_rgba(0,234,255,0.8)]"
+                            />
+                          ))}
+                        </div>
 
-                      <div className="space-y-4 max-w-md mx-auto text-center">
-                         <div className="text-xs font-bold text-cyan-200 uppercase tracking-wider animate-text-blink">
-                            {logs.length > 0 ? logs[logs.length - 1] : "Negotiating security handshake..."}
-                         </div>
-                         
-                         <div className="w-full bg-white/5 h-1 border border-white/10 overflow-hidden relative rounded-full">
-                            <div className="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-indigo-500 rounded-full animate-progress-flow" />
-                         </div>
+                        <div className="space-y-4 max-w-md mx-auto text-center">
+                           <motion.div 
+                             key={logs[logs.length - 1]}
+                             initial={{ opacity: 0, y: 5 }}
+                             animate={{ opacity: 1, y: 0 }}
+                             className="text-xs font-bold text-cyan-200 uppercase tracking-wider"
+                           >
+                              {logs.length > 0 ? logs[logs.length - 1] : "Negotiating security handshake..."}
+                           </motion.div>
+                           
+                           <div className="w-full bg-white/5 h-1 border border-white/10 overflow-hidden relative rounded-full">
+                              <motion.div 
+                                initial={{ x: '-100%' }}
+                                animate={{ x: '100%' }}
+                                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                                className="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-indigo-500 rounded-full w-1/2" 
+                              />
+                           </div>
 
-                         <div className="grid grid-cols-3 gap-2 pt-4 text-[8px] font-mono uppercase tracking-widest text-[#00eaff]/45">
-                            <div>VECTORS: ALIGNED</div>
-                            <div>MODEL: GEMINI-2.5</div>
-                            <div>INTEGRITY: 99.8%</div>
-                         </div>
-                      </div>
-                    </div>
-                  )}
+                           <div className="grid grid-cols-3 gap-2 pt-4 text-[8px] font-mono uppercase tracking-widest text-[#00eaff]/45">
+                              <div>VECTORS: ALIGNED</div>
+                              <div>MODEL: GEMINI-2.5</div>
+                              <div>INTEGRITY: 99.8%</div>
+                           </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   {/* AI RESULT DISPLAY */}
                   {aiResult && (
@@ -985,9 +1065,70 @@ export default function ToolInterface() {
                       </div>
                     </div>
                   )}
+
+                  {/* VISUAL HISTORY LOG */}
+                  <div className="p-10 bg-black border-t border-white/10">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-6">Recent Tool Execution History</h3>
+                    {loadingHistory ? (
+                      <div className="flex items-center gap-3 text-xs font-mono text-zinc-500">
+                        <Loader2 className="w-4 h-4 animate-spin" /> Fetching history...
+                      </div>
+                    ) : historyDocs.length === 0 ? (
+                      <div className="text-xs font-mono text-zinc-600">No past execution logs available for this tool.</div>
+                    ) : (
+                      <div className="space-y-4">
+                        {historyDocs.map((doc) => (
+                          <div key={doc.id} className="p-4 border border-white/5 rounded-md bg-white/5 hover:bg-white/10 transition-colors">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-[10px] font-black tracking-widest uppercase text-cyan-400">{doc.action}</span>
+                              <span className="text-[10px] font-mono text-zinc-500">
+                                {doc.timestamp ? new Date((doc.timestamp as { toMillis?: () => number }).toMillis ? (doc.timestamp as { toMillis?: () => number }).toMillis!() : Number(doc.timestamp)).toLocaleDateString() : 'Just now'}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 truncate">{doc.result.substring(0, 150)}...</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="flex-grow space-y-6">
+                  {/* Perimeter Presets */}
+                  <div className="p-8 border border-white/10 rounded-sm bg-zinc-950/40 mb-10">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#00eaff] mb-4">Perimeter Presets</h3>
+                    <div className="flex gap-3 overflow-x-auto custom-scrollbar pb-2">
+                       <button
+                         onClick={() => {
+                            const aggressiveSettings = { ...toolSettings };
+                            [...tool.settings, ...customSettings].forEach(s => {
+                               if (s.type === 'range') aggressiveSettings[s.id] = s.max || 100;
+                               if (s.type === 'toggle') aggressiveSettings[s.id] = true;
+                            });
+                            setToolSettings(aggressiveSettings);
+                            setLogs(prev => [...prev, "Applied 'Maximum Overdrive' perimeter preset."]);
+                         }}
+                         className="px-6 py-3 border border-[#00eaff]/30 hover:bg-[#00eaff]/10 text-cyan-300 text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-colors"
+                       >
+                         Maximum Overdrive
+                       </button>
+                       <button
+                         onClick={() => {
+                            const conservativeSettings = { ...toolSettings };
+                            [...tool.settings, ...customSettings].forEach(s => {
+                               if (s.type === 'range') conservativeSettings[s.id] = s.min !== undefined ? s.min : 0;
+                               if (s.type === 'toggle') conservativeSettings[s.id] = false;
+                            });
+                            setToolSettings(conservativeSettings);
+                            setLogs(prev => [...prev, "Applied 'Conservative Guardrails' perimeter preset."]);
+                         }}
+                         className="px-6 py-3 border border-white/10 hover:bg-white/5 text-zinc-400 text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-colors"
+                       >
+                         Conservative Guardrails
+                       </button>
+                    </div>
+                  </div>
+
                   {/* Parameter Addition Header & Form */}
                   <div className="p-8 border border-dashed border-white/10 hover:border-white/20 rounded-sm bg-zinc-950/40 transition-all mb-10">
                     {!isAddingParam ? (
