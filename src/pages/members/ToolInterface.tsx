@@ -644,7 +644,7 @@ export default function ToolInterface() {
   };
 
   return (
-    <PageWrapper maxWidth="max-w-7xl" showHero={false}>
+    <PageWrapper maxWidth="max-w-7xl" showHero={false} showLargeLogo={false}>
       <div className="w-full px-6 py-10 relative">
         {/* SOULFUL DECORATION */}
         <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-cyan-600/10 blur-[120px] rounded-full pointer-events-none"></div>

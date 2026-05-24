@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star, Moon, Sun, Search, Command } from "lucide-react";
+import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star, Moon, Sun, Search, Command, Coins } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import AIAssistant from "./AIAssistant";
 
 export default function PageWrapper({ 
   children, 
   maxWidth = "max-w-5xl", 
-  showHero = true 
+  showHero = true,
+  showLargeLogo = true
 }: { 
   children: React.ReactNode, 
   maxWidth?: string,
-  showHero?: boolean
+  showHero?: boolean,
+  showLargeLogo?: boolean
 }) {
   const { user, loading, loginWithGoogle, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -76,108 +78,134 @@ export default function PageWrapper({
     { to: "/reviews", label: "Reviews", icon: Star, color: "text-yellow-400" },
     { to: "/founders", label: "Founders", icon: Users, color: "text-emerald-500" },
     { to: "/memorial", label: "Bull's Memorial", icon: Anchor, color: "text-orange-500" },
+    { to: "/tribute", label: "Tip Jar", icon: Coins, color: "text-pink-500" },
     { to: "/contact", label: "Contact", icon: MessageSquare, color: "text-green-500" },
   ];
 
   return (
     <div className="min-h-screen bg-transparent text-white flex flex-col relative overflow-x-hidden">
-      {/* NAVBAR */}
-      <header className="w-full fixed top-4 left-0 z-50 flex justify-center px-4">
+      {/* DESKTOP SIDEBAR (Hidden on mobile) */}
+      <aside className="hidden md:flex flex-col w-72 fixed top-0 left-0 bottom-0 bg-black/95 border-r border-white/10 backdrop-blur-2xl z-50 p-6 justify-between select-none overflow-y-auto">
+        
+        {/* TOP CLUSTER: Logo & Status */}
+        <div className="flex flex-col gap-6">
+          <Link to="/" className="flex items-center gap-3 py-2 pl-2">
+            <div className="w-10 h-10 flex items-center justify-center rounded-sm">
+              <img src="/logo.svg" alt="AI Surfer Logo" className="w-full h-full object-contain drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]" />
+            </div>
+            <span className="text-xl font-black tracking-tighter uppercase text-white">
+              <span className="text-soul-gradient italic font-serif">AI Surfer</span>
+            </span>
+          </Link>
+
+          {/* Status Indicator */}
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-950/30 border border-emerald-500/20 rounded-full" title="System Matrix Online">
+            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400">All Systems Nominal</span>
+          </div>
+
+          {/* Search Button Stacked */}
+          <button onClick={() => setIsSearchOpen(true)} className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer" title="Search (Cmd+K)">
+            <div className="flex items-center gap-3">
+              <Search className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-bold uppercase tracking-widest">Search Matrix</span>
+            </div>
+            <kbd className="flex items-center gap-1 font-mono text-[9px] bg-black/50 px-1.5 py-0.5 rounded opacity-70">
+              <Command className="w-2.5 h-2.5" />K
+            </kbd>
+          </button>
+
+          {/* Navigation Links List */}
+          <nav className="flex flex-col gap-1.5 pt-2">
+            {navLinks.map((link) => (
+              <Link 
+                key={link.to}
+                className={`transition-all px-4 py-3 rounded-xl flex items-center gap-3 group relative ${isActive(link.to) ? 'bg-white/10 text-white font-bold' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`} 
+                to={link.to}
+              >
+                <link.icon className={`w-4 h-4 ${link.color} group-hover:scale-110 transition-transform ${isActive(link.to) ? 'scale-110' : ''}`} />
+                <span className="text-[10px] font-black uppercase tracking-[0.1em]">{link.label}</span>
+                {isActive(link.to) && (
+                  <motion.div 
+                    layoutId="sidebarActiveBg"
+                    className="absolute left-1 w-1 top-3 bottom-3 bg-cyan-400 shadow-[0_0_10px_rgba(0,234,255,0.8)] rounded-full"
+                  />
+                )}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        {/* BOTTOM CLUSTER: Theme, Profile & Auth tools */}
+        <div className="flex flex-col gap-4 pt-6 border-t border-white/10">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Global Settings</span>
+            <button onClick={toggleTheme} className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer" title="Toggle Theme (Cmd+Shift+L)">
+              {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            </button>
+          </div>
+
+          {loading ? (
+            <div className="w-full flex justify-center py-2">
+              <div className="w-4 h-4 rounded-full border border-white/20 border-t-white animate-spin"></div>
+            </div>
+          ) : user ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between p-2 bg-white/5 border border-white/5 rounded-xl">
+                <Link to="/profile" className="flex items-center gap-3">
+                  {user.photoURL ? (
+                     <img src={user.photoURL} alt={user.displayName || "User"} className={`w-8 h-8 rounded-full border-2 transition-all ${isActive('/profile') ? 'border-cyan-400' : 'border-white/20'}`} />
+                  ) : (
+                     <div className={`w-8 h-8 rounded-full bg-white/10 border-2 flex items-center justify-center text-[10px] font-bold text-white transition-all ${isActive('/profile') ? 'border-cyan-400' : 'border-white/20'}`}>
+                       {user.email?.[0].toUpperCase()}
+                     </div>
+                  )}
+                  <div className="flex flex-col select-none">
+                    <span className="text-[10px] font-black uppercase text-white truncate max-w-[124px]">{user.displayName || 'Active Member'}</span>
+                    <span className="text-[8px] font-mono text-zinc-500 truncate max-w-[124px]">{user.email}</span>
+                  </div>
+                </Link>
+                <button 
+                  onClick={() => { if (window.confirm("Are you sure you want to sign out?")) logout(); }}
+                  className="w-7 h-7 flex items-center justify-center rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-colors cursor-pointer"
+                  title="Sign Out"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+
+              {/* Neural Dashboard Quick Link */}
+              <Link to="/members" className={`w-full flex items-center justify-center gap-2 py-3 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-xl group transition-all hover:bg-cyan-500 hover:text-black ${isActive('/members') && !isActive('/members/sync') ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.3)]' : ''}`}>
+                <LayoutDashboard className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+                <span className="text-[10px] font-black uppercase tracking-widest">My Dashboard</span>
+              </Link>
+            </div>
+          ) : (
+            <button 
+              onClick={async () => {
+                try {
+                  await loginWithGoogle(false);
+                } catch {
+                  alert("Authentication failed. If you are viewing this in the AI Studio preview, popups may be blocked. Please click the arrow/window icon at the top right to open this app in a new tab and try again.");
+                }
+              }}
+              className="w-full py-3 bg-white text-black rounded-xl hover:bg-cyan-400 transition-colors text-[10px] font-black uppercase tracking-widest text-center cursor-pointer font-bold"
+            >
+              Sign In With Google
+            </button>
+          )}
+
+        </div>
+      </aside>
+
+      {/* MOBILE NAVBAR (Hidden on desktop) */}
+      <header className="md:hidden w-full fixed top-4 left-0 z-50 flex justify-center px-4">
         <div className="w-full max-w-6xl backdrop-blur-xl bg-black/50 border border-white/10 rounded-full flex items-center justify-between px-6 py-3 shadow-[0_0_30px_rgba(0,0,0,0.5)] navbar-glow">
           <Link to="/" className="flex items-center gap-3 relative z-[60]">
             <div className="w-10 h-10 flex items-center justify-center rounded-sm">
               <img src="/logo.svg" alt="AI Surfer Logo" className="w-full h-full object-contain drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]" />
             </div>
-            <span className="text-xl font-black tracking-tighter uppercase text-white hidden lg:block">
-              <span className="text-soul-gradient italic font-serif">AI Surfer</span>
-            </span>
           </Link>
-
-          {/* Global Status Indicator */}
-          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-emerald-950/30 border border-emerald-500/20 rounded-full ml-4 mr-auto" title="System Matrix Online">
-            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400">All Systems Nominal</span>
-          </div>
-
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex gap-1 bg-white/5 rounded-full p-1 border border-white/5 items-center">
-            {navLinks.map((link, idx) => (
-              <motion.div 
-                key={link.to}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
-              >
-                <Link 
-                  className={`transition-all px-4 py-2 rounded-full flex items-center gap-2 group relative ${isActive(link.to) ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`} 
-                  to={link.to}
-                >
-                  <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em]">
-                    <link.icon className={`w-3 h-3 ${link.color} group-hover:scale-110 transition-transform ${isActive(link.to) ? 'scale-110' : ''}`} />
-                    <span>{link.label}</span>
-                  </div>
-                  {isActive(link.to) && (
-                    <motion.div 
-                      layoutId="activeNav"
-                      className="absolute inset-x-4 -bottom-1 h-px bg-cyan-400 shadow-[0_0_10px_rgba(0,234,255,0.8)]"
-                    />
-                  )}
-                </Link>
-              </motion.div>
-            ))}
-          </nav>
-            
-          <div className="hidden md:flex items-center gap-4">
-            <button onClick={() => setIsSearchOpen(true)} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors" title="Search (Cmd+K)">
-              <Search className="w-3.5 h-3.5" />
-              <span className="text-[10px] font-bold uppercase tracking-widest hidden lg:block">Search</span>
-              <kbd className="hidden lg:flex items-center gap-1 font-mono text-[9px] bg-black/50 px-1.5 py-0.5 rounded opacity-70">
-                <Command className="w-2.5 h-2.5" />K
-              </kbd>
-            </button>
-            <button onClick={toggleTheme} className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors" title="Toggle Theme (Cmd+Shift+L)">
-              {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-            </button>
-            {loading ? (
-              <div className="w-4 h-4 rounded-full border border-white/20 border-t-white animate-spin"></div>
-            ) : user ? (
-              <div className="flex items-center gap-2">
-                <Link to="/members" className={`flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-full group transition-all hover:bg-cyan-500 hover:text-black ${isActive('/members') && !isActive('/members/sync') ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.5)]' : ''}`}>
-                  <LayoutDashboard className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
-                  <span className="text-[10px] font-black uppercase tracking-widest hidden lg:block">Dashboard</span>
-                </Link>
-                <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity ml-1">
-                  {user.photoURL ? (
-                     <img src={user.photoURL} alt={user.displayName || "User"} className={`w-8 h-8 rounded-full border-2 transition-all ${isActive('/profile') ? 'border-cyan-400 scale-110' : 'border-white/20'}`} />
-                  ) : (
-                     <div className={`w-8 h-8 rounded-full bg-white/10 border-2 flex items-center justify-center text-[10px] font-bold text-white transition-all ${isActive('/profile') ? 'border-cyan-400 scale-110' : 'border-white/20'}`}>
-                       {user.email?.[0].toUpperCase()}
-                     </div>
-                  )}
-                </Link>
-                <button 
-                  onClick={() => { if (window.confirm("Are you sure you want to sign out?")) logout(); }}
-                  className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-colors ml-1"
-                  title="Sign Out"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ) : (
-              <button 
-                onClick={async () => {
-                  try {
-                    await loginWithGoogle(false);
-                  } catch {
-                    alert("Authentication failed. If you are viewing this in the AI Studio preview, popups may be blocked. Please click the arrow/window icon at the top right to open this app in a new tab and try again.");
-                  }
-                }}
-                className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-cyan-400 transition-colors text-[10px] font-black uppercase tracking-widest"
-              >
-                Join
-              </button>
-            )}
-          </div>
 
           {/* Mobile Theme & Menu Button */}
           <div className="md:hidden flex items-center gap-2 relative z-[60]">
@@ -336,8 +364,21 @@ export default function PageWrapper({
       </AnimatePresence>
 
       {/* CONTENT */}
-      <main className="flex-1 pt-32 pb-20 relative flex flex-col items-center fade-in">
+      <main className="flex-1 pt-32 md:pt-16 pb-20 relative flex flex-col items-center fade-in md:pl-72">
         <div className={`relative ${maxWidth} mx-auto px-6 z-10 w-full`}>
+          {showLargeLogo && (
+            <div className="flex flex-col items-center mb-16 select-none text-center animate-in fade-in slide-in-from-top-4 duration-1000">
+              <div className="relative p-2 rounded-3xl bg-black/40 border border-white/5 shadow-[0_0_55px_rgba(0,0,0,0.85)]">
+                <img 
+                  src="/ocean_tide_logo.png" 
+                  alt="OceanTideDrop AI Surfer" 
+                  className="w-44 h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain rounded-2xl drop-shadow-[0_0_25px_rgba(34,211,238,0.2)] hover:drop-shadow-[0_0_45px_rgba(34,211,238,0.5)] transition-all duration-500 hover:scale-[1.02]"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.6em] text-cyan-400 mt-6 block">OceanTideDrop AI Surfer</span>
+            </div>
+          )}
           {showHero && (
             <div className="text-center mb-12">
                <span className="text-cyan-400 font-bold uppercase tracking-[0.5em] text-[10px]">AI Surfer Growth Architecture</span>
@@ -348,7 +389,7 @@ export default function PageWrapper({
       </main>
 
       {/* FOOTER */}
-      <footer className="relative pt-32 pb-20 text-center text-cyan-200/90 text-sm z-10 shrink-0 mt-auto bg-black">
+      <footer className="relative pt-32 pb-20 text-center text-cyan-200/90 text-sm z-10 shrink-0 mt-auto bg-black md:pl-72">
         {/* WAVE DIVIDER */}
         <div className="absolute top-0 left-0 w-full overflow-hidden leading-none transform -translate-y-full">
             <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-[calc(100%+1.3px)] h-[50px] relative block">

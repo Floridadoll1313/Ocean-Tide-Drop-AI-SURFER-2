@@ -52,6 +52,24 @@ export default function AIAssistant() {
             </div>
             
             <div className="flex-1 overflow-y-auto p-4 space-y-4 font-sans text-sm">
+               <div className="p-3 bg-cyan-950/40 border border-cyan-400/20 rounded-xl flex flex-col gap-2">
+                 <div className="flex items-center gap-2">
+                   <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                   <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">Telegram Bot Live</span>
+                 </div>
+                 <p className="text-[11px] text-zinc-300 leading-normal">
+                   Connect directly to our unified workspace automation and strategy feed inside Telegram.
+                 </p>
+                 <a 
+                   href="https://t.me/boost/oceantidedropaisolutions"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   className="w-full bg-cyan-400 hover:bg-cyan-300 text-black font-black text-[10px] tracking-wider uppercase py-2 rounded-lg text-center transition-all hover:scale-[1.01] flex items-center justify-center gap-1.5"
+                 >
+                   Launch Telegram Bot &rarr;
+                 </a>
+               </div>
+
                {messages.map((m, i) => (
                  <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[80%] p-3 rounded-2xl ${m.role === 'user' ? 'bg-cyan-400 text-black rounded-tr-none' : 'bg-white/10 text-white rounded-tl-none'}`}>

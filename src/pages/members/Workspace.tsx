@@ -466,7 +466,7 @@ export default function Workspace() {
 
   if (!user) {
     return (
-      <PageWrapper maxWidth="max-w-7xl" showHero={false}>
+      <PageWrapper maxWidth="max-w-7xl" showHero={false} showLargeLogo={false}>
         <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">
           <ShieldAlert className="w-16 h-16 text-zinc-600 mb-8" />
           <h1 className="text-4xl font-black uppercase tracking-tighter text-white mb-4">Authorization Required</h1>
@@ -484,7 +484,7 @@ export default function Workspace() {
 
   if (!accessToken) {
     return (
-      <PageWrapper maxWidth="max-w-7xl" showHero={false}>
+      <PageWrapper maxWidth="max-w-7xl" showHero={false} showLargeLogo={false}>
         <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">
           <CalendarDays className="w-16 h-16 text-zinc-600 mb-8" />
           <h1 className="text-4xl font-black uppercase tracking-tighter text-white mb-4">Connect Workspace</h1>
@@ -501,7 +501,7 @@ export default function Workspace() {
   }
 
   return (
-    <PageWrapper maxWidth="max-w-7xl" showHero={false}>
+    <PageWrapper maxWidth="max-w-7xl" showHero={false} showLargeLogo={false}>
       <div className="w-full px-6 py-10">
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">

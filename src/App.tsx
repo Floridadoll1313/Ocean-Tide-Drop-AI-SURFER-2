@@ -24,6 +24,7 @@ import Shop from './pages/shop/Shop';
 import Memorial from './pages/memorial/Memorial';
 import Reviews from './pages/reviews/Reviews';
 import Support from './pages/support/Support';
+import Tribute from './pages/tribute/Tribute';
 
 function App() {
   return (
@@ -34,6 +35,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/tipjar" element={<Tribute />} />
+          <Route path="/tribute" element={<Tribute />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/pricing/:slug" element={<PricingDetail />} />
           <Route path="/members" element={<Members />} />
