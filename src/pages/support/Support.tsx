@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PageWrapper from "../../components/PageWrapper";
-import { Headphones, Mail, MessageSquare, ArrowRight, ShieldCheck, Activity, Plus, Bot, Ticket, Search, Send, CheckCircle2 } from "lucide-react";
+import { Headphones, Mail, MessageSquare, ArrowRight, ShieldCheck, Activity, Plus, Bot, Ticket, Search, Send, CheckCircle2, Terminal } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 export default function Support() {
-  const [activeTab, setActiveTab] = useState<'faq' | 'contact' | 'status' | 'chat' | 'ticket'>('faq');
+  const [activeTab, setActiveTab] = useState<'faq' | 'contact' | 'status' | 'chat' | 'ticket' | 'logs'>('faq');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [faqSearch, setFaqSearch] = useState('');
 
@@ -18,15 +18,44 @@ export default function Support() {
   const [ticketBody, setTicketBody] = useState('');
   const [ticketSubmitted, setTicketSubmitted] = useState(false);
 
+  const [submittedTickets, setSubmittedTickets] = useState<{id: string, subject: string, date: string, status: string}[]>([
+    { id: 'TKT-8942', subject: 'Cognitive node mismatch on workspace import', date: '2026-05-21', status: 'Resolved' },
+    { id: 'TKT-9104', subject: 'Requesting API quota increase', date: '2026-05-22', status: 'In Progress' }
+  ]);
+
+  const [supportLogs, setSupportLogs] = useState<{timestamp: string, event: string, level: string}[]>([
+    { timestamp: '11:42:01', event: 'SYSTEM: Initialized autonomous diagnostic sweep.', level: 'INFO' },
+    { timestamp: '11:45:22', event: 'NETWORK: Verified stable handshake with origin nodes.', level: 'INFO' },
+    { timestamp: '11:51:09', event: 'SUPPORT: User initiated knowledge base query.', level: 'ACTION' }
+  ]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+      setSupportLogs(prev => [...prev.slice(-15), { timestamp: timeStr, event: 'SYSTEM: Routine background parity check aligned.', level: 'INFO' }]);
+    }, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleSendSupportChat = (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
     setChatMessages(prev => [...prev, { role: 'user', text: chatInput }]);
+    
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+    setSupportLogs(prev => [...prev.slice(-15), { timestamp: timeStr, event: 'CHAT: User dispatched query to AI Node.', level: 'ACTION' }]);
+
     setChatInput('');
     setIsBotTyping(true);
     setTimeout(() => {
        setIsBotTyping(false);
        setChatMessages(prev => [...prev, { role: 'bot', text: 'I have processed your query through the central node. It appears human oversight is optimal here—please initialize a ticket if the issue persists.' }]);
+       
+       const nextNow = new Date();
+       const nextTimeStr = `${nextNow.getHours().toString().padStart(2, '0')}:${nextNow.getMinutes().toString().padStart(2, '0')}:${nextNow.getSeconds().toString().padStart(2, '0')}`;
+       setSupportLogs(prev => [...prev.slice(-15), { timestamp: nextTimeStr, event: 'CHAT: AI Node resolved conversational block.', level: 'INFO' }]);
     }, 1500);
   };
 
@@ -34,6 +63,19 @@ export default function Support() {
      e.preventDefault();
      if (!ticketSubject.trim() || !ticketBody.trim()) return;
      setTicketSubmitted(true);
+     
+     const newTicket = {
+       id: `TKT-${Math.floor(Math.random() * 9000) + 1000}`,
+       subject: ticketSubject,
+       date: new Date().toISOString().split('T')[0],
+       status: 'Open'
+     };
+     setSubmittedTickets(prev => [newTicket, ...prev]);
+
+     const now = new Date();
+     const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+     setSupportLogs(prev => [...prev.slice(-15), { timestamp: timeStr, event: `TICKET: Entity initialized portal record ${newTicket.id}.`, level: 'ACTION' }]);
+
      setTimeout(() => {
         setTicketSubject('');
         setTicketBody('');
@@ -124,6 +166,15 @@ export default function Support() {
               </span>
               {activeTab === 'status' && <ArrowRight className="w-4 h-4 text-cyan-400" />}
             </button>
+            <button 
+              onClick={() => setActiveTab('logs')}
+              className={`w-full p-6 text-left border transition-all flex justify-between items-center ${activeTab === 'logs' ? 'bg-cyan-950/30 border-cyan-500/30 text-white' : 'bg-white/5 border-white/5 text-zinc-400 hover:border-white/20'}`}
+            >
+              <span className="font-black uppercase tracking-widest text-sm flex items-center gap-3">
+                <Terminal className="w-4 h-4" /> System Logs
+              </span>
+              {activeTab === 'logs' && <ArrowRight className="w-4 h-4 text-cyan-400" />}
+            </button>
           </div>
 
           <div className="lg:col-span-8 bg-black border border-white/10 p-8 md:p-12 min-h-[400px]">
@@ -189,14 +240,24 @@ export default function Support() {
                   exit={{ opacity: 0, x: -10 }}
                   className="flex flex-col h-full min-h-[400px]"
                 >
-                  <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-                    <div className="w-10 h-10 bg-cyan-900/50 border border-cyan-500/50 rounded-full flex items-center justify-center shrink-0">
-                      <Bot className="w-5 h-5 text-cyan-400" />
+                  <div className="flex items-center justify-between gap-3 mb-6 pb-4 border-b border-white/10 flex-wrap">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-cyan-900/50 border border-cyan-500/50 rounded-full flex items-center justify-center shrink-0">
+                        <Bot className="w-5 h-5 text-cyan-400" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-black uppercase text-white leading-none">Automated Connect</h2>
+                        <span className="text-[10px] font-mono text-cyan-400">STATUS: ONLINE / REACTIVE</span>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-xl font-black uppercase text-white leading-none">Automated Connect</h2>
-                      <span className="text-[10px] font-mono text-cyan-400">STATUS: ONLINE / REACTIVE</span>
-                    </div>
+                    <a 
+                      href="https://t.me/boost/oceantidedropaisolutions"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-teal-500/20 hover:from-cyan-400 hover:to-teal-400 border border-cyan-400/30 text-cyan-400 hover:text-black font-black uppercase text-[10px] tracking-widest rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(34,211,238,0.15)] hover:shadow-[0_0_20px_rgba(34,211,238,0.4)]"
+                    >
+                      Launch Website Bot &rarr;
+                    </a>
                   </div>
                   
                   <div className="flex-1 bg-white/5 border border-white/10 rounded overflow-hidden flex flex-col pt-4">
@@ -241,10 +302,29 @@ export default function Support() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -10 }}
                 >
-                  <h2 className="text-2xl font-black uppercase text-cyan-400 mb-8 border-b border-white/10 pb-4">Submit Portal Ticket</h2>
+                  <h2 className="text-2xl font-black uppercase text-cyan-400 mb-8 border-b border-white/10 pb-4">Support Portal</h2>
                   
+                  <div className="mb-10">
+                    <h3 className="text-sm font-black uppercase text-zinc-500 mb-4 tracking-widest">Active Tickets</h3>
+                    <div className="space-y-3">
+                       {submittedTickets.map(ticket => (
+                         <div key={ticket.id} className="p-4 border border-white/5 bg-white/5 flex items-center justify-between rounded hover:bg-white/10 transition-colors cursor-pointer">
+                           <div>
+                             <span className="text-xs font-mono text-cyan-400 block mb-1">{ticket.id}</span>
+                             <span className="text-sm font-medium text-white">{ticket.subject}</span>
+                           </div>
+                           <div className="text-right">
+                             <span className="text-xs text-zinc-500 block mb-1">{ticket.date}</span>
+                             <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded inline-block ${ticket.status === 'Resolved' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}`}>{ticket.status}</span>
+                           </div>
+                         </div>
+                       ))}
+                    </div>
+                  </div>
+
+                  <h3 className="text-sm font-black uppercase text-zinc-500 mb-4 tracking-widest">Submit New Ticket</h3>
                   {ticketSubmitted ? (
-                    <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <div className="flex flex-col items-center justify-center py-20 text-center bg-white/5 border border-white/10 rounded">
                       <CheckCircle2 className="w-16 h-16 text-emerald-400 mb-6" />
                       <h3 className="text-xl font-bold text-white mb-2 uppercase tracking-widest">Portal Record Created</h3>
                       <p className="text-zinc-400">Our engineers have received your ticket and will process it shortly.</p>
@@ -339,6 +419,29 @@ export default function Support() {
                            <span className="text-emerald-400 text-xs font-bold uppercase tracking-widest">{sys.status}</span>
                            <span className="text-zinc-500 text-xs font-mono w-16 text-right">Uptime: {sys.uptime}</span>
                          </div>
+                       </div>
+                     ))}
+                   </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'logs' && (
+                <motion.div
+                  key="logs"
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                >
+                   <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
+                     <h2 className="text-2xl font-black uppercase text-cyan-400">Automated Support Logs</h2>
+                     <span className="text-[10px] font-mono text-cyan-500 uppercase tracking-widest bg-cyan-950/40 px-2 py-1 border border-cyan-500/20 rounded">Real-time Streamed</span>
+                   </div>
+                   
+                   <div className="space-y-2 h-[400px] overflow-y-auto custom-scrollbar pr-2 flex flex-col-reverse">
+                     {[...supportLogs].reverse().map((log, idx) => (
+                       <div key={idx} className="flex gap-4 p-3 bg-white/5 border border-white/5 rounded text-xs font-mono hover:bg-white/10 transition-colors">
+                         <span className="text-zinc-500 shrink-0 shadow-none">[{log.timestamp}]</span>
+                         <span className={`${log.level === 'ACTION' ? 'text-cyan-400 font-bold' : 'text-zinc-300'}`}>{log.event}</span>
                        </div>
                      ))}
                    </div>

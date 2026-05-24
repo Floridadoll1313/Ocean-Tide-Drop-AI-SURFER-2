@@ -1895,7 +1895,7 @@ Reference: [RLS Performance](https://supabase.com/docs/guides/database/postgres/
 
 export default function Mcp() {
   return (
-    <PageWrapper>
+    <PageWrapper showLargeLogo={false}>
       <div className="max-w-4xl mx-auto py-10">
         <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-12 text-[#00eaff] drop-shadow-[0_0_20px_#00eaff]">Best Practices</h1>
         <div className="prose prose-invert prose-headings:font-display prose-a:text-blue-400 hover:prose-a:text-blue-300 text-left markdown-body">
