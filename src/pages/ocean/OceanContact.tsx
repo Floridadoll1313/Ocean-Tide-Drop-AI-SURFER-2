@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import PageWrapper from '../../components/PageWrapper';
 import OceanBubbles from '../../components/OceanBubbles';
 import OceanChatbot from '../../components/OceanChatbot';
@@ -26,17 +27,17 @@ export default function OceanContact() {
       <div className="-mt-4 md:-mt-8 -mx-4 md:-mx-8 min-h-[calc(100vh-4rem)] bg-gradient-to-b from-[#021B33] via-[#033860] to-[#0AA1DD] text-slate-100 font-sans overflow-x-hidden selection:bg-cyan-500/30 relative">
         <OceanBubbles />
         {/* Custom Mini-Nav */}
-        <nav className="flex items-center justify-between px-6 py-4 bg-[#030e1a]/80 backdrop-blur-md border-b border-cyan-900/40 sticky top-0 z-50">
-          <div className="flex items-center gap-2 font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 text-lg md:text-xl cursor-pointer" onClick={() => window.location.href = '/ocean'}>
+        <nav className="flex items-center justify-between px-6 py-4 bg-[#030e1a]/80 backdrop-blur-md border-b border-cyan-900/40 sticky top-0 z-50 select-none">
+          <Link className="flex items-center gap-2 font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 text-lg md:text-xl cursor-pointer" to="/ocean">
             <span className="text-2xl" role="img" aria-label="wave">🌊</span> 
             OCEAN TIDE DROP 
             <span className="text-2xl hidden sm:inline-block" role="img" aria-label="flower">🌺</span>
-          </div>
-          <ul className="hidden md:flex items-center gap-8 text-sm font-semibold tracking-wide text-cyan-100/70">
-            <li className="hover:text-cyan-400 transition-colors cursor-pointer" onClick={() => window.location.href = '/ocean-services'}>Services</li>
-            <li className="hover:text-cyan-400 transition-colors cursor-pointer" onClick={() => window.location.href = '/ocean'}>Free Tools</li>
-            <li className="hover:text-cyan-400 transition-colors cursor-pointer" onClick={() => window.location.href = '/ocean-cases'}>Success Stories</li>
-            <li className="hover:text-cyan-400 transition-colors cursor-pointer" onClick={() => window.location.href = '/ocean-reports'}>Surf Reports</li>
+          </Link>
+          <ul className="hidden md:flex items-center gap-8 text-sm font-semibold tracking-wide text-cyan-100/70 justify-between p-0 list-none m-0">
+            <li><Link className="hover:text-cyan-400 transition-colors cursor-pointer" to="/ocean-services">Services</Link></li>
+            <li><Link className="hover:text-cyan-400 transition-colors cursor-pointer" to="/ocean">Free Tools</Link></li>
+            <li><Link className="hover:text-cyan-400 transition-colors cursor-pointer" to="/ocean-cases">Success Stories</Link></li>
+            <li><Link className="hover:text-cyan-400 transition-colors cursor-pointer" to="/ocean-reports">Surf Reports</Link></li>
             <li className="text-cyan-400 cursor-pointer">Contact</li>
           </ul>
         </nav>
