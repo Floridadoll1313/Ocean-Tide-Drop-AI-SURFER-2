@@ -223,7 +223,7 @@ export default function Tribute() {
   const handleClaimPass = () => {
     const trimmed = emailInput.trim();
     if (!trimmed || !trimmed.includes("@") || trimmed.length < 5) {
-      alert("Please provide a valid surfer network address.");
+      alert("Please enter a valid email address.");
       return;
     }
 
@@ -614,7 +614,7 @@ export default function Tribute() {
                     <Mail className="w-4 h-4 text-zinc-500 absolute left-4 top-1/2 -translate-y-1/2" />
                     <input
                       type="email"
-                      placeholder="Input active network email..."
+                      placeholder="Enter your email address..."
                       value={emailInput}
                       onChange={(e) => setEmailInput(e.target.value)}
                       disabled={isMinting}

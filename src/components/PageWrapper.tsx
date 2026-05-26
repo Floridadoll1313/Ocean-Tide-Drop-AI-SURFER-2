@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star, Moon, Sun, Search, Command, Coins } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import AIAssistant from "./AIAssistant";
+import SparklesOverlay from "./SparklesOverlay";
 
 export default function PageWrapper({ 
   children, 
@@ -77,6 +78,7 @@ export default function PageWrapper({
     { to: "/members", label: "Members", icon: LayoutDashboard, color: "text-cyan-400" },
     { to: "/reviews", label: "Reviews", icon: Star, color: "text-yellow-400" },
     { to: "/founders", label: "Founders", icon: Users, color: "text-emerald-500" },
+    { to: "/create", label: "C.R.E.A.T.E.", icon: Command, color: "text-[#00ff66]" },
     { to: "/memorial", label: "Bull's Memorial", icon: Anchor, color: "text-orange-500" },
     { to: "/tribute", label: "Tip Jar", icon: Coins, color: "text-pink-500" },
     { to: "/contact", label: "Contact", icon: MessageSquare, color: "text-green-500" },
@@ -84,6 +86,7 @@ export default function PageWrapper({
 
   return (
     <div className="min-h-screen bg-transparent text-white flex flex-col relative overflow-x-hidden">
+      <SparklesOverlay />
       {/* DESKTOP SIDEBAR (Hidden on mobile) */}
       <aside className="hidden md:flex flex-col w-72 fixed top-0 left-0 bottom-0 bg-black/95 border-r border-white/10 backdrop-blur-2xl z-50 p-6 justify-between select-none overflow-y-auto">
         
@@ -372,7 +375,7 @@ export default function PageWrapper({
                 <img 
                   src="/ocean_tide_logo.png" 
                   alt="OceanTideDrop AI Surfer" 
-                  className="w-44 h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain rounded-2xl drop-shadow-[0_0_25px_rgba(34,211,238,0.2)] hover:drop-shadow-[0_0_45px_rgba(34,211,238,0.5)] transition-all duration-500 hover:scale-[1.02]"
+                  className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 object-contain rounded-2xl drop-shadow-[0_0_30px_rgba(34,211,238,0.25)] hover:drop-shadow-[0_0_50px_rgba(34,211,238,0.55)] transition-all duration-500 hover:scale-[1.03]"
                   referrerPolicy="no-referrer"
                 />
               </div>
