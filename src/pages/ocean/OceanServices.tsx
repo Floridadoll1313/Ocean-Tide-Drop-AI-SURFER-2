@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PageWrapper from '../../components/PageWrapper';
 import OceanBubbles from '../../components/OceanBubbles';
 import OceanChatbot from '../../components/OceanChatbot';
@@ -47,12 +48,12 @@ export default function OceanServices() {
             OCEAN TIDE DROP 
             <span className="text-2xl hidden sm:inline-block" role="img" aria-label="flower">🌺</span>
           </div>
-          <ul className="hidden md:flex items-center gap-8 text-sm font-semibold tracking-wide text-cyan-100/70">
+          <ul className="hidden md:flex items-center gap-8 text-sm font-semibold tracking-wide text-cyan-100/70 justify-between select-none p-0 list-none m-0">
             <li className="text-cyan-400 cursor-pointer">Services</li>
-            <li className="hover:text-cyan-400 transition-colors cursor-pointer" onClick={() => window.location.href = '/ocean'}>Free Tools</li>
-            <li className="hover:text-cyan-400 transition-colors cursor-pointer" onClick={() => window.location.href = '/ocean-cases'}>Success Stories</li>
-            <li className="hover:text-cyan-400 transition-colors cursor-pointer" onClick={() => window.location.href = '/ocean-reports'}>Surf Reports</li>
-            <li className="hover:text-cyan-400 transition-colors cursor-pointer" onClick={() => window.location.href = '/ocean-contact'}>Contact</li>
+            <li><Link className="hover:text-cyan-400 transition-colors cursor-pointer" to="/ocean">Free Tools</Link></li>
+            <li><Link className="hover:text-cyan-400 transition-colors cursor-pointer" to="/ocean-cases">Success Stories</Link></li>
+            <li><Link className="hover:text-cyan-400 transition-colors cursor-pointer" to="/ocean-reports">Surf Reports</Link></li>
+            <li><Link className="hover:text-cyan-400 transition-colors cursor-pointer" to="/ocean-contact">Contact</Link></li>
           </ul>
         </nav>
 
