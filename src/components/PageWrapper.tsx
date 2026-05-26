@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star, Moon, Sun, Search, Command, Coins } from "lucide-react";
+import { Menu, X, Home as HomeIcon, Briefcase, Layers, MessageSquare, LayoutDashboard, Anchor, Users, Calendar as CalendarIcon, Twitter, Linkedin, Instagram, MapPin, Star, Moon, Sun, Search, Command, Coins, Waves, BookOpen, Target, Calculator, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import AIAssistant from "./AIAssistant";
 import SparklesOverlay from "./SparklesOverlay";
@@ -79,6 +79,14 @@ export default function PageWrapper({
     { to: "/reviews", label: "Reviews", icon: Star, color: "text-yellow-400" },
     { to: "/founders", label: "Founders", icon: Users, color: "text-emerald-500" },
     { to: "/create", label: "C.R.E.A.T.E.", icon: Command, color: "text-[#00ff66]" },
+    { to: "/surfer", label: "AI Surfer", icon: Anchor, color: "text-[#39ff14]" },
+    { to: "/ocean", label: "Tide Drop", icon: Waves, color: "text-cyan-400" },
+    { to: "/ocean-services", label: "Ocean Services", icon: Layers, color: "text-blue-400" },
+    { to: "/ocean-reports", label: "Surf Reports", icon: BookOpen, color: "text-teal-400" },
+    { to: "/ocean-cases", label: "Success Stories", icon: Target, color: "text-orange-400" },
+    { to: "/ocean-roi", label: "ROI Calculator", icon: Calculator, color: "text-indigo-400" },
+    { to: "/ocean-contact", label: "Contact Us", icon: Mail, color: "text-pink-400" },
+    { to: "/commander", label: "Commander", icon: Command, color: "text-[#00ff66]" },
     { to: "/memorial", label: "Bull's Memorial", icon: Anchor, color: "text-orange-500" },
     { to: "/tribute", label: "Tip Jar", icon: Coins, color: "text-pink-500" },
     { to: "/contact", label: "Contact", icon: MessageSquare, color: "text-green-500" },

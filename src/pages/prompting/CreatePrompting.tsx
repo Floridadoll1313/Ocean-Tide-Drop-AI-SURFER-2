@@ -100,9 +100,7 @@ export default function CreatePrompting() {
       <div className="relative min-h-[calc(100vh-4rem)] w-full flex flex-col items-center select-none" style={{ background: 'linear-gradient(135deg, #07020d 0%, #110524 100%)' }}>
         
         {/* Style Blocks */}
-        <style dangerouslySetInnerHTML={{ __html: `
-          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;900&display=swap');
-          
+        <style>{`
           .font-orbitron { font-family: 'Orbitron', 'Inter', sans-serif; }
           .font-mono { font-family: 'JetBrains Mono', monospace; }
           
@@ -155,7 +153,7 @@ export default function CreatePrompting() {
           .accordion-item.active .accordion-icon {
             transform: rotate(180deg);
           }
-        `}} />
+        `}</style>
 
         {/* Blueprint Grid Overlay */}
         <div className="absolute inset-0 z-0 pointer-events-none" style={{
