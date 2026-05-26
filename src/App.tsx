@@ -26,6 +26,14 @@ import Reviews from './pages/reviews/Reviews';
 import Support from './pages/support/Support';
 import Tribute from './pages/tribute/Tribute';
 import CreatePrompting from './pages/prompting/CreatePrompting';
+import AISurfer from './pages/surfer/AISurfer';
+import NodeCommander from './pages/commander/NodeCommander';
+import OceanTideDrop from './pages/ocean/OceanTideDrop';
+import OceanServices from './pages/ocean/OceanServices';
+import OceanSurfReports from './pages/ocean/OceanSurfReports';
+import OceanCaseStudies from './pages/ocean/OceanCaseStudies';
+import OceanROICalculator from './pages/ocean/OceanROICalculator';
+import OceanContact from './pages/ocean/OceanContact';
 
 function App() {
   return (
@@ -39,6 +47,14 @@ function App() {
           <Route path="/tipjar" element={<Tribute />} />
           <Route path="/tribute" element={<Tribute />} />
           <Route path="/create" element={<CreatePrompting />} />
+          <Route path="/surfer" element={<AISurfer />} />
+          <Route path="/commander" element={<NodeCommander />} />
+          <Route path="/ocean" element={<OceanTideDrop />} />
+          <Route path="/ocean-services" element={<OceanServices />} />
+          <Route path="/ocean-reports" element={<OceanSurfReports />} />
+          <Route path="/ocean-cases" element={<OceanCaseStudies />} />
+          <Route path="/ocean-roi" element={<OceanROICalculator />} />
+          <Route path="/ocean-contact" element={<OceanContact />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/pricing/:slug" element={<PricingDetail />} />
           <Route path="/members" element={<Members />} />
