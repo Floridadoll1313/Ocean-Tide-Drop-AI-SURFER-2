@@ -106,10 +106,10 @@ export default function Memorial() {
             <div className="absolute bottom-12 left-12 right-12 z-20">
               <div className="flex items-center gap-3 text-cyan-400 mb-2">
                 <MapPin className="w-4 h-4 animate-bounce" />
-                <span className="text-xs font-black uppercase tracking-[0.2em] text-shadow-sm">Charleston, South Carolina</span>
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-shadow-sm">Hatteras Island ➔ Charleston</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-black italic uppercase text-white tracking-tighter">Johnny Burgess Hooper</h2>
-              <p className="text-cyan-300/80 text-sm font-black uppercase tracking-widest mt-2 font-mono">"Bull" — Anchored in Charleston harbor & shores</p>
+              <p className="text-cyan-300/80 text-sm font-black uppercase tracking-widest mt-2 font-mono">"Bull" — Salvo Sound & Charleston Shores</p>
             </div>
           </motion.div>
 
@@ -127,6 +127,25 @@ export default function Memorial() {
               <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter font-orbitron">Lowcountry Masterclass Integrity</h3>
               <p className="text-white/70 text-base leading-relaxed font-sans">
                 Johnny "Bull" Burgess Hooper was a cornerstone of the coastal surfer community. Operating primarily out of Charleston, South Carolina, his master carpentry hands raised resilient beach homes and coastal landmarks engineered to stand strong against the fierce Atlantic ocean storms. Every rafter, joist, and deck he framed is a testament to honest craftsmanship.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="glass-card p-10 rounded-[3rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-950/25 via-zinc-900/40 to-zinc-950/60 relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 p-8 opacity-[0.04]">
+                <Waves className="w-24 h-24 text-cyan-400 animate-pulse" />
+              </div>
+              <MapPin className="w-8 h-8 text-cyan-400 mb-6" />
+              <h3 className="text-2xl font-black italic uppercase text-white mb-4 tracking-tighter font-orbitron">Hatteras Sound & Salvo Sanctuary</h3>
+              <p className="text-white/80 text-base leading-relaxed font-sans">
+                Bull didn’t just construct shelters; he was bonded with the shifting sand and tides of the Outer Banks. On beautiful <span className="font-extrabold text-cyan-300">Hatteras Island</span>, he built coastal retreats and lived on the calm sound in <span className="font-extrabold text-cyan-300">Salvo</span>, directly across from <span className="font-bold text-white">Sand Street</span>. For 13 beautiful, unforgettable years, we shared a life together in that wind-swept sanctuary.
+              </p>
+              <p className="text-white/60 text-xs mt-4 leading-relaxed font-mono uppercase tracking-wider border-t border-white/5 pt-4">
+                Now, carrying his unyielding spirit, I build this business in Charleston, SC, as a living tribute to his ocean mastery.
               </p>
             </motion.div>
 
