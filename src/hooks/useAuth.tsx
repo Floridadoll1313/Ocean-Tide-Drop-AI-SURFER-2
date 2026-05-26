@@ -9,7 +9,7 @@ interface UserData {
   displayName?: string;
   role?: string;
   subscriptionStatus?: 'none' | 'active' | 'canceled';
-  tier?: 'basic' | 'premium' | 'enterprise';
+  tier?: 'none' | 'basic' | 'premium' | 'enterprise';
   photoURL?: string;
 }
 
@@ -57,28 +57,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUserData(null);
         setLoading(false);
       } else {
-        // Listen to user document in Firestore
         const userDocRef = doc(db, 'users', currentUser.uid);
         unsubscribeFirestore = onSnapshot(userDocRef, async (docSnap) => {
           if (docSnap.exists()) {
-            setUserData(docSnap.data() as UserData);
+            const data = docSnap.data() as UserData;
+            setUserData({
+              ...data,
+              subscriptionStatus: data.subscriptionStatus || 'none',
+              tier: data.subscriptionStatus === 'active' ? (data.tier || 'basic') : 'none'
+            });
             setLoading(false);
           } else {
-            // Default userData if document doesn't exist yet
             const defaultUser: UserData = {
               uid: currentUser.uid,
               email: currentUser.email || '',
               displayName: currentUser.displayName || '',
               photoURL: currentUser.photoURL || '',
               subscriptionStatus: 'none',
-              role: 'user', // required by rules
-              tier: 'basic'
+              role: 'user',
+              tier: 'none'
             };
             try {
               await setDoc(userDocRef, defaultUser);
             } catch (err: unknown) {
               console.error("Error creating default user doc in firestore:", err);
-              // Fallback to setting local state if write fails or isn't completed yet
               setUserData(defaultUser);
               setLoading(false);
             }
