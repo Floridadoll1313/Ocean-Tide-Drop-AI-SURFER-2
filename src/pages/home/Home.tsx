@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PageWrapper from "../../components/PageWrapper";
+import { useAuth } from "../../hooks/useAuth";
 import { motion } from "motion/react";
 import { 
   Waves, Bot, Cpu, Headset, 
@@ -12,8 +13,29 @@ import {
 import cyberSurferWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
 
 export default function Home() {
+  const { user, loginWithGoogle } = useAuth();
+
   return (
     <PageWrapper maxWidth="max-w-screen-2xl" showHero={false}>
+      {/* ⚡ Sly / Sleek Top Join Bar */}
+      <div className="w-full flex justify-end items-center px-6 pt-6 relative z-30 max-w-6xl mx-auto -mb-8">
+        {!user ? (
+          <button
+            onClick={() => loginWithGoogle(false)}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black uppercase text-[10px] tracking-[0.2em] hover:brightness-110 md:hover:scale-105 transition-all shadow-[0_0_20px_rgba(6,182,212,0.35)] cursor-pointer"
+          >
+            <span>✨ Join Now</span>
+          </button>
+        ) : (
+          <Link
+            to="/members"
+            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-cyan-400 hover:bg-cyan-500/10 font-black uppercase text-[10px] tracking-[0.2em] transition-all"
+          >
+            <span>🌊 Members Dashboard</span>
+          </Link>
+        )}
+      </div>
+
       {/* 🌊 HERO SECTION */}
       <div className="flex flex-col items-center text-center max-w-6xl mx-auto relative mt-16 px-6">
         
