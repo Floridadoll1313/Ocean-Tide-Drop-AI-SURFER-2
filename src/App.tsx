@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './hooks/useAuth';
 import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/home/Home';
@@ -44,12 +44,15 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services" element={<Services />} />
-          <Route path="/tipjar" element={<Tribute />} />
+          <Route path="/tipjar" element={<Navigate to="/tip-jar" replace />} />
+          <Route path="/tip-jar" element={<Tribute />} />
           <Route path="/tribute" element={<Tribute />} />
           <Route path="/create" element={<CreatePrompting />} />
           <Route path="/surfer" element={<AISurfer />} />
+          <Route path="/ai-surfer" element={<AISurfer />} />
           <Route path="/commander" element={<NodeCommander />} />
           <Route path="/ocean" element={<OceanTideDrop />} />
+          <Route path="/ai-surfer-ocean-tide-drop" element={<Navigate to="/ocean" replace />} />
           <Route path="/ocean-services" element={<OceanServices />} />
           <Route path="/ocean-reports" element={<OceanSurfReports />} />
           <Route path="/ocean-cases" element={<OceanCaseStudies />} />
@@ -58,6 +61,9 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/pricing/:slug" element={<PricingDetail />} />
           <Route path="/members" element={<Members />} />
+          <Route path="/dashboard" element={<Navigate to="/members" replace />} />
+          <Route path="/ai-dashboard" element={<Navigate to="/members" replace />} />
+          <Route path="/oas-6" element={<Navigate to="/members" replace />} />
           <Route path="/members/monetization" element={<Monetization />} />
           <Route path="/members/sync" element={<Workspace />} />
           <Route path="/members/tool/:toolId" element={<ToolInterface />} />
@@ -74,6 +80,7 @@ function App() {
           <Route path="/mcp" element={<Mcp />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/support" element={<Support />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </AuthProvider>
