@@ -51,11 +51,16 @@ export default function Pricing() {
 
     if (!activeUser) {
       try {
-        await loginWithGoogle();
+        activeUser = await loginWithGoogle();
       } catch {
         setError("Sign-in failed. Open the site in a full browser tab and try again.");
         return;
       }
+    }
+
+    if (!activeUser) {
+      setError("Please sign in before starting checkout so your membership can be attached to your account.");
+      return;
     }
 
     setLoadingTier(tier.slug);
@@ -64,8 +69,8 @@ export default function Pricing() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: activeUser?.uid || user?.uid,
-          email: activeUser?.email || user?.email,
+          userId: activeUser.uid,
+          email: activeUser.email,
           tierId: tier.slug,
         }),
       });
