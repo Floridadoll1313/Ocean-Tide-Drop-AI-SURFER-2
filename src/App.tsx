@@ -1,8 +1,9 @@
 // src/App.tsx
 import React from 'react';
-import './App.css'; // Assuming you have an App.css file
-import AuthStatus from './AuthStatus'; // Import the AuthStatus component
-import SignUpForm from './SignUpForm'; // Import the SignUpForm component
+import './App.css';
+import AuthStatus from './AuthStatus';
+import SignUpForm from './SignUpForm';
+import SignInForm from './SignInForm'; // <--- Import the SignInForm component
 
 function App() {
   return (
@@ -17,8 +18,8 @@ function App() {
         {/* The SignUpForm component allows new users to register */}
         <SignUpForm />
 
-        {/* You can add a SignInForm component here later if you create one */}
-        {/* <SignInForm /> */}
+        {/* The SignInForm component allows existing users to log in */}
+        <SignInForm /> {/* <--- Render the SignInForm component here */}
 
         {/* Other parts of your application will go below here */}
       </main>
