@@ -25,7 +25,7 @@ export default function Monetization() {
   const [loading, setLoading] = useState<string | null>(null);
   const [tiers, setTiers] = useState<PricingTier[]>(fallbackTiers);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
+  const { user, loginWithGoogle } = useAuth();
 
   useEffect(() => {
     fetch("/api/pricing-tiers")
@@ -44,12 +44,28 @@ export default function Monetization() {
 
   const handleCheckout = async (tierId: string) => {
     setError(null);
+    let activeUser = user;
+
+    if (!activeUser) {
+      try {
+        activeUser = await loginWithGoogle();
+      } catch {
+        setError("Sign-in failed. Open the site in a full browser tab and try again.");
+        return;
+      }
+    }
+
+    if (!activeUser) {
+      setError("Please sign in before starting checkout so your membership can be attached to your account.");
+      return;
+    }
+
     setLoading(tierId);
     try {
       const response = await fetch("/api/stripe/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tierId, userId: user?.uid || null, email: user?.email || null }),
+        body: JSON.stringify({ tierId, userId: activeUser.uid, email: activeUser.email }),
       });
       const data = await response.json();
       if (response.ok && data.url) {
@@ -110,7 +126,7 @@ export default function Monetization() {
                   {tier.features.map((feature) => <div key={feature} className="flex items-start gap-3"><CheckCircle2 className="w-3.5 h-3.5 text-zinc-700 shrink-0 mt-0.5" /><span className="text-[10px] font-medium text-zinc-400 leading-tight uppercase tracking-widest">{feature}</span></div>)}
                 </div>
                 <button onClick={() => handleCheckout(tier.id)} disabled={loading !== null} className={`w-full py-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3 ${tier.popular ? 'bg-white text-black hover:bg-cyan-400' : 'bg-zinc-900 text-white border border-white/10 hover:border-white/30'}`}>
-                  {loading === tier.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <>Secure Checkout <ArrowUpRight className="w-3 h-3" /></>}
+                  {loading === tier.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <>{user ? "Secure Checkout" : "Sign In to Checkout"} <ArrowUpRight className="w-3 h-3" /></>}
                 </button>
               </div>
             ))}
