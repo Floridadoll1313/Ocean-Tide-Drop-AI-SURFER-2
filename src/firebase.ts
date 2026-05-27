@@ -1,34 +1,37 @@
 // src/firebase.ts
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, GoogleAuthProvider } from "firebase/auth"; // <--- Add GoogleAuthProvider
-import { getFirestore } from "firebase/firestore"; // <--- Add getFirestore for later
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-// Your web app's Firebase configuration
+// Your web app's Firebase configuration, using the provided details
 const firebaseConfig = {
-  apiKey: "AIzaSyDi-h1ccOtyFq3h2uWq037pPiE76fX4wNk",
-  authDomain: "otdaisurfer-org.firebaseapp.com",
-  projectId: "otdaisurfer-org",
-  storageBucket: "otdaisurfer-org.firebasestorage.app",
-  messagingSenderId: "534903080702",
-  appId: "1:534903080702:web:b392690ad1468185d987af",
-  measurementId: "G-HGSEPKW1L4"
+  apiKey: "AIzaSyB-ESc7O76NImSsdspCWIP6zygLwuWkDm0", // Updated API Key
+  authDomain: "otd-ai-surfer.firebaseapp.com",
+  projectId: "otd-ai-surfer",
+  storageBucket: "otd-ai-surfer.firebasestorage.app",
+  messagingSenderId: "46473040430",
+  appId: "1:46473040430:web:8438a456c93831be0605bf",
+  // If you are using analytics, you might have a measurementId here as well
+  // measurementId: "G-XXXXXXXXXX"
 };
 
 // Initialize Firebase App
 const app = initializeApp(firebaseConfig);
 
 // Initialize Analytics (if you're using it)
+// Be aware that getAnalytics might throw an error if the measurementId is missing
+// or if it's not correctly set up in the Firebase Console for this app.
 const analytics = getAnalytics(app);
 
 // Initialize Firebase Authentication
 const auth = getAuth(app);
 
-// Initialize Google Auth Provider <--- Add this
+// Initialize Google Auth Provider
 const googleProvider = new GoogleAuthProvider();
 
-// Initialize Cloud Firestore <--- Add this for later
+// Initialize Cloud Firestore
 const db = getFirestore(app);
 
 // Export all initialized services and providers
-export { app, analytics, auth, googleProvider, db }; // <--- Update this export
+export { app, analytics, auth, googleProvider, db };
