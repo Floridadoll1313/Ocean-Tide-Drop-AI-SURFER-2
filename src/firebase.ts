@@ -1,7 +1,8 @@
 // src/firebase.ts
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth"; // <--- Add this import
+import { getAuth, GoogleAuthProvider } from "firebase/auth"; // <--- Add GoogleAuthProvider
+import { getFirestore } from "firebase/firestore"; // <--- Add getFirestore for later
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -20,8 +21,14 @@ const app = initializeApp(firebaseConfig);
 // Initialize Analytics (if you're using it)
 const analytics = getAnalytics(app);
 
-// Initialize Firebase Authentication <--- Add this line
+// Initialize Firebase Authentication
 const auth = getAuth(app);
 
-// Export the initialized 'app', 'analytics', AND 'auth' so other files can use them
-export { app, analytics, auth }; // <--- Update this export
+// Initialize Google Auth Provider <--- Add this
+const googleProvider = new GoogleAuthProvider();
+
+// Initialize Cloud Firestore <--- Add this for later
+const db = getFirestore(app);
+
+// Export all initialized services and providers
+export { app, analytics, auth, googleProvider, db }; // <--- Update this export
