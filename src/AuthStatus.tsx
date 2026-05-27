@@ -1,23 +1,11 @@
 // src/AuthStatus.tsx
-import React, { useState, useEffect } from 'react';
-import { auth } from './firebase'; // Import the auth instance
-import { User, onAuthStateChanged, signOut } from 'firebase/auth'; // Import specific auth functions
+import React from 'react';
+import { auth } from './firebase';
+import { signOut } from 'firebase/auth';
+import useAuthStatus from './hooks/useAuthStatus'; // Import the custom hook
 
 const AuthStatus: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // This listener observes changes to the user's sign-in state.
-    // It's crucial for knowing if a user is logged in or out.
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-
-    // Cleanup the listener when the component unmounts
-    return () => unsubscribe();
-  }, []);
+  const { user, loading } = useAuthStatus(); // Use the custom hook
 
   const handleSignOut = async () => {
     try {
@@ -40,8 +28,7 @@ const AuthStatus: React.FC = () => {
           <button onClick={handleSignOut}>Sign Out</button>
         </div>
       ) : (
-        <p>You are not signed in. Please sign in to continue.</p>
-        // Here you would typically have a link or button to your sign-in page
+        <p>You are not signed in.</p>
       )}
     </div>
   );
