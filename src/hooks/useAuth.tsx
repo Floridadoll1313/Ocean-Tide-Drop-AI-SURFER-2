@@ -20,7 +20,7 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   setError: (error: string | null) => void;
-  loginWithGoogle: (requestWorkspaceScopes?: boolean) => Promise<void>;
+  loginWithGoogle: (requestWorkspaceScopes?: boolean) => Promise<User | null>;
   logout: () => Promise<void>;
 }
 
@@ -31,7 +31,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   error: null,
   setError: () => {},
-  loginWithGoogle: async () => {},
+  loginWithGoogle: async () => null,
   logout: async () => {}
 });
 
@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const loginWithGoogle = async (requestWorkspaceScopes = false) => {
+  const loginWithGoogle = async (requestWorkspaceScopes = false): Promise<User | null> => {
     try {
       setError(null);
       const provider = new GoogleAuthProvider();
@@ -122,6 +122,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (credential?.accessToken) {
         setAccessToken(credential.accessToken);
       }
+      setUser(result.user);
+      return result.user;
     } catch (err: unknown) {
       console.error("Error signing in with Google:", err);
       const errorMessage = err instanceof Error ? err.message : String(err);
