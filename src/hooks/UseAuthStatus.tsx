@@ -1,26 +1,37 @@
-// src/hooks/useAuthStatus.ts
-import { useState, useEffect } from 'react';
-import { auth } from '../firebase';
-import { User, onAuthStateChanged } from 'firebase/auth';
+// src/AuthStatus.tsx
+import React from 'react';
+import { auth } from './firebase';
+import { signOut } from 'firebase/auth';
+import useAuthStatus from './hooks/useAuthStatus'; // Import the custom hook
 
-interface AuthStatusHook {
-  user: User | null;
-  loading: boolean;
-}
+const AuthStatus: React.FC = () => {
+  const { user, loading } = useAuthStatus(); // Use the custom hook
 
-const useAuthStatus = (): AuthStatusHook => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      console.log('User signed out successfully!');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
+  if (loading) {
+    return <p>Loading authentication status...</p>;
+  }
 
-  return { user, loading };
+  return (
+    <div>
+      {user ? (
+        <div>
+          <p>Welcome, {user.email}!</p>
+          <button onClick={handleSignOut}>Sign Out</button>
+        </div>
+      ) : (
+        <p>You are not signed in.</p>
+      )}
+    </div>
+  );
 };
 
-export default useAuthStatus;
+export default AuthStatus;
