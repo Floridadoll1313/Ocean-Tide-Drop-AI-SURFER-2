@@ -20,7 +20,7 @@ Ocean Tide Drop AI SURFER is a cinematic React + Vite + TypeScript site for the 
 - Firebase Admin SDK on the server
 - Stripe checkout + webhook support
 - Gemini API support through `@google/genai`
-- GitHub Actions / SonarCloud workflow
+- GitHub Actions
 
 ## Main app files
 
@@ -149,5 +149,5 @@ If deploying the Express server, ensure the production platform runs `server.ts`
 
 ## Current readiness notes
 
-See `docs/production-readiness-checklist.md` for the remaining production checklist.
+See `docs/production-readiness-` for the remaining production checklist.
 See `docs/site-audit-2026-05-26.md` for the route/member/payment audit and fixes.
