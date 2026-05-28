@@ -9,7 +9,7 @@ interface UserData {
   displayName?: string;
   role?: string;
   subscriptionStatus?: 'none' | 'active' | 'canceled';
-  tier?: 'basic' | 'premium' | 'enterprise';
+  tier?: 'none' | 'basic' | 'premium' | 'enterprise';
   photoURL?: string;
 }
 
@@ -20,7 +20,7 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   setError: (error: string | null) => void;
-  loginWithGoogle: (requestWorkspaceScopes?: boolean) => Promise<void>;
+  loginWithGoogle: (requestWorkspaceScopes?: boolean) => Promise<User | null>;
   logout: () => Promise<void>;
 }
 
@@ -31,7 +31,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   error: null,
   setError: () => {},
-  loginWithGoogle: async () => {},
+  loginWithGoogle: async () => null,
   logout: async () => {}
 });
 
@@ -57,28 +57,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUserData(null);
         setLoading(false);
       } else {
-        // Listen to user document in Firestore
         const userDocRef = doc(db, 'users', currentUser.uid);
         unsubscribeFirestore = onSnapshot(userDocRef, async (docSnap) => {
           if (docSnap.exists()) {
-            setUserData(docSnap.data() as UserData);
+            const data = docSnap.data() as UserData;
+            setUserData({
+              ...data,
+              subscriptionStatus: data.subscriptionStatus || 'none',
+              tier: data.subscriptionStatus === 'active' ? (data.tier || 'basic') : 'none'
+            });
             setLoading(false);
           } else {
-            // Default userData if document doesn't exist yet
             const defaultUser: UserData = {
               uid: currentUser.uid,
               email: currentUser.email || '',
               displayName: currentUser.displayName || '',
               photoURL: currentUser.photoURL || '',
               subscriptionStatus: 'none',
-              role: 'user', // required by rules
-              tier: 'basic'
+              role: 'user',
+              tier: 'none'
             };
             try {
               await setDoc(userDocRef, defaultUser);
             } catch (err: unknown) {
               console.error("Error creating default user doc in firestore:", err);
-              // Fallback to setting local state if write fails or isn't completed yet
               setUserData(defaultUser);
               setLoading(false);
             }
@@ -97,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const loginWithGoogle = async (requestWorkspaceScopes = false) => {
+  const loginWithGoogle = async (requestWorkspaceScopes = false): Promise<User | null> => {
     try {
       setError(null);
       const provider = new GoogleAuthProvider();
@@ -120,6 +122,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (credential?.accessToken) {
         setAccessToken(credential.accessToken);
       }
+      setUser(result.user);
+      return result.user;
     } catch (err: unknown) {
       console.error("Error signing in with Google:", err);
       const errorMessage = err instanceof Error ? err.message : String(err);
