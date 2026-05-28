@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { db } from "../../lib/firebase";
 import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp, Timestamp } from "firebase/firestore";
@@ -268,6 +268,15 @@ export default function Members() {
   if (!activeUser) {
     return (
       <PageWrapper>
+        {/* Sleek Top Join Bar */}
+        <div className="w-full flex justify-end items-center px-6 pt-4 relative z-30 max-w-2xl mx-auto -mb-4">
+          <button
+            onClick={() => loginWithGoogle(false)}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black uppercase text-[10px] tracking-[0.2em] hover:brightness-110 md:hover:scale-105 transition-all shadow-[0_0_20px_rgba(6,182,212,0.35)] cursor-pointer"
+          >
+            <span>✨ Join Now</span>
+          </button>
+        </div>
         <div className="flex flex-col items-center justify-center p-12 text-center max-w-2xl mx-auto border border-cyan-500/10 bg-zinc-950/40 rounded-[3rem] backdrop-blur-md relative mt-12 py-20 overflow-hidden">
           {/* Subtle background glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-cyan-500/10 blur-[80px] rounded-full pointer-events-none"></div>
@@ -332,6 +341,15 @@ export default function Members() {
 
   return (
     <PageWrapper maxWidth="max-w-7xl" showHero={false} showLargeLogo={false}>
+      {/* Sleek Top Join/Upgrade Bar */}
+      <div className="w-full flex justify-end items-center px-6 pt-4 relative z-30 max-w-7xl mx-auto -mb-8">
+        <Link
+          to="/pricing"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black uppercase text-[10px] tracking-[0.2em] hover:brightness-110 md:hover:scale-105 transition-all shadow-[0_0_20px_rgba(6,182,212,0.35)]"
+        >
+          <span>⭐ Join Premium Tiers</span>
+        </Link>
+      </div>
       <div className="flex flex-col w-full relative">
         {/* SOULFUL DECORATION */}
         <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none"></div>

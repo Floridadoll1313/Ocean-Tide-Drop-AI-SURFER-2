@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, X, Send } from 'lucide-react';
+import { X, Send } from 'lucide-react';
 
 export default function OceanChatbot() {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PageWrapper from "../../components/PageWrapper";
 import { useAuth } from "../../hooks/useAuth";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { collection, query, where, orderBy, onSnapshot, Timestamp } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { CreditCard, Package, History, ShieldCheck, Clock } from "lucide-react";
@@ -163,7 +163,7 @@ export default function Profile() {
                 <div className="text-center py-12 border border-dashed border-white/10 rounded-2xl bg-black/20">
                   <Clock className="w-10 h-10 text-white/20 mx-auto mb-4" />
                   <p className="text-white/40 text-sm">No payment history found.</p>
-                  <a href="/pricing" className="mt-4 inline-block text-[#00eaff] text-[10px] font-black uppercase tracking-[0.2em] hover:underline">View Tiers</a>
+                  <Link to="/pricing" className="mt-4 inline-block text-[#00eaff] text-[10px] font-black uppercase tracking-[0.2em] hover:underline">View Tiers</Link>
                 </div>
               ) : (
                 <div className="space-y-4">
