@@ -1,18 +1,10 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyB-ESc7O76NImSsdspCWIP6zygLwuWkDm0",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "otd-ai-surfer.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "otd-ai-surfer",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "otd-ai-surfer.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "46473040430",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:46473040430:web:8438a456c93831be0605bf",
-};
+import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+export const db = getFirestore(app, (firebaseConfig as any).firestoreDatabaseId);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('https://www.googleapis.com/auth/calendar');

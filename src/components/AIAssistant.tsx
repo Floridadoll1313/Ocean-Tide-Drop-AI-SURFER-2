@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageSquare, X, Send, Sparkles, Mic, MicOff } from 'lucide-react';
+import { MessageSquare, X, Send, Sparkles, Mic, MicOff, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 
@@ -30,8 +30,8 @@ interface SpeechErrorEvent {
 export default function AIAssistant() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<{role: 'user' | 'assistant', content: string}[]>([
-    { role: 'assistant', content: "Hello! I am your AI Surfer guide. Try my new Voice-To-Text feature or tap simulated shortcut commands to trigger custom workflows!" }
+  const [messages, setMessages] = useState<{role: 'user' | 'assistant', content: string, image?: string}[]>([
+    { role: 'assistant', content: "Hello! I am your AI Surfer guide. Try my new Voice-To-Text feature, tap simulated shortcuts, or ask me to 'generate image of [something]'!" }
   ]);
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -224,9 +224,25 @@ export default function AIAssistant() {
 
     if (text.includes("query tools") || text.includes("list tools") || text.includes("list commands") || text.includes("help") || text.includes("tool")) {
       return {
-        reply: "Active platform tools matching queries:\n1. Tribute Jar Panel (preset bids or custom donations with simulation and progress goal tracking)\n2. VIP Badge Minter (digital cryptographic status)\n3. Custom Synth Soundboard (High Tide, Deep Swell, Coral Reef oscillators)\n4. Waveform diagnostics scanner (SVG osc curve tuning)",
+        reply: "Active platform tools matching queries:\n1. Tribute Jar Panel (preset bids or custom donations with simulation and progress goal tracking)\n2. VIP Badge Minter (digital cryptographic status)\n3. Custom Synth Soundboard (High Tide, Deep Swell, Coral Reef oscillators)\n4. Waveform diagnostics scanner (SVG osc curve tuning)\n5. Visual Image Generation (e.g., 'generate image of cyber surfer')",
         workflow: "Core Diagnostics ➔ List Query Tools"
       };
+    }
+
+    if (text.startsWith("generate image of ") || text.startsWith("create image of ") || text.startsWith("draw ") || text.startsWith("generate ")) {
+      const match = text.match(/^(?:generate image of|create image of|draw|generate)\s+(.+)/i);
+      if (match && match[1]) {
+        const prompt = match[1].trim();
+        const encodedPrompt = encodeURIComponent(prompt + ", high quality, cinematic, 8k resolution, vaporwave, cyberpunk aesthetics");
+        // We use Pollinations AI for free, on-the-fly image generation without an API key
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=400&nologo=true`;
+        
+        return {
+          reply: `Synthesizing visual pattern based on your neural prompt: "${prompt}"... Rendering 8K display matrix.`,
+          workflow: "Visual Synthesis ➔ Image Generation",
+          image: imageUrl
+        };
+      }
     }
 
     return null;
@@ -244,7 +260,8 @@ export default function AIAssistant() {
           ...prev, 
           { 
             role: 'assistant', 
-            content: `🤖 VOICE TRIGGERED: ${commandResult.workflow}\n\n${commandResult.reply}` 
+            content: `🤖 VOICE TRIGGERED: ${commandResult.workflow}\n\n${commandResult.reply}`,
+            image: commandResult.image
           }
         ]);
       } else {
@@ -343,7 +360,8 @@ export default function AIAssistant() {
           ...prev, 
           { 
             role: 'assistant', 
-            content: `🤖 WORKFLOW TRIGGERED: ${commandResult.workflow}\n\n${commandResult.reply}` 
+            content: `🤖 WORKFLOW TRIGGERED: ${commandResult.workflow}\n\n${commandResult.reply}`,
+            image: commandResult.image
           }
         ]);
       } else {
@@ -429,6 +447,11 @@ export default function AIAssistant() {
                  <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[85%] p-3 rounded-2xl text-xs ${m.role === 'user' ? 'bg-cyan-400 text-black rounded-tr-none font-bold' : 'bg-white/10 text-white rounded-tl-none whitespace-pre-wrap leading-relaxed'}`}>
                        {m.content}
+                       {m.image && (
+                         <div className="mt-3 overflow-hidden rounded-lg border border-cyan-500/30 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                           <img src={m.image} alt="Generated UI" className="w-full h-auto block" referrerPolicy="no-referrer" loading="lazy" />
+                         </div>
+                       )}
                     </div>
                  </div>
                ))}
@@ -471,6 +494,26 @@ export default function AIAssistant() {
                  {isListening ? <MicOff className="w-4 h-4 animate-pulse" /> : <Mic className="w-4 h-4" />}
                </button>
 
+               <label className="w-9 h-9 rounded-full bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 flex items-center justify-center shrink-0 transition-all cursor-pointer" title="Simulate Image Upload">
+                 <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        const fakeUrl = URL.createObjectURL(e.target.files[0]);
+                        setMessages(prev => [...prev, { role: 'user', content: `Attached Image: ${e.target.files![0].name}`, image: fakeUrl }]);
+                        setIsThinking(true);
+                        setTimeout(() => {
+                           setIsThinking(false);
+                           setMessages(prev => [...prev, { role: 'assistant', content: `🤖 VISION MATRIX: I've scanned your image upload. The visual data has been processed. Would you like me to extract insights or create a similar 'generated' asset?` }]);
+                        }, 1300);
+                      }
+                    }} 
+                 />
+                 <ImageIcon className="w-4 h-4" />
+               </label>
+               
                <input 
                  value={input}
                  onChange={e => setInput(e.target.value)}

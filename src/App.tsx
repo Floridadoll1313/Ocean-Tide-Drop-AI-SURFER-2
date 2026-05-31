@@ -1,10 +1,7 @@
-// src/App.tsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './hooks/useAuth';
 import ScrollToTop from './components/ScrollToTop';
-
-// Pages
 import Home from './pages/home/Home';
 import Contact from './pages/contact/Contact';
 import Services from './pages/services/Services';
@@ -37,8 +34,7 @@ import OceanSurfReports from './pages/ocean/OceanSurfReports';
 import OceanCaseStudies from './pages/ocean/OceanCaseStudies';
 import OceanROICalculator from './pages/ocean/OceanROICalculator';
 import OceanContact from './pages/ocean/OceanContact';
-
-import './App.css';
+import ScanPay from './pages/payment/ScanPay';
 
 function App() {
   return (
@@ -46,46 +42,30 @@ function App() {
       <Router>
         <ScrollToTop />
         <Routes>
-          {/* Core */}
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services" element={<Services />} />
-
-          {/* Tribute / Tip Jar */}
-          <Route path="/tipjar" element={<Navigate to="/tip-jar" replace />} />
-          <Route path="/tip-jar" element={<Tribute />} />
+          <Route path="/tipjar" element={<Tribute />} />
           <Route path="/tribute" element={<Tribute />} />
-
-          {/* AI Tools */}
+          <Route path="/scan-pay" element={<ScanPay />} />
           <Route path="/create" element={<CreatePrompting />} />
           <Route path="/surfer" element={<AISurfer />} />
-          <Route path="/ai-surfer" element={<AISurfer />} />
           <Route path="/commander" element={<NodeCommander />} />
-
-          {/* Ocean / Business Suite */}
-          <Route path="/ai-surfer-ocean-tide-drop" element={<Navigate to="/ocean" replace />} />
           <Route path="/ocean" element={<OceanTideDrop />} />
           <Route path="/ocean-services" element={<OceanServices />} />
           <Route path="/ocean-reports" element={<OceanSurfReports />} />
           <Route path="/ocean-cases" element={<OceanCaseStudies />} />
           <Route path="/ocean-roi" element={<OceanROICalculator />} />
           <Route path="/ocean-contact" element={<OceanContact />} />
-
-          {/* Pricing */}
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/pricing/:slug" element={<PricingDetail />} />
-
-          {/* Members */}
           <Route path="/members" element={<Members />} />
-          <Route path="/dashboard" element={<Navigate to="/members" replace />} />
-          <Route path="/ai-dashboard" element={<Navigate to="/members" replace />} />
-          <Route path="/oas-6" element={<Navigate to="/members" replace />} />
           <Route path="/members/monetization" element={<Monetization />} />
           <Route path="/members/sync" element={<Workspace />} />
           <Route path="/members/tool/:toolId" element={<ToolInterface />} />
-
-          {/* Content */}
           <Route path="/lore" element={<Lore />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
           <Route path="/founders" element={<Founders />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/forecast" element={<Forecast />} />
@@ -93,16 +73,9 @@ function App() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/memorial" element={<Memorial />} />
           <Route path="/reviews" element={<Reviews />} />
-
-          {/* Utility */}
           <Route path="/mcp" element={<Mcp />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/support" element={<Support />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsOfService />} />
-
-          {/* Catch-all */}
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

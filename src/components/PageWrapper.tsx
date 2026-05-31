@@ -18,7 +18,6 @@ export default function PageWrapper({
   showLargeLogo?: boolean
 }) {
   const { user, loading, loginWithGoogle, logout } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,8 +63,6 @@ export default function PageWrapper({
     }
   }, [isSearchOpen]);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
   const isActive = (path: string) => {
     if (path === "/" && location.pathname !== "/") return false;
     return location.pathname.startsWith(path);
@@ -80,12 +77,14 @@ export default function PageWrapper({
     { to: "/founders", label: "Founders", icon: Users, color: "text-emerald-500" },
     { to: "/create", label: "C.R.E.A.T.E.", icon: Command, color: "text-[#00ff66]" },
     { to: "/surfer", label: "AI Surfer", icon: Anchor, color: "text-[#39ff14]" },
+    { to: "/scan-pay", label: "Scan & Pay", icon: Coins, color: "text-green-400" },
     { to: "/ocean", label: "Tide Drop", icon: Waves, color: "text-cyan-400" },
     { to: "/ocean-services", label: "Ocean Services", icon: Layers, color: "text-blue-400" },
     { to: "/ocean-reports", label: "Surf Reports", icon: BookOpen, color: "text-teal-400" },
     { to: "/ocean-cases", label: "Success Stories", icon: Target, color: "text-orange-400" },
     { to: "/ocean-roi", label: "ROI Calculator", icon: Calculator, color: "text-indigo-400" },
     { to: "/ocean-contact", label: "Contact Us", icon: Mail, color: "text-pink-400" },
+    { to: "/pricing", label: "Pricing", icon: Coins, color: "text-yellow-300" },
     { to: "/commander", label: "Commander", icon: Command, color: "text-[#00ff66]" },
     { to: "/memorial", label: "Bull's Memorial", icon: Anchor, color: "text-orange-500" },
     { to: "/tribute", label: "Tip Jar", icon: Coins, color: "text-pink-500" },
@@ -95,8 +94,8 @@ export default function PageWrapper({
   return (
     <div className="min-h-screen bg-transparent text-white flex flex-col relative overflow-x-hidden">
       <SparklesOverlay />
-      {/* DESKTOP SIDEBAR (Hidden on mobile) */}
-      <aside className="hidden md:flex flex-col w-72 fixed top-0 left-0 bottom-0 bg-black/95 border-r border-white/10 backdrop-blur-2xl z-50 p-6 justify-between select-none overflow-y-auto">
+      {/* SIDEBAR (Always on side) */}
+      <aside className="flex flex-col w-64 lg:w-72 fixed top-0 left-0 bottom-0 bg-black/95 border-r border-white/10 backdrop-blur-2xl z-50 p-4 lg:p-6 justify-between select-none overflow-y-auto">
         
         {/* TOP CLUSTER: Logo & Status */}
         <div className="flex flex-col gap-6">
@@ -209,114 +208,6 @@ export default function PageWrapper({
         </div>
       </aside>
 
-      {/* MOBILE NAVBAR (Hidden on desktop) */}
-      <header className="md:hidden w-full fixed top-4 left-0 z-50 flex justify-center px-4">
-        <div className="w-full max-w-6xl backdrop-blur-xl bg-black/50 border border-white/10 rounded-full flex items-center justify-between px-6 py-3 shadow-[0_0_30px_rgba(0,0,0,0.5)] navbar-glow">
-          <Link to="/" className="flex items-center gap-3 relative z-[60]">
-            <div className="w-10 h-10 flex items-center justify-center rounded-sm">
-              <img src="/logo.svg" alt="AI Surfer Logo" className="w-full h-full object-contain drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]" />
-            </div>
-          </Link>
-
-          {/* Mobile Theme & Menu Button */}
-          <div className="md:hidden flex items-center gap-2 relative z-[60]">
-            <button onClick={() => setIsSearchOpen(true)} className="p-2 text-zinc-400 hover:text-white flex items-center" title="Search">
-              <Search className="w-5 h-5" />
-            </button>
-            <button onClick={toggleTheme} className="p-2 text-zinc-400 hover:text-white flex items-center" title="Toggle Theme">
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-            <button 
-              onClick={toggleMenu}
-              className="p-2 text-white"
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20, clipPath: 'circle(0% at 90% 5%)' }}
-            animate={{ opacity: 1, y: 0, clipPath: 'circle(150% at 90% 5%)' }}
-            exit={{ opacity: 0, y: -20, clipPath: 'circle(0% at 90% 5%)' }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl md:hidden overflow-hidden"
-          >
-            <div className="flex flex-col items-center justify-center h-full gap-8 p-6 text-center">
-              <nav className="flex flex-col gap-6">
-                {navLinks.map((link, idx) => (
-                  <motion.div
-                    key={link.to}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + idx * 0.05 }}
-                  >
-                    <Link 
-                      onClick={toggleMenu} 
-                      className={`text-4xl font-black uppercase tracking-tighter transition-all flex items-center justify-center gap-4 ${isActive(link.to) ? 'text-white' : 'text-cyan-400 hover:text-white'}`} 
-                      to={link.to}
-                    >
-                      <link.icon className={`w-8 h-8 ${isActive(link.to) ? link.color : 'text-zinc-700'}`} />
-                      {link.label}
-                      {isActive(link.to) && (
-                        <motion.div 
-                          layoutId="mobileActiveDot"
-                          className="w-2 h-2 rounded-full bg-white ml-2 shadow-[0_0_8px_rgba(255,255,255,0.8)]"
-                        />
-                      )}
-                    </Link>
-                  </motion.div>
-                ))}
-              </nav>
-
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="mt-8 pt-8 border-t border-white/10 w-full max-w-xs flex flex-col gap-4"
-              >
-                {user ? (
-                  <>
-                    <Link onClick={toggleMenu} to="/members/sync" className={`flex items-center justify-center gap-3 transition-opacity ${isActive('/members/sync') ? 'opacity-100' : 'opacity-60'}`}>
-                      <CalendarIcon className="w-6 h-6 text-emerald-400" />
-                      <span className="font-bold">Neural Sync</span>
-                    </Link>
-                    <Link onClick={toggleMenu} to="/profile" className={`flex items-center justify-center gap-3 text-sm transition-opacity ${isActive('/profile') ? 'opacity-100' : 'opacity-60'}`}>
-                      {user.photoURL && <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full border border-white" />}
-                      <span className="font-bold">{user.displayName || "View Profile"}</span>
-                    </Link>
-                    <button 
-                      onClick={() => { if (window.confirm("Are you sure you want to sign out?")) { logout(); toggleMenu(); } }}
-                      className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-black uppercase text-xs tracking-widest"
-                    >
-                      Sign Out
-                    </button>
-                  </>
-                ) : (
-                  <button 
-                    onClick={async () => { 
-                      try {
-                        await loginWithGoogle(false); 
-                        toggleMenu(); 
-                      } catch {
-                        alert("Authentication failed. If you are viewing this in the AI Studio preview, popups may be blocked. Please click the arrow/window icon at the top right to open this app in a new tab and try again.");
-                      }
-                    }}
-                    className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase text-xs tracking-widest"
-                  >
-                    Sign In With Google
-                  </button>
-                )}
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Search Overlay */}
       <AnimatePresence>
         {isSearchOpen && (
@@ -375,7 +266,7 @@ export default function PageWrapper({
       </AnimatePresence>
 
       {/* CONTENT */}
-      <main className="flex-1 pt-32 md:pt-16 pb-20 relative flex flex-col items-center fade-in md:pl-72">
+      <main className="flex-1 pt-12 pb-20 relative flex flex-col items-center fade-in pl-64 lg:pl-72 w-full">
         <div className={`relative ${maxWidth} mx-auto px-6 z-10 w-full`}>
           {showLargeLogo && (
             <div className="flex flex-col items-center mb-16 select-none text-center animate-in fade-in slide-in-from-top-4 duration-1000">
@@ -400,7 +291,7 @@ export default function PageWrapper({
       </main>
 
       {/* FOOTER */}
-      <footer className="relative pt-32 pb-20 text-center text-cyan-200/90 text-sm z-10 shrink-0 mt-auto bg-black md:pl-72">
+      <footer className="relative pt-32 pb-20 text-center text-cyan-200/90 text-sm z-10 shrink-0 mt-auto bg-black pl-64 lg:pl-72 w-full">
         {/* WAVE DIVIDER */}
         <div className="absolute top-0 left-0 w-full overflow-hidden leading-none transform -translate-y-full">
             <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-[calc(100%+1.3px)] h-[50px] relative block">
