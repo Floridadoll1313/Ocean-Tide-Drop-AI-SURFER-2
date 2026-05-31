@@ -17,7 +17,7 @@ interface ToolWork {
 }
 
 export default function Members() {
-  const { user, userData, loading, error, loginWithGoogle } = useAuth();
+  const { user, userData, loading, error, loginWithGoogle, loginAsGuest } = useAuth();
   const navigate = useNavigate();
   const [isDemoSession, setIsDemoSession] = useState(false);
   const [demoTier, setDemoTier] = useState<'basic' | 'premium' | 'enterprise'>('premium');
@@ -269,7 +269,13 @@ export default function Members() {
     return (
       <PageWrapper>
         {/* Sleek Top Join Bar */}
-        <div className="w-full flex justify-end items-center px-6 pt-4 relative z-30 max-w-2xl mx-auto -mb-4">
+        <div className="w-full flex justify-end items-center px-6 pt-4 relative z-30 max-w-2xl mx-auto -mb-4 gap-3">
+          <button
+            onClick={() => loginAsGuest()}
+            className="px-4 py-3 rounded-xl bg-black border border-white/10 text-[#8b80a3] font-black uppercase text-[10px] tracking-[0.2em] hover:text-white transition-all cursor-pointer"
+          >
+            <span>👤 Guest Mode</span>
+          </button>
           <button
             onClick={() => loginWithGoogle(false)}
             className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black uppercase text-[10px] tracking-[0.2em] hover:brightness-110 md:hover:scale-105 transition-all shadow-[0_0_20px_rgba(6,182,212,0.35)] cursor-pointer"

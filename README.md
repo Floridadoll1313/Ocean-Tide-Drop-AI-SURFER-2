@@ -1,153 +1,209 @@
-# Ocean Tide Drop AI SURFER
+🌊 OCEAN TIDE DROP — CINEMATIC ARCHITECTURE README
 
-Official source repository for the Ocean Tide Drop / AI Surfer marketing agency web app.
+A Neon‑Surf React + Vite + Cloudflare Pages System
 
-> Source of truth: `Floridadoll1313/Ocean-Tide-Drop-AI-SURFER-2`
+---
 
-## What this app is
+🌟 Overview
+Ocean Tide Drop is a cinematic, neon‑surf web experience built with:
 
-Ocean Tide Drop AI SURFER is a cinematic React + Vite + TypeScript site for the AI Surfer marketing agency. It includes public brand pages, Ocean Tide Drop service pages, pricing, member access, AI assistant features, Firebase authentication, and Stripe checkout integration.
-
-## Current stack
-
-- React 18
-- TypeScript
+- React 19
 - Vite
-- React Router
-- Tailwind CSS / custom CSS
-- Express server in `server.ts`
-- Firebase Auth + Firestore
-- Firebase Admin SDK on the server
-- Stripe checkout + webhook support
-- Gemini API support through `@google/genai`
-- GitHub Actions / SonarCloud workflow
+- TypeScript
+- Cloudflare Pages
+- Framer Motion
+- Lucide Icons
 
-## Main app files
+The project is structured around a clean, scalable architecture designed for rapid iteration, mobile‑first workflows, and a glowing, mythic brand identity.
 
-```text
+This README documents the full system architecture, folder structure, and development flow.
+
+---
+
+🏛️ Project Architecture
+
+```
 src/
-  App.tsx                    Route map and page shell
-  main.tsx                   Vite/React entry point
-  index.css                  Global styles
-  components/                Shared UI components
-  hooks/useAuth.tsx          Firebase auth/user state
-  lib/firebase.ts            Firebase browser client config
-  pages/                     Public pages, member pages, ocean pages
-server.ts                    Express API + production static server
-vite.config.ts               Vite build config
-.env.example                 Environment variable template
+  components/      → Reusable UI components + co‑located CSS
+  pages/           → Page-level scenes (Pricing, Membership, etc.)
+  layouts/         → Global wrappers (Nav, Dock, HUD)
+  styles/          → Global CSS (variables, animations, themes)
+  utils/           → Pure helper functions
+  hooks/           → Custom React hooks
+  data/            → Product tiers, navigation, constants
+  router.tsx       → Central routing map
+  App.jsx          → App shell
+  main.jsx         → Vite entry point
 ```
 
-## Key routes
+This structure keeps your UI modular, your logic clean, and your brand consistent.
 
-- `/` — Home
-- `/services` — Services
-- `/pricing` — Pricing
-- `/members` — Members area
-- `/members/monetization` — Member upgrade/monetization page
-- `/tip-jar` — Tribute / Tip Jar page
-- `/ocean` — Ocean Tide Drop service home
-- `/ocean-services` — Ocean services
-- `/ocean-reports` — Ocean reports
-- `/ocean-cases` — Case studies
-- `/ocean-roi` — ROI calculator
-- `/ocean-contact` — Ocean contact
-- `/surfer` and `/ai-surfer` — AI Surfer page
-- `/support` — Support
-- `/privacy` — Privacy policy
-- `/terms` — Terms of service
+---
 
-Compatibility redirects are kept for older links such as `/tipjar`, `/dashboard`, `/ai-dashboard`, `/oas-6`, and `/ai-surfer-ocean-tide-drop`.
+🎨 Components
+All reusable UI lives in:
 
-## Local development
+```
+src/components/
+```
 
-Install dependencies:
+Each component has a matching CSS file:
 
-```bash
+```
+ProductCard.tsx
+product-card.css
+NavBar.jsx
+neon-dock.css
+Sidebar.tsx
+sidebar.css
+HUD.tsx
+hud.css
+```
+
+This ensures:
+
+- clean separation  
+- predictable imports  
+- cinematic styling per component  
+
+---
+
+📄 Pages
+Pages are scenes in your cinematic universe.
+
+```
+src/pages/
+  pricing/
+    Pricing.tsx
+    PricingDetail.tsx
+    pricing.css
+  membership/
+    MembershipIndex.tsx
+    membership.css
+  home/
+    Home.jsx
+```
+
+Each page can have its own CSS, animations, and layout.
+
+---
+
+🧩 Layouts
+Layouts wrap pages with global UI:
+
+```
+src/layouts/
+  Layout.tsx
+  AuthLayout.tsx
+  GameLayout.tsx
+```
+
+These handle:
+
+- Navigation  
+- Neon Dock  
+- HUD  
+- Soundscape  
+- Auth gates  
+
+---
+
+🧠 Data Layer
+Centralized product + tier data:
+
+```
+src/data/
+  products.ts
+  tiers.ts
+  navigation.ts
+```
+
+This keeps your pricing system clean and maintainable.
+
+---
+
+🎛️ Styles
+Global styling lives here:
+
+```
+src/styles/
+  index.css
+  variables.css
+  animations.css
+  themes.css
+```
+
+This is where your neon‑ocean glow, cosmic gradients, and waterline animations live.
+
+---
+
+🧭 Routing
+All routes are defined in:
+
+```
+src/router.tsx
+```
+
+This keeps navigation clean and centralized.
+
+---
+
+🌊 Surf Tier System
+Your 4‑tier cinematic pricing system:
+
+- Dawn Patrol — Entry tier  
+- Breakline — Mid‑tier  
+- Hatteras Island — High‑touch tier  
+- Cape Point — Founder‑level tier  
+
+Each tier has:
+
+- a ProductCard  
+- a PricingDetail page  
+- a narrative  
+- a feature set  
+- a cinematic image  
+
+---
+
+🚀 Development
+
+Install dependencies
+```
 npm install
 ```
 
-Start the dev server:
-
-```bash
+Run dev server
+```
 npm run dev
 ```
 
-Build for production:
-
-```bash
+Build for production
+```
 npm run build
 ```
 
-Preview the production build locally:
+Deploy (Cloudflare Pages)
+Push to your connected GitHub repo — Cloudflare builds automatically.
 
-```bash
-npm run preview
-```
+---
 
-Run lint checks:
+🔥 Brand Identity
+Ocean Tide Drop is built on:
 
-```bash
-npm run lint
-```
+- neon cyan + neon pink glow  
+- cinematic gradients  
+- surf‑energy motion  
+- mythic storytelling  
+- AI‑driven content systems  
 
-## Environment variables
+Every component and page reflects this identity.
 
-Copy `.env.example` to a local `.env` file and fill in real provider values. Do not commit real secrets.
+---
 
-Required/expected values include:
+🐚 Credits
+Created by Shannon Foster
+Architected with cinematic precision  
+Powered by React, Vite, and Cloudflare Workers
 
-```text
-STRIPE_SECRET_KEY=
-STRIPE_WEBHOOK_SECRET=
-ADMIN_SECRET=
-GEMINI_API_KEY=
-STRIPE_PRICE_ID_DAWN_PATROL=
-STRIPE_PRICE_ID_BREAKLINE=
-STRIPE_PRICE_ID_HATTERAS_ISLAND=
-STRIPE_PRICE_ID_CAPE_POINT=
-VITE_FIREBASE_API_KEY=
-VITE_FIREBASE_AUTH_DOMAIN=
-VITE_FIREBASE_PROJECT_ID=
-VITE_FIREBASE_STORAGE_BUCKET=
-VITE_FIREBASE_MESSAGING_SENDER_ID=
-VITE_FIREBASE_APP_ID=
-```
-
-Provider-side items to verify before accepting live payments:
-
-- Firebase Authorized Domains include the production domain.
-- Stripe live secret key, webhook secret, and price IDs belong to the intended Ocean Tide Drop account.
-- Stripe webhook points to `/api/stripe/webhook` on the production host.
-- Gemini API key is configured only in the server environment.
-- Tip Jar/Tribute payment link is replaced with a confirmed PayPal or Stripe link before real collection.
-
-## Deployment notes
-
-This repo contains the app and server source. Cloudflare Pages, Firebase Hosting, or another host may still require project settings outside the repo.
-
-Recommended production build command:
-
-```bash
-npm run build
-```
-
-Recommended output directory for static-only hosting:
-
-```text
-dist
-```
-
-If deploying the Express server, ensure the production platform runs `server.ts` through a TypeScript-capable runtime/build step, or compile the server before starting it.
-
-## GitHub hygiene
-
-- Keep this repo as the official production source.
-- Keep real secrets out of GitHub.
-- Use branches and pull requests for fixes.
-- Archive or label older duplicate Ocean/AI Surfer experiment repos so this source of truth stays clear.
-
-## Current readiness notes
-
-See `docs/production-readiness-checklist.md` for the remaining production checklist.
-See `docs/site-audit-2026-05-26.md` for the route/member/payment audit and fixes.
+---

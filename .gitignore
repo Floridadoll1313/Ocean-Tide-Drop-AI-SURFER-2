@@ -1,49 +1,24 @@
-# Dependencies
-node_modules/
-
-# Build output
-dist/
-dist-ssr/
-build/
-coverage/
-
-# Local environment / secrets
-.env
-.env.*
-!.env.example
-.dev.vars
-*.pem
-*.key
-*.p12
-*.p8
-service-account*.json
-firebase-service-account*.json
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-*.log
-copilot-messages.log
-
-# Local/editor files
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-.settings/
+node_modules
+dist-ssr
 *.local
 
-# Project local state
+# Sync .project/sourceTexts/ folder (source text files)
+
+# Don't sync user-specific SQLite databases
 .project/*.sqlite
+
+# Don't sync SQLite auxiliary files
 .project/*.sqlite-wal
 .project/*.sqlite-shm
+
+# Don't sync temporary files
 .project/.temp/**
+
+# Don't sync user-specific files
 .project/complete_drafts.txt
 .project/localProjectSettings.json
 .project/localProjectSwap.json
-.project/attachments/files/**
+copilot-messages.log
 
 # Archive formats
 *.zip
@@ -76,14 +51,25 @@ Thumbs.db
 *.vhd
 *.vmdk
 
-# Build and release folders
+# System files
+.DS_Store
+.project/attachments/files/**
+
+# Build and Release Folders
 bin-debug/
 bin-release/
 [Oo]bj/
 [Bb]in/
 
-# Other generated binaries
+# Other files and folders
+.settings/
+
+# Executables
 *.swf
 *.air
 *.ipa
 *.apk
+
+# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
+# should NOT be excluded as they contain compiler settings and other important
+# information for Eclipse / Flash Builder.

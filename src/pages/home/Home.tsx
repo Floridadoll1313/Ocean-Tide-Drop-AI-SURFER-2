@@ -13,19 +13,32 @@ import {
 import cyberSurferWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
 
 export default function Home() {
-  const { user, loginWithGoogle } = useAuth();
+  const { user, loginWithGoogle, loginAsGuest, error } = useAuth();
 
   return (
     <PageWrapper maxWidth="max-w-screen-2xl" showHero={false}>
       {/* ⚡ Sly / Sleek Top Join Bar */}
-      <div className="w-full flex justify-end items-center px-6 pt-6 relative z-30 max-w-6xl mx-auto -mb-8">
+      <div className="w-full flex justify-end items-center px-6 pt-6 relative z-30 max-w-6xl mx-auto -mb-8 gap-3">
+        {error && (
+          <div className="absolute right-6 top-20 bg-red-500/10 border border-red-500/50 text-red-400 text-xs px-4 py-2 flex items-center gap-2 rounded shadow-lg backdrop-blur z-50">
+            <span>⚠️</span> {error}
+          </div>
+        )}
         {!user ? (
-          <button
-            onClick={() => loginWithGoogle(false)}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black uppercase text-[10px] tracking-[0.2em] hover:brightness-110 md:hover:scale-105 transition-all shadow-[0_0_20px_rgba(6,182,212,0.35)] cursor-pointer"
-          >
-            <span>✨ Join Now</span>
-          </button>
+          <>
+            <button
+              onClick={() => loginAsGuest()}
+              className="px-4 py-3 rounded-xl bg-black border border-white/10 text-[#8b80a3] font-black uppercase text-[10px] tracking-[0.2em] hover:text-white transition-all cursor-pointer"
+            >
+              <span>👤 Guest Mode</span>
+            </button>
+            <button
+              onClick={() => loginWithGoogle(false)}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black uppercase text-[10px] tracking-[0.2em] hover:brightness-110 md:hover:scale-105 transition-all shadow-[0_0_20px_rgba(6,182,212,0.35)] cursor-pointer"
+            >
+              <span>✨ Join Now</span>
+            </button>
+          </>
         ) : (
           <Link
             to="/members"

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { User, onAuthStateChanged, signInWithPopup, signOut, GoogleAuthProvider } from 'firebase/auth';
+import { User, onAuthStateChanged, signInWithPopup, signOut, GoogleAuthProvider, signInAnonymously } from 'firebase/auth';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
@@ -9,7 +9,7 @@ interface UserData {
   displayName?: string;
   role?: string;
   subscriptionStatus?: 'none' | 'active' | 'canceled';
-  tier?: 'none' | 'basic' | 'premium' | 'enterprise';
+  tier?: 'basic' | 'premium' | 'enterprise';
   photoURL?: string;
 }
 
@@ -20,7 +20,8 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   setError: (error: string | null) => void;
-  loginWithGoogle: (requestWorkspaceScopes?: boolean) => Promise<User | null>;
+  loginWithGoogle: (requestWorkspaceScopes?: boolean) => Promise<void>;
+  loginAsGuest: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -31,7 +32,8 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   error: null,
   setError: () => {},
-  loginWithGoogle: async () => null,
+  loginWithGoogle: async () => {},
+  loginAsGuest: async () => {},
   logout: async () => {}
 });
 
@@ -57,30 +59,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUserData(null);
         setLoading(false);
       } else {
+        // Listen to user document in Firestore
         const userDocRef = doc(db, 'users', currentUser.uid);
         unsubscribeFirestore = onSnapshot(userDocRef, async (docSnap) => {
           if (docSnap.exists()) {
-            const data = docSnap.data() as UserData;
-            setUserData({
-              ...data,
-              subscriptionStatus: data.subscriptionStatus || 'none',
-              tier: data.subscriptionStatus === 'active' ? (data.tier || 'basic') : 'none'
-            });
+            setUserData(docSnap.data() as UserData);
             setLoading(false);
           } else {
+            // Default userData if document doesn't exist yet
+            const isAnonymous = currentUser.isAnonymous;
             const defaultUser: UserData = {
               uid: currentUser.uid,
-              email: currentUser.email || '',
-              displayName: currentUser.displayName || '',
+              email: currentUser.email || (isAnonymous ? 'guest@aisurfer.com' : ''),
+              displayName: currentUser.displayName || (isAnonymous ? 'Ghost Surfer' : ''),
               photoURL: currentUser.photoURL || '',
               subscriptionStatus: 'none',
-              role: 'user',
-              tier: 'none'
+              role: 'user', // required by rules
+              tier: 'basic'
             };
             try {
               await setDoc(userDocRef, defaultUser);
             } catch (err: unknown) {
               console.error("Error creating default user doc in firestore:", err);
+              // Fallback to setting local state if write fails or isn't completed yet
               setUserData(defaultUser);
               setLoading(false);
             }
@@ -99,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const loginWithGoogle = async (requestWorkspaceScopes = false): Promise<User | null> => {
+  const loginWithGoogle = async (requestWorkspaceScopes = false) => {
     try {
       setError(null);
       const provider = new GoogleAuthProvider();
@@ -122,11 +123,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (credential?.accessToken) {
         setAccessToken(credential.accessToken);
       }
-      setUser(result.user);
-      return result.user;
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error("Error signing in with Google:", err);
-      const errorMessage = err instanceof Error ? err.message : String(err);
+      let errorMessage = err instanceof Error ? err.message : String(err);
+      
+      if (err?.code === 'auth/popup-blocked' || err?.code === 'auth/popup-closed-by-user' || errorMessage.toLowerCase().includes('popup')) {
+         errorMessage = "Pop-up blocked or closed. In this preview environment, please open the 'Share' or 'New Tab' button in the top right to log in with Google.";
+      } else if (err?.code === 'auth/operation-not-allowed') {
+         errorMessage = "Google login is not enabled in Firebase. Please enable 'Google' provider in Firebase Auth.";
+      }
+      
+      setError(errorMessage);
+      throw err;
+    }
+  };
+
+  const loginAsGuest = async () => {
+    try {
+      setError(null);
+      await signInAnonymously(auth);
+    } catch (err: any) {
+      console.error("Error signing in as guest:", err);
+      let errorMessage = err instanceof Error ? err.message : String(err);
+      
+      if (err?.code === 'auth/operation-not-allowed') {
+         errorMessage = "Guest login is disabled. Please enable 'Anonymous' provider in Firebase Auth settings.";
+      }
+
       setError(errorMessage);
       throw err;
     }
@@ -146,7 +169,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, userData, accessToken, loading, error, setError, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, userData, accessToken, loading, error, setError, loginWithGoogle, loginAsGuest, logout }}>
       {children}
     </AuthContext.Provider>
   );
