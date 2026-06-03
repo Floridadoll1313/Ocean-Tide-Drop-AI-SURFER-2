@@ -1,4 +1,5 @@
 node_modules
+dist
 dist-ssr
 *.local
 
@@ -20,7 +21,7 @@ dist-ssr
 .project/localProjectSwap.json
 copilot-messages.log
 
-# Archive formats
+# Archive formats (including built packages)
 *.zip
 *.rar
 *.7z
@@ -31,6 +32,7 @@ copilot-messages.log
 *.gz
 *.bz2
 *.xz
+*.tgz
 
 # Windows executables and installers
 *.exe
@@ -69,6 +71,17 @@ bin-release/
 *.air
 *.ipa
 *.apk
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
 
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
