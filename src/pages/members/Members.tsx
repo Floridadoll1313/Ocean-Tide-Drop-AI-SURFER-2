@@ -145,7 +145,6 @@ export default function Members() {
     }
   };
 
-  // Fixed line below: removed 'export' keyword
   const TOOLS = [
     // BASIC TOOLS
     { name: "Brand Voice Architect", minTier: 'basic', icon: <Users className="w-6 h-6 text-cyan-300" />, description: "AI-driven tone synthesis and elite-grade consistent brand positioning copy." },
@@ -289,3 +288,460 @@ export default function Members() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-cyan-500/10 blur-[80px] rounded-full pointer-events-none"></div>
 
           <span className="text-[10px] bg-cyan-400/15 border border-cyan-400/30 text-cyan-400 font-bold uppercase tracking-[0.4em] px-4 py-2 rounded-full mb-8 z-10">
+            AI Surfer Portal_
+          </span>
+
+          <h1 className="text-4xl md:text-5xl font-black uppercase text-white tracking-tighter mb-4 z-10 font-orbitron">
+            MEMBERS AREA
+          </h1>
+          <p className="text-white/90 mb-8 max-w-md text-sm leading-relaxed z-10 font-medium">
+            Access to our proprietary AI suite, workflow automatons, and storm-resilient strategic engines is reserved for active members.
+          </p>
+
+          {isInIframe && (
+            <div className="bg-orange-500/10 border border-orange-500/30 text-orange-400 p-6 rounded-xl mb-10 max-w-lg mx-auto text-[11px] font-medium tracking-wide z-10 text-left">
+              <div className="font-bold uppercase tracking-widest text-orange-400 mb-2 flex items-center gap-2">
+                <span>⚠️ PREVIEW MODE CONSTRAINT</span>
+              </div>
+              The Google Sign-In popup may be blocked inside this iframe preview. 
+              <ul className="list-disc list-inside mt-2 space-y-1 text-zinc-300">
+                <li>Click <strong>AI Surfer Demo Sandbox</strong> below to enter instantly.</li>
+                <li>Or open this app in a <strong>new tab</strong> (using the arrow icon at the top-right of your screen) to use Sign In.</li>
+              </ul>
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-6 rounded-xl mb-10 max-w-lg mx-auto text-xs font-semibold z-10 text-left">
+              <div className="font-bold uppercase tracking-widest text-red-400 mb-2 flex items-center gap-2">
+                <span>⚠️ SIGN IN ERROR DETECTED</span>
+              </div>
+              <p className="mb-2 text-zinc-200">The authentication attempt failed with the following details:</p>
+              <code className="block bg-black/60 border border-white/10 p-3 rounded-lg font-mono text-cyan-200 break-all select-all">
+                {error}
+              </code>
+              <p className="mt-3 text-zinc-300">
+                If the error mentions an <strong>unauthorized domain</strong>, please ensure that this URL is added to your Firebase project's Authorized Domains list in the Firebase Console (under Authentication &gt; Settings &gt; Authorized domains).
+              </p>
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row gap-4 w-full justify-center px-6 z-10">
+            <button 
+              onClick={() => loginWithGoogle(false)}
+              className="px-8 py-4 bg-white text-black hover:bg-cyan-400 hover:text-black font-black uppercase text-xs tracking-[0.2em] transition-all transform hover:scale-105 shadow-[0_4px_25px_rgba(255,255,255,0.15)] hover:shadow-cyan-400/20"
+            >
+              🔒 Sign In With Google
+            </button>
+            <button 
+              onClick={() => setIsDemoSession(true)}
+              className="px-8 py-4 bg-cyan-500/10 text-cyan-400 border border-cyan-400 hover:bg-cyan-400 hover:text-black font-black uppercase text-xs tracking-[0.2em] transition-all transform hover:scale-105"
+            >
+              🌊 AI Surfer Demo Sandbox
+            </button>
+          </div>
+        </div>
+      </PageWrapper>
+    );
+  }
+
+  return (
+    <PageWrapper maxWidth="max-w-7xl" showHero={false} showLargeLogo={false}>
+      {/* Sleek Top Join/Upgrade Bar */}
+      <div className="w-full flex justify-end items-center px-6 pt-4 relative z-30 max-w-7xl mx-auto -mb-8">
+        <Link
+          to="/pricing"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black uppercase text-[10px] tracking-[0.2em] hover:brightness-110 md:hover:scale-105 transition-all shadow-[0_0_20px_rgba(6,182,212,0.35)]"
+        >
+          <span>⭐ Join Premium Tiers</span>
+        </Link>
+      </div>
+      <div className="flex flex-col w-full relative">
+        {/* SOULFUL DECORATION */}
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+        <div className="absolute top-1/2 -right-40 w-[600px] h-[600px] bg-orange-600/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+        {/* Launching Overlay */}
+        {launchingTool && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-sm">
+            <div className="flex flex-col items-center text-center p-16 bg-black border border-cyan-400/30 rounded-sm">
+              <Loader2 className="w-12 h-12 text-cyan-400 animate-spin mb-8" />
+              <h2 className="text-3xl font-black uppercase text-white mb-2 tracking-tighter">Synchronizing {launchingTool}</h2>
+              <p className="text-cyan-400 text-[10px] font-black uppercase tracking-[0.4em] animate-pulse">Initializing AI Architecture...</p>
+            </div>
+          </div>
+        )}
+
+        {/* DEMO CONTROLLER HUD */}
+        {isDemoSession && (
+          <div className="bg-cyan-950/40 border border-cyan-400/30 p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 w-full max-w-6xl mx-auto mb-12 backdrop-blur-md relative overflow-hidden">
+             <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500"></div>
+             <div className="flex items-center gap-4">
+                <div className="w-3 h-3 rounded-full bg-cyan-400 animate-ping"></div>
+                <div>
+                  <span className="text-xs font-black uppercase text-cyan-400 tracking-widest block">Sandbox Simulator Active</span>
+                  <p className="text-[10px] font-bold text-white/90 uppercase tracking-wider mt-0.5">Simulating an active premium subscription to AI Surfer Tools</p>
+                </div>
+             </div>
+             <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black text-white uppercase tracking-widest mr-2">Level:</span>
+                {(['basic', 'premium', 'enterprise'] as const).map((tier) => (
+                   <button
+                     key={tier}
+                     onClick={() => setDemoTier(tier)}
+                     className={`px-4 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all rounded-lg border ${userTier === tier ? 'bg-[#00eaff] text-black border-[#00eaff] shadow-[0_0_15px_rgba(0,255,255,0.4)]' : 'bg-white/5 text-cyan-200 border-white/10 hover:text-white hover:border-cyan-400/50'}`}
+                   >
+                     {tier === 'basic' ? 'Basic' : tier === 'premium' ? 'Premium 2' : 'Enterprise 2'}
+                   </button>
+                ))}
+             </div>
+          </div>
+        )}
+
+        {/* DASHBOARD HEADER */}
+        <div className="flex flex-col items-center text-center mb-16 gap-8">
+          <div className="flex flex-col items-center">
+            <div className="flex items-center gap-3 mb-4 font-black text-cyan-400 tracking-[0.4em] uppercase text-xs">
+              <span>AI Surfer Core Interface</span>
+              <div className="h-2 w-2 rounded-full bg-[#00eaff] animate-pulse shadow-[0_0_10px_#00eaff]"></div>
+            </div>
+            <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter text-white">
+              Command <span className="text-soul-gradient">Center.</span>
+            </h1>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row items-center gap-4 bg-white/5 border border-white/10 p-2 rounded-sm backdrop-blur-md">
+             <div className="px-6 py-3 md:border-r border-white/10 text-center w-full sm:w-auto">
+                <span className="text-[9px] font-black uppercase tracking-widest text-cyan-400 block mb-1">Account Level</span>
+                <span className="text-xs font-black uppercase tracking-widest text-white">
+                   {userTier === 'none' ? 'Visitor' : userTier === 'basic' ? 'Basic Member' : userTier === 'premium' ? 'Premium 2' : 'Enterprise 2'}
+                </span>
+             </div>
+             <div className="px-6 py-3 md:border-r border-white/10 text-center w-full sm:w-auto">
+                <span className="text-[9px] font-black uppercase tracking-widest text-cyan-400 block mb-1">Status</span>
+                <span className="text-xs font-black uppercase text-[#00eaff] tracking-widest">AI Core Synchronized</span>
+             </div>
+             <div className="px-6 py-2 flex items-center justify-center w-full sm:w-auto">
+                <ToolSelector onLaunchTool={handleLaunch} isDemoSession={isDemoSession} demoTier={demoTier} />
+             </div>
+          </div>
+        </div>
+
+        {/* MONETIZATION & GROWTH SHOCK */}
+        <div className="mb-20 grid md:grid-cols-3 gap-8 max-w-6xl mx-auto w-full">
+           <div 
+             onClick={() => navigate('/members/monetization')}
+             className="bg-glass-colorful border border-white/10 p-10 rounded-sm hover:border-cyan-500/50 transition-all cursor-pointer group relative overflow-hidden accent-glow-cyan"
+           >
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-all">
+                 <DollarSign className="w-12 h-12 text-white" />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-cyan-400 block mb-4">Phase Deployment</span>
+              <h3 className="text-2xl font-black uppercase tracking-tighter text-white mb-4">Monetization <span className="text-soul-gradient italic font-serif lowercase">Blueprint.</span></h3>
+              <p className="text-white text-[11px] font-bold uppercase tracking-widest leading-loose">Access the high-frequency roadmap to architecting your business revenue streams.</p>
+           </div>
+           
+           <div 
+             onClick={() => navigate('/members/sync')}
+             className="bg-white/5 border border-white/10 p-10 rounded-sm hover:border-[#00eaff]/50 transition-all cursor-pointer group relative accent-glow-cyan"
+           >
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-all">
+                 <Calendar className="w-12 h-12 text-white" />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#00eaff] block mb-4">Neural Workspace</span>
+              <h3 className="text-2xl font-black uppercase tracking-tighter text-white mb-4">Neural <span className="text-soul-gradient italic font-serif lowercase">Sync.</span></h3>
+              <p className="text-white text-[11px] font-bold uppercase tracking-widest leading-loose">Synchronize your Google Calendar and Tasks for unified strategic management.</p>
+           </div>
+
+           <div 
+             onClick={() => navigate('/pricing')}
+             className="bg-white/5 border border-orange-500/20 p-10 rounded-sm hover:border-orange-500/50 transition-all cursor-pointer group relative overflow-hidden"
+           >
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-all">
+                 <Zap className="w-12 h-12 text-orange-400" />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-orange-400 block mb-4">Stripe Access</span>
+              <h3 className="text-2xl font-black uppercase tracking-tighter text-white mb-4">Premium <br /><span className="text-orange-400 italic font-serif lowercase">Gateway.</span></h3>
+              <p className="text-white text-[11px] font-bold uppercase tracking-widest leading-loose">Manage your subscription and unlock high-ticket AI modules.</p>
+           </div>
+        </div>
+
+        {/* DASHBOARD TOP STATS */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-cyan-500/20 border border-cyan-500/20 mb-20 overflow-hidden rounded-xl">
+           {[
+             { label: "Surfer Network Health", val: "99.9% Online", icon: <Activity className="w-4 h-4 text-[#00eaff]" /> },
+             { label: "AI Transmission Speeds", val: "24.5 GB/s", icon: <Cpu className="w-4 h-4 text-purple-400" /> },
+             { label: "Global Node Reach", val: "128 Nodes", icon: <Globe className="w-4 h-4 text-emerald-400" /> },
+             { label: "Local Strategic Lift", val: "Maximized", icon: <BarChart3 className="w-4 h-4 text-orange-400" /> }
+           ].map((stat, i) => (
+             <div key={i} className="bg-black p-8 group hover:bg-zinc-900 transition-all">
+                <div className="flex items-center justify-between mb-4">
+                   <div className="text-cyan-400 transition-colors">{stat.icon}</div>
+                   <span className="text-[10px] font-bold text-cyan-400">NODE_ {i+1}</span>
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-cyan-200 block mb-1">{stat.label}</span>
+                <span className="text-2xl font-black text-white">{stat.val}</span>
+             </div>
+           ))}
+        </div>
+        
+        <div className="grid lg:grid-cols-3 gap-12">
+          {/* LEFT: PRIMARY TOOLS */}
+          <div className="lg:col-span-2 space-y-12">
+            {/* FAVORITE & RECENT SECTIONS */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-zinc-950/40 p-6 rounded-2xl border border-cyan-500/10 mb-8">
+               {/* FAVORITE SYSTEMS */}
+               <div className="space-y-4">
+                  <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                     <h3 className="text-xs font-black uppercase tracking-widest text-[#00eaff] flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        Starred AI Systems
+                     </h3>
+                     <span className="text-[9px] font-bold text-zinc-500 font-mono">PINNED</span>
+                  </div>
+                  
+                  {favoriteToolsList.length === 0 ? (
+                     <div className="p-8 text-center border border-dashed border-white/5 rounded bg-black/25 flex flex-col items-center justify-center min-h-[140px]">
+                        <p className="text-zinc-650 text-[10px] uppercase font-black tracking-wider leading-relaxed">No pinned tools.</p>
+                        <p className="text-zinc-600 text-[9px] uppercase tracking-wider mt-1 text-center">Star custom agency tools below to pin them for faster access frequencies.</p>
+                     </div>
+                  ) : (
+                     <div className="space-y-2">
+                        {favoriteToolsList.map((tool) => {
+                           const accessible = hasAccess(tool.minTier);
+                           const toolId = tool.name.toLowerCase().replace(/ /g, '-');
+                           return (
+                              <div 
+                                key={toolId}
+                                onClick={() => accessible ? handleLaunch(tool.name) : navigate('/pricing')}
+                                className="p-3 bg-black border border-cyan-500/10 hover:border-[#00eaff]/45 transition-all rounded flex items-center justify-between group cursor-pointer"
+                              >
+                                 <div className="flex items-center gap-3 min-w-0">
+                                    <div className="p-2 bg-[#00eaff]/5 border border-[#00eaff]/10 rounded group-hover:bg-[#00eaff]/10 transition-all shrink-0">
+                                       {tool.icon}
+                                    </div>
+                                    <div className="truncate">
+                                       <span className="text-[11px] font-black uppercase text-white tracking-wider block truncate">{tool.name}</span>
+                                       <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest">{tool.minTier} tier</span>
+                                    </div>
+                                 </div>
+                                 
+                                 <button
+                                    onClick={(e) => toggleFavorite(toolId, e)}
+                                    className="p-1.5 text-[#00eaff] hover:text-zinc-400 transition-colors shrink-0"
+                                    title="Unstar System"
+                                 >
+                                    <Sparkles className="w-3.5 h-3.5 fill-current" />
+                                 </button>
+                              </div>
+                           );
+                        })}
+                     </div>
+                  )}
+               </div>
+
+               {/* RECENTLY LAUNCHED */}
+               <div className="space-y-4">
+                  <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                     <h3 className="text-xs font-black uppercase tracking-widest text-purple-400 flex items-center gap-2">
+                        <Clock className="w-3.5 h-3.5" />
+                        Recently Used
+                     </h3>
+                     <span className="text-[9px] font-bold text-zinc-500 font-mono">TELEMETRY</span>
+                  </div>
+
+                  {recentToolsList.length === 0 ? (
+                     <div className="p-8 text-center border border-dashed border-white/5 rounded bg-black/25 flex flex-col items-center justify-center min-h-[140px]">
+                        <p className="text-zinc-650 text-[10px] uppercase font-black tracking-wider leading-relaxed">System queue empty.</p>
+                        <p className="text-zinc-600 text-[9px] uppercase tracking-wider mt-1 text-center">Your recently launched dynamic AI nodes will register here in realtime.</p>
+                     </div>
+                  ) : (
+                     <div className="space-y-2">
+                        {recentToolsList.map((tool) => {
+                           const accessible = hasAccess(tool.minTier);
+                           const toolId = tool.name.toLowerCase().replace(/ /g, '-');
+                           return (
+                              <div 
+                                key={toolId}
+                                onClick={() => accessible ? handleLaunch(tool.name) : navigate('/pricing')}
+                                className="p-3 bg-black border border-white/10 hover:border-purple-400/40 transition-all rounded flex items-center justify-between group cursor-pointer"
+                              >
+                                 <div className="flex items-center gap-3 min-w-0">
+                                    <div className="p-2 bg-white/5 border border-white/10 rounded group-hover:bg-purple-950/20 transition-all shrink-0">
+                                       {tool.icon}
+                                    </div>
+                                    <div className="truncate">
+                                       <span className="text-[11px] font-black uppercase text-white tracking-wider block truncate">{tool.name}</span>
+                                       <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest">ready frequency</span>
+                                    </div>
+                                 </div>
+                                 
+                                 <span className="text-[8px] font-black uppercase tracking-widest text-zinc-600 px-2 py-1 bg-white/5 border border-white/5 rounded shrink-0">LAUNCH &rarr;</span>
+                              </div>
+                           );
+                        })}
+                     </div>
+                  )}
+               </div>
+            </div>
+
+            <div className="space-y-20">
+              {[
+                { 
+                  tierId: 'basic', 
+                  tierName: 'Basic Membership Tools', 
+                  tools: TOOLS.filter(t => t.minTier === 'basic') 
+                },
+                { 
+                  tierId: 'premium', 
+                  tierName: 'Premium 2 Level Tools', 
+                  tools: TOOLS.filter(t => t.minTier === 'premium') 
+                },
+                { 
+                  tierId: 'enterprise', 
+                  tierName: 'Enterprise 2 Level Tools', 
+                  tools: TOOLS.filter(t => t.minTier === 'enterprise') 
+                }
+              ].map((group) => (
+                <div key={group.tierId}>
+                  <div className="flex items-center gap-6 mb-8">
+                     <h2 className="text-xl font-black uppercase tracking-widest text-[#00eaff]/90">{group.tierName}</h2>
+                     <div className="h-px flex-1 bg-cyan-400/20"></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-cyan-500/10 border border-cyan-500/10">
+                    {group.tools.map((tool, idx) => {
+                      const accessible = hasAccess(tool.minTier);
+                      const tId = tool.name.toLowerCase().replace(/ /g, '-');
+                      const isFav = favorites.includes(tId);
+                      return (
+                        <div 
+                          key={idx} 
+                          onClick={() => accessible ? handleLaunch(tool.name) : navigate('/pricing')}
+                          className={`bg-black p-10 flex flex-col items-start text-left group transition-all duration-500 overflow-hidden relative ${!accessible ? 'opacity-40 grayscale cursor-default hover:bg-zinc-950' : 'hover:bg-zinc-900 cursor-pointer'}`}
+                        >
+                          {!accessible && (
+                            <div className="absolute top-4 right-4 bg-cyan-500/10 px-3 py-1.5 rounded-sm border border-cyan-400/30 flex items-center gap-2">
+                               <LayoutDashboard className="w-3 h-3 text-[#00eaff]" />
+                               <span className="text-[8px] font-black uppercase text-[#00eaff] tracking-widest">Locked</span>
+                            </div>
+                          )}
+
+                          {accessible && (
+                             <button
+                               onClick={(e) => toggleFavorite(tId, e)}
+                               className="absolute top-4 right-4 p-2 bg-white/5 border border-white/10 text-cyan-300 hover:text-[#00eaff] hover:border-[#00eaff]/30 transition-all rounded z-10 group/starred"
+                               title={isFav ? "Unstar System" : "Star System"}
+                             >
+                               <Sparkles className={`w-3.5 h-3.5 transition-transform group-hover/starred:scale-110 ${isFav ? 'text-[#00eaff] fill-current' : ''}`} />
+                             </button>
+                          )}
+
+                          <div className="mb-8 transition-colors duration-500">
+                            {tool.icon}
+                          </div>
+                          <h4 className="text-xl font-black uppercase tracking-tight text-white mb-2">{tool.name}</h4>
+                          <p className="text-white/90 text-sm mb-8 font-medium leading-relaxed font-sans">{tool.description}</p>
+                          
+                          <div className="mt-auto flex items-center gap-4">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400 group-hover:text-cyan-300 transition-colors">
+                              {accessible ? 'Launch Module →' : 'Upgrade your wave to Unlock →'}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-8 border-t border-cyan-500/20">
+               <h2 className="text-2xl font-black uppercase tracking-tighter text-white mb-8">AI Core Terminal</h2>
+               <div className="bg-black border border-cyan-500/20 p-6 rounded-sm mb-12">
+                 <textarea 
+                   className="w-full bg-white/5 border border-cyan-500/30 p-4 text-sm text-white focus:outline-none focus:border-[#00eaff] transition-colors resize-none rounded-sm mb-4"
+                   rows={4}
+                   placeholder="Enter your prompt here..."
+                   value={aiPrompt}
+                   onChange={(e) => setAiPrompt(e.target.value)}
+                 />
+                 <button 
+                   onClick={handleAIGenerate}
+                   disabled={aiLoading || !aiPrompt}
+                   className="w-full bg-[#00eaff]/10 text-[#00eaff] border border-[#00eaff]/50 px-6 py-4 text-xs font-black uppercase tracking-widest hover:bg-[#00eaff]/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                 >
+                   {aiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Terminal className="w-4 h-4" />}
+                   {aiLoading ? "Processing..." : "Transmit to AI"}
+                 </button>
+                 
+                 {aiResponse && (
+                   <div className="mt-6 p-4 bg-white/5 border border-cyan-500/20 rounded-sm text-sm text-cyan-100 whitespace-pre-wrap font-mono leading-relaxed">
+                     {aiResponse}
+                   </div>
+                 )}
+               </div>
+            </div>
+
+            <div className="pt-8 border-t border-cyan-500/20">
+               <h2 className="text-2xl font-black uppercase tracking-tighter text-white mb-8">Recent Transmissions</h2>
+               <div className="space-y-1">
+                  {recentWork.length === 0 ? (
+                    <div className="p-10 text-center border border-dashed border-cyan-500/20 rounded-sm group hover:border-cyan-400/40 transition-all cursor-pointer" onClick={() => handleLaunch("System Health Scan")}>
+                       <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400 group-hover:text-white transition-colors">No transmissions detected. Click to Initialize AI Core →</span>
+                    </div>
+                  ) : (
+                    recentWork.map((log) => (
+                      <div key={log.id} className="flex items-center justify-between p-6 bg-white/5 border border-cyan-500/10 hover:bg-white/10 transition-all cursor-pointer group rounded-sm">
+                         <div className="flex items-center gap-6">
+                            <div className="w-2 h-2 rounded-full bg-cyan-400 group-hover:bg-white transition-all shadow-[0_0_10px_cyan]"></div>
+                            <div>
+                               <span className="text-[10px] font-black uppercase text-white block mb-0.5">{log.toolName}</span>
+                               <span className="text-xs uppercase text-cyan-100 font-bold tracking-widest group-hover:text-white transition-colors">{log.result}</span>
+                            </div>
+                         </div>
+                         <span className="text-[9px] font-black text-cyan-400">{log.timestamp ? new Date(log.timestamp.toDate()).toLocaleTimeString() : 'syncing...'}</span>
+                      </div>
+                    ))
+                  )}
+               </div>
+            </div>
+          </div>
+
+          {/* RIGHT: SIDEBAR */}
+          <div className="space-y-12">
+             <Chat />
+
+             <div>
+                <h3 className="text-sm font-black uppercase tracking-widest text-[#00eaff] mb-6">Network Access</h3>
+                <div className="space-y-4">
+                   <a 
+                     href="https://discord.com" 
+                     target="_blank" 
+                     rel="noopener noreferrer"
+                     className="flex items-center justify-between p-6 bg-black border border-cyan-500/20 hover:bg-zinc-900 transition-all group rounded-xl"
+                   >
+                     <div className="flex items-center gap-4">
+                        <Rocket className="w-5 h-5 text-cyan-400 group-hover:text-white transition-colors" />
+                        <span className="text-xs font-black uppercase text-white">Private Discord</span>
+                     </div>
+                     <span className="text-[10px] font-black text-[#00eaff]">Join →</span>
+                   </a>
+                   <div className="p-6 bg-black border border-cyan-500/20 flex items-center justify-between rounded-xl">
+                      <div className="flex items-center gap-4">
+                         <Settings className="w-5 h-5 text-cyan-400" />
+                         <span className="text-xs font-black uppercase text-white">API Keys</span>
+                      </div>
+                      <span className="px-2 py-1 bg-cyan-500/10 text-[8px] font-black uppercase text-[#00eaff] rounded border border-cyan-400/30">Internal Only</span>
+                   </div>
+                </div>
+             </div>
+
+             <div className="pt-8 border-t border-cyan-500/10 text-center">
+                <span className="text-[8px] font-black uppercase tracking-[0.4em] text-cyan-400">AI Surfer Marketing Agency © 2026</span>
+             </div>
+          </div>
+        </div>
+      </div>
+    </PageWrapper>
+  );
+}
