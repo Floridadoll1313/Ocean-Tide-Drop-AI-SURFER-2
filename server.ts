@@ -354,6 +354,32 @@ async function startServer() {
   });
 
   app.get("/api/health", (req, res) => res.json({ status: "ok", env: process.env.NODE_ENV }));
+
+  // New Test Endpoint to view your Firestore document
+  app.get("/api/test-firebase", async (req, res) => {
+    try {
+      console.log("🌊 Attempting to read 'otd ai surfer' collection...");
+      const snapshot = await db.collection("otd ai surfer").get();
+      
+      if (snapshot.empty) {
+        return res.json({ message: "Connected, but no documents found in 'otd ai surfer'." });
+      }
+
+      const documents: any[] = [];
+      snapshot.forEach(doc => {
+        documents.push({
+          id: doc.id,
+          data: doc.data()
+        });
+      });
+
+      res.json({ status: "Success", items: documents });
+    } catch (error: unknown) {
+      console.error("Firebase read error:", error);
+      res.status(500).json({ error: (error as Error).message });
+    }
+  });
+
   app.post("/api/workflow/surfer", startSurferPipeline);
   app.post("/api/ai/generate", generateAIContent);
   app.post("/api/ai/generate-stream", generateAIContentStream);
