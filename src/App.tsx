@@ -74,6 +74,7 @@ function App() {
           <Route path="/memorial" element={<Memorial />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/mcp" element={<Mcp />} />
+<Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/support" element={<Support />} />
         </Routes>
