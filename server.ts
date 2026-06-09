@@ -9,33 +9,39 @@ case "checkout.session.completed": {
     break;
   }
 
-  let tier = "basic";
-  if (tierId === "breakline" || tierId === "hatteras-island") tier = "premium";
-  if (tierId === "cape-point") tier = "enterprise";
+  // Map tier safely
+  let tier: "basic" | "premium" | "enterprise" = "basic";
 
-  console.log("🌊 Writing subscription to Supabase:", userId);
+  if (tierId === "breakline" || tierId === "hatteras-island") {
+    tier = "premium";
+  }
 
-  // 1. UPSERT CLIENT
-  await supabase.from("clients").upsert({
-    uid: userId,
-    email: session.customer_email,
+  if (tierId === "cape-point") {
+    tier = "enterprise";
+  }
+
+  const email =
+    session.customer_details?.email ||
+    session.customer_email ||
+    "";
+
+  console.log("🌊 Triggering full onboarding pipeline:", {
+    userId,
     tier,
-    status: "active",
-    stripe_customer_id: session.customer,
-    stripe_subscription_id: session.subscription,
-    updated_at: new Date()
+    email,
   });
 
-  // 2. CREATE PAYMENT RECORD
-  await supabase.from("payments").insert({
-    user_id: userId,
-    amount: session.amount_total || 0,
-    currency: session.currency || "usd",
-    status: "succeeded",
-    stripe_session_id: session.id,
-    tier_id: tierId
-  });
+  try {
+    await onboardClient({
+      userId,
+      email,
+      tier,
+    });
 
-  console.log("✅ Supabase onboarding complete");
+    console.log("⚡ FULL AUTOMATED ONBOARDING COMPLETE");
+  } catch (err) {
+    console.error("❌ Onboarding failed:", err);
+  }
+
   break;
 }
