@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "test:supabase": "node testSupabase.ts"
   },
   "dependencies": {
     "@google/genai": "^2.3.0",
@@ -56,10 +57,5 @@
     "typescript-eslint": "^8.59.3",
     "vite": "^5.2.0",
     "vitest": "^1.0.0"
-    {
-  "scripts": {
-    "test": "vitest"
-  }
-}
   }
 }
