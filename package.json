@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "test:supabase": "node testSupabase.ts"
   },
   "dependencies": {
     "@google/genai": "^2.3.0",
