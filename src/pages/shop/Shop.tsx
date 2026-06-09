@@ -58,6 +58,9 @@ const SHOP_ITEMS = [
   },
 ];
 
+const CORE_MESSAGE =
+  "Digital product creators do not need to start from scratch. Download launch-ready templates, AI prompts, and brand assets that help you package your offer, promote it with confidence, and start selling faster.";
+
 const BENEFITS = [
   "Instant digital download after checkout",
   "Beginner-friendly setup guides included",
@@ -100,7 +103,7 @@ export default function Shop() {
               </h1>
 
               <p className="mt-8 text-white/70 text-base md:text-xl font-medium max-w-3xl leading-relaxed">
-                Download plug-and-play launch assets, AI workflows, and brand systems designed to help you package your expertise, promote with confidence, and turn browsers into buyers.
+                {CORE_MESSAGE}
               </p>
 
               <div className="mt-10 flex flex-col sm:flex-row gap-4">
