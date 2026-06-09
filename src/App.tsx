@@ -36,6 +36,18 @@ import OceanROICalculator from './pages/ocean/OceanROICalculator';
 import OceanContact from './pages/ocean/OceanContact';
 import ScanPay from './pages/payment/ScanPay';
 import Dashboard from './pages/dashboard/Dashboard';
+import { useEffect } from 'react';
+import { testSupabase } from './utils/testSupabase';
+
+function App() {
+  useEffect(() => {
+    testSupabase();
+  }, []);
+
+  return <div>OTD AI Surfers 🌊🏄</div>;
+}
+
+export default App;
 
 function App() {
   return (
