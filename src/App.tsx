@@ -35,6 +35,7 @@ import OceanCaseStudies from './pages/ocean/OceanCaseStudies';
 import OceanROICalculator from './pages/ocean/OceanROICalculator';
 import OceanContact from './pages/ocean/OceanContact';
 import ScanPay from './pages/payment/ScanPay';
+import Dashboard from './pages/dashboard/Dashboard';
 
 function App() {
   return (
@@ -74,7 +75,7 @@ function App() {
           <Route path="/memorial" element={<Memorial />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/mcp" element={<Mcp />} />
-<Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/support" element={<Support />} />
         </Routes>
