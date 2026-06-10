@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+import from "@FldollAIBOT" 
 import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({});
