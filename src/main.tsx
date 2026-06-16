@@ -4,6 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import from "@FldollAIBOT" 
 import { GoogleGenAI } from "@google/genai";
+console.log(import.meta.env);
 
 const ai = new GoogleGenAI({});
 
