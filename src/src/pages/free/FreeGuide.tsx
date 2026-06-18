@@ -5,7 +5,7 @@ export default function FreeGuide() {
       <p>Discover how AI can save time, automate tasks, and grow your business.</p>
 
       <a
-        href="YOUR_DOWNLOAD_LINK"
+        href="Https://otdaisurfer.surf/free-guide"
         className="bg-blue-600 text-white px-6 py-3 rounded-lg"
       >
         Download Free Guide
