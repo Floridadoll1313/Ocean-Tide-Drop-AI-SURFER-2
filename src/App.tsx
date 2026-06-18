@@ -89,8 +89,8 @@ function App() {
           <Route path="/mcp" element={<Mcp />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/support" element={<Support />} />
-<Route path="/free-guide" element={<FreeGuide />} />
+          <Route path="/support" element={<Support />}  />
+<Route path="/free-guide" element={<FreeGuideLanding />} />
         </Routes>
       </Router>
     </AuthProvider>
