@@ -38,6 +38,7 @@ import ScanPay from './pages/payment/ScanPay';
 import Dashboard from './pages/dashboard/Dashboard';
 import { useEffect } from 'react';
 import { testSupabase } from './utils/testSupabase';
+import FreeGuideLanding from './pages/FreeGuideLanding';
 
 function App() {
   useEffect(() => {
