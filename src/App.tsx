@@ -20,11 +20,7 @@ import Shop from "./pages/shop/Shop";
 import FreeGuideLanding from "./pages/FreeGuideLanding";
 
 import { testSupabase } from "./utils/testSupabase";
-<!-- Calendly badge widget begin -->
-<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
-<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
-<script type="text/javascript">window.onload = function() { Calendly.initBadgeWidget({ url: 'https://calendly.com/oceantidedrop/new-meeting', text: 'Schedule time with me', color: '#101319', textColor: '#13dadf', branding: true }); }</script>
-<!-- Calendly badge widget end -->
+import CalendlyBadge from "./components/CalendlyBadge";
 function App() {
   useEffect(() => {
     testSupabase();
