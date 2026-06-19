@@ -8,6 +8,9 @@ import ScrollToTop from "./components/ScrollToTop";
 import Layout from "./layouts/Layout";
 
 // Pages
+import { testSupabase } from "./lib/supabaseTest";
+
+testSupabase();
 import Home from "./pages/home/Home";
 import Contact from "./pages/contact/Contact";
 import Services from "./pages/services/Services";
