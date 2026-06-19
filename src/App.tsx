@@ -3,14 +3,15 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "./hooks/useAuth";
 import ScrollToTop from "./components/ScrollToTop";
+import CalendlyBadge from "./components/CalendlyBadge";
 
 // Layout
 import Layout from "./layouts/Layout";
 
-// Pages
+// Supabase Test
 import { testSupabase } from "./lib/supabaseTest";
 
-testSupabase();
+// Pages
 import Home from "./pages/home/Home";
 import Contact from "./pages/contact/Contact";
 import Services from "./pages/services/Services";
@@ -22,8 +23,6 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Shop from "./pages/shop/Shop";
 import FreeGuideLanding from "./pages/FreeGuideLanding";
 
-import { testSupabase } from "./utils/testSupabase";
-import CalendlyBadge from "./components/CalendlyBadge";
 function App() {
   useEffect(() => {
     testSupabase();
@@ -33,9 +32,9 @@ function App() {
     <AuthProvider>
       <Router>
         <ScrollToTop />
+        <CalendlyBadge />
 
         <Routes>
-          {/* 🌊 ALL ROUTES FLOW THROUGH LAYOUT */}
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/contact" element={<Contact />} />
