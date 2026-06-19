@@ -1,23 +1,26 @@
 {
   "name": "ai-surfer",
-  "version": "0.0.0",
   "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "main": "server.ts",
+
   "scripts": {
-    "dev": "tsx watch server.ts",
+    "dev": "vite",
     "build": "vite build",
-    "start": "node dist/server.js",
-    "preview": "vite preview",
-    "lint": "eslint ."
+    "preview": "vite preview"
   },
+
   "dependencies": {
-    "express": "^4.19.2"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.0",
+    "@supabase/supabase-js": "^2.50.0"
   },
+
   "devDependencies": {
-    "vite": "^5.0.0",
-    "tsx": "^4.7.0",
-    "typescript": "^5.4.0",
-    "eslint": "^8.57.0"
+    "@vitejs/plugin-react": "^4.3.4",
+    "@tailwindcss/vite": "^4.1.11",
+    "typescript": "^5.8.3",
+    "vite": "^5.4.19"
   }
 }
