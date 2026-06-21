@@ -1,49 +1,38 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../utils/supabase";
 
-export function useUserTier(email) {
+export function useUserTier(userEmail?: string) {
   const [tier, setTier] = useState("free");
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!email) return;
+    if (!userEmail) return;
 
-    setLoading(true);
-
-    // initial fetch
-    async function load() {
-      const { data, error } = await supabase
+    // initial load
+    const load = async () => {
+      const { data } = await supabase
         .from("users")
         .select("tier")
-        .eq("email", email)
+        .eq("email", userEmail)
         .single();
 
-      if (data?.tier) {
-        setTier(data.tier);
-      }
-
-      setLoading(false);
-    }
+      if (data?.tier) setTier(data.tier);
+    };
 
     load();
 
-    // 🔥 REAL TIME AUTO-UNLOCK LISTENER
+    // real-time updates ⚡
     const channel = supabase
-      .channel("tier-updates")
+      .channel("tier-live")
       .on(
         "postgres_changes",
         {
           event: "UPDATE",
           schema: "public",
           table: "users",
-          filter: `email=eq.${email}`,
+          filter: `email=eq.${userEmail}`,
         },
         (payload) => {
-          const newTier = payload.new?.tier;
-          if (newTier) {
-            console.log("🌊 Tier updated live:", newTier);
-            setTier(newTier);
-          }
+          setTier(payload.new.tier);
         }
       )
       .subscribe();
@@ -51,7 +40,7 @@ export function useUserTier(email) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [email]);
+  }, [userEmail]);
 
-  return { tier, loading };
+  return tier;
 }
