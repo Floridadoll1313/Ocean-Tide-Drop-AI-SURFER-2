@@ -2,12 +2,13 @@ import Stripe from "stripe";
 import { buffer } from "micro";
 import { createClient } from "@supabase/supabase-js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-06-20",
+});
 
-// 🌊 Supabase ADMIN client (bypasses RLS)
 const supabase = createClient(
-  process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_SERVICE_ROLE_KEY as string
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY! // 🔥 SERVER ONLY
 );
 
 export const config = {
@@ -16,64 +17,42 @@ export const config = {
   },
 };
 
-/**
- * 🌊 Stripe Webhook Handler
- */
 export default async function handler(req: any, res: any) {
+  const sig = req.headers["stripe-signature"];
   const buf = await buffer(req);
-  const sig = req.headers["stripe-signature"] as string;
 
   let event: Stripe.Event;
 
   try {
     event = stripe.webhooks.constructEvent(
       buf,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET as string
+      sig!,
+      process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (err: any) {
-    console.error("Webhook error:", err.message);
-    return res.status(400).send("Webhook Error");
+    return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  /**
-   * 💳 SUCCESSFUL PAYMENT
-   */
+  // 💳 PAYMENT SUCCESS
   if (event.type === "checkout.session.completed") {
     const session: any = event.data.object;
 
-    const tier = session.metadata?.tier || "wave";
     const email = session.customer_details?.email;
+    const tier = session.metadata?.tier || "free";
 
-    console.log("🌊 PAYMENT SUCCESS");
-    console.log("Email:", email);
-    console.log("Tier:", tier);
+    console.log("🌊 Stripe payment success:", email, tier);
 
-    if (!email) {
-      console.error("No email found in Stripe session");
-      return res.status(400).json({ error: "No email" });
-    }
+    if (!email) return res.json({ ok: true });
 
-    /**
-     * 🔓 UPSERT USER + UPDATE TIER
-     */
-    const { error } = await supabase
+    // 🧬 UPDATE USER TIER (CORE UNLOCK)
+    await supabase
       .from("users")
-      .upsert(
-        {
-          email,
-          tier,
-          stripe_session_id: session.id,
-        },
-        { onConflict: "email" }
-      );
-
-    if (error) {
-      console.error("Supabase error:", error);
-      return res.status(500).json({ error: "DB update failed" });
-    }
-
-    console.log("🌊 USER UNLOCKED:", email);
+      .update({
+        tier,
+        subscription_status: "active",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("email", email);
   }
 
   res.json({ received: true });
