@@ -1,7 +1,14 @@
 import Stripe from "stripe";
 import { buffer } from "micro";
+import { createClient } from "@supabase/supabase-js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+
+// 🌊 Supabase ADMIN client (bypasses RLS)
+const supabase = createClient(
+  process.env.SUPABASE_URL as string,
+  process.env.SUPABASE_SERVICE_ROLE_KEY as string
+);
 
 export const config = {
   api: {
@@ -10,7 +17,7 @@ export const config = {
 };
 
 /**
- * 🌊 Webhook = payment success listener
+ * 🌊 Stripe Webhook Handler
  */
 export default async function handler(req: any, res: any) {
   const buf = await buffer(req);
@@ -30,19 +37,43 @@ export default async function handler(req: any, res: any) {
   }
 
   /**
-   * 💳 PAYMENT SUCCESS → THIS IS WHERE YOU UNLOCK USERS
+   * 💳 SUCCESSFUL PAYMENT
    */
   if (event.type === "checkout.session.completed") {
     const session: any = event.data.object;
 
-    const tier = session.metadata?.tier;
+    const tier = session.metadata?.tier || "wave";
+    const email = session.customer_details?.email;
 
     console.log("🌊 PAYMENT SUCCESS");
-    console.log("Unlocked Tier:", tier);
+    console.log("Email:", email);
+    console.log("Tier:", tier);
 
-    // 🔓 NEXT STEP (we will wire this next):
-    // - save user in DB
-    // - update tier = wave / tsunami
+    if (!email) {
+      console.error("No email found in Stripe session");
+      return res.status(400).json({ error: "No email" });
+    }
+
+    /**
+     * 🔓 UPSERT USER + UPDATE TIER
+     */
+    const { error } = await supabase
+      .from("users")
+      .upsert(
+        {
+          email,
+          tier,
+          stripe_session_id: session.id,
+        },
+        { onConflict: "email" }
+      );
+
+    if (error) {
+      console.error("Supabase error:", error);
+      return res.status(500).json({ error: "DB update failed" });
+    }
+
+    console.log("🌊 USER UNLOCKED:", email);
   }
 
   res.json({ received: true });
