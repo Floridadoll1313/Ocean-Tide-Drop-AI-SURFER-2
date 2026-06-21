@@ -13,38 +13,49 @@ import { supabase } from "./utils/supabase";
 
 export default function App() {
   const [userTier, setUserTier] = useState("free");
-  const [email, setEmail] = useState(null);
+  const [email, setEmail] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   /**
-   * 🌊 LOAD USER SESSION + TIER
+   * 🌊 LOAD SESSION + USER TIER
    */
   useEffect(() => {
     async function initUser() {
-      const { data: session } = await supabase.auth.getSession();
+      setLoading(true);
 
-      const userEmail = session?.session?.user?.email;
+      const { data } = await supabase.auth.getSession();
+      const userEmail = data?.session?.user?.email;
 
-      if (!userEmail) return;
+      if (!userEmail) {
+        setLoading(false);
+        return;
+      }
 
       setEmail(userEmail);
 
-      const { data } = await supabase
+      const { data: userData } = await supabase
         .from("users")
         .select("tier")
         .eq("email", userEmail)
         .single();
 
-      if (data?.tier) {
-        setUserTier(data.tier);
+      if (userData?.tier) {
+        setUserTier(userData.tier);
       }
+
+      setLoading(false);
     }
 
     initUser();
+  }, []);
 
-    /**
-     * ⚡ LIVE AUTO-UNLOCK LISTENER
-     * (Stripe webhook → Supabase → UI updates instantly)
-     */
+  /**
+   * ⚡ REALTIME AUTO-UNLOCK LISTENER
+   * Stripe webhook → Supabase → instant UI update
+   */
+  useEffect(() => {
+    if (!email) return;
+
     const channel = supabase
       .channel("tier-realtime")
       .on(
@@ -53,13 +64,13 @@ export default function App() {
           event: "UPDATE",
           schema: "public",
           table: "users",
-          filter: email ? `email=eq.${email}` : undefined,
+          filter: `email=eq.${email}`,
         },
         (payload) => {
           const newTier = payload.new?.tier;
 
           if (newTier) {
-            console.log("🌊 Tier updated live:", newTier);
+            console.log("🌊 LIVE TIER UPDATE:", newTier);
             setUserTier(newTier);
           }
         }
@@ -72,13 +83,33 @@ export default function App() {
   }, [email]);
 
   /**
-   * 🌊 WRAPPER: inject tier into ProtectedRoute
+   * 🔒 PROTECTED WRAPPER
    */
-  function Protected({ children }) {
+  function Protected({
+    children,
+    requiredTier = "bronze",
+  }: {
+    children: React.ReactNode;
+    requiredTier?: string;
+  }) {
     return (
-      <ProtectedRoute userTier={userTier}>
+      <ProtectedRoute
+        userTier={userTier}
+        requiredTier={requiredTier}
+      >
         {children}
       </ProtectedRoute>
+    );
+  }
+
+  /**
+   * 🌊 LOADING STATE
+   */
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
+        <p>Loading ocean system... 🌊</p>
+      </div>
     );
   }
 
@@ -87,28 +118,31 @@ export default function App() {
       <Navbar userTier={userTier} />
 
       <Routes>
+
         {/* 🌊 PUBLIC */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
-        {/* 🔒 MEMBERS ONLY (FREE LOGIN REQUIRED) */}
+        {/* 🔒 DASHBOARD (BRONZE+) */}
         <Route
           path="/dashboard"
           element={
-            <Protected>
+            <Protected requiredTier="bronze">
               <Dashboard userTier={userTier} />
             </Protected>
           }
         />
 
+        {/* 🔵 TOOLS (WAVE+) */}
         <Route
           path="/tools"
           element={
-            <Protected>
+            <Protected requiredTier="wave">
               <Tools userTier={userTier} />
             </Protected>
           }
         />
+
       </Routes>
     </>
   );
