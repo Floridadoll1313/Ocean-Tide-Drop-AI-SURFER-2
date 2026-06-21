@@ -1,24 +1,46 @@
 import React from "react";
-import { Lock, ArrowUpRight, Waves } from "lucide-react";
+import { Lock, ArrowUpRight, Waves, CreditCard } from "lucide-react";
 
-const TIER_ORDER: Record<string, number> = {
+/**
+ * 🌊 Tier system (single source of truth)
+ */
+const TIERS: Record<string, number> = {
   free: 0,
   bronze: 1,
   wave: 2,
   tsunami: 3,
 };
 
-const TIER_NAMES: Record<string, string> = {
+const TIER_LABELS: Record<string, string> = {
   free: "Free Tide",
   bronze: "Bronze Tide",
   wave: "Wave Tier",
   tsunami: "Tsunami Elite",
 };
 
-const TIER_VALUE: Record<string, string[]> = {
-  bronze: ["Basic AI tools", "Starter workflows", "Guided setup"],
-  wave: ["Automation engine", "Prompt library", "Revenue systems"],
-  tsunami: ["Full SaaS system", "Advanced AI infrastructure", "Elite scaling tools"],
+/**
+ * 💳 Stripe mapping (IMPORTANT PART)
+ * This is what makes it "Stripe-aware"
+ */
+const STRIPE_PLANS: Record<
+  string,
+  { name: string; price: string; stripeTier: string }
+> = {
+  bronze: {
+    name: "Bronze Tide",
+    price: "$29/mo",
+    stripeTier: "bronze",
+  },
+  wave: {
+    name: "Wave Tier",
+    price: "$99/mo",
+    stripeTier: "wave",
+  },
+  tsunami: {
+    name: "Tsunami Elite",
+    price: "$250/mo",
+    stripeTier: "tsunami",
+  },
 };
 
 export default function UpgradeGate({
@@ -26,25 +48,36 @@ export default function UpgradeGate({
   requiredTier = "bronze",
   title = "Unlock This System",
   description = "Upgrade to access this feature.",
-  upgradeTier = "bronze",
 }: {
   currentTier?: string;
   requiredTier?: string;
-  upgradeTier?: string;
   title?: string;
   description?: string;
 }) {
-  const currentLevel = TIER_ORDER[currentTier] ?? 0;
-  const requiredLevel = TIER_ORDER[requiredTier] ?? 1;
+  const currentLevel = TIERS[currentTier] ?? 0;
+  const requiredLevel = TIERS[requiredTier] ?? 1;
 
-  const canUpgradeTo = upgradeTier || requiredTier;
+  const targetPlan =
+    STRIPE_PLANS[requiredTier] || STRIPE_PLANS["bronze"];
 
-  const missingOut = TIER_VALUE[requiredTier] || [];
+  const missingFeatures = [
+    "Automated AI workflows",
+    "Revenue system unlock",
+    "Premium prompt library",
+  ];
+
+  const handleUpgrade = () => {
+    /**
+     * 🌊 Stripe-aware redirect
+     * We pass the correct tier into pricing/checkout flow
+     */
+    window.location.href = `/pricing?tier=${targetPlan.stripeTier}`;
+  };
 
   return (
     <div className="relative w-full flex items-center justify-center py-16 px-6">
-      
-      {/* 🌊 BACKDROP */}
+
+      {/* 🌊 BACKGROUND */}
       <div className="absolute inset-0 opacity-40 blur-[120px] bg-gradient-to-br from-cyan-500/20 via-blue-500/10 to-transparent" />
 
       {/* 💳 MAIN CARD */}
@@ -66,14 +99,30 @@ export default function UpgradeGate({
           {description}
         </p>
 
-        {/* 🌊 VALUE PREVIEW */}
-        <div className="mb-8 text-left bg-black/30 border border-white/10 rounded-xl p-5">
-          <p className="text-xs text-cyan-300 uppercase tracking-widest mb-3">
-            What you unlock in {TIER_NAMES[requiredTier]}
-          </p>
+        {/* 💡 STRIPE PLAN DISPLAY */}
+        <div className="mb-8 bg-black/30 border border-white/10 rounded-xl p-5 text-left">
 
-          <div className="space-y-2">
-            {missingOut.map((item, i) => (
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs text-cyan-300 uppercase tracking-widest">
+              Recommended Upgrade
+            </p>
+
+            <div className="flex items-center gap-1 text-white/50 text-xs">
+              <CreditCard className="w-3 h-3" />
+              Stripe Plan
+            </div>
+          </div>
+
+          <div className="text-xl font-bold text-white">
+            {targetPlan.name}
+          </div>
+
+          <div className="text-cyan-300 text-sm font-bold mb-3">
+            {targetPlan.price}
+          </div>
+
+          <div className="space-y-2 mt-4">
+            {missingFeatures.map((item, i) => (
               <div key={i} className="text-white/70 text-sm flex items-center gap-2">
                 <Waves className="w-3 h-3 text-cyan-400" />
                 {item}
@@ -82,25 +131,23 @@ export default function UpgradeGate({
           </div>
         </div>
 
-        {/* 🔥 URGENCY STRIP */}
+        {/* ⚡ URGENCY LINE */}
         <div className="text-xs text-white/40 mb-6">
-          Instant unlock • Cancel anytime • Upgrade takes under 30 seconds
+          Instant activation • Stripe secure checkout • Cancel anytime
         </div>
 
-        {/* 💳 PRIMARY CTA */}
+        {/* 💳 CTA */}
         <button
-          onClick={() => {
-            window.location.href = `/pricing?upgrade=${canUpgradeTo}`;
-          }}
+          onClick={handleUpgrade}
           className="w-full py-4 rounded-2xl bg-cyan-400 text-black font-black uppercase tracking-widest hover:bg-cyan-300 transition flex items-center justify-center gap-2"
         >
-          Upgrade to {TIER_NAMES[canUpgradeTo]}
+          Upgrade to {targetPlan.name}
           <ArrowUpRight className="w-4 h-4" />
         </button>
 
-        {/* BACK LINK */}
-        <p className="mt-6 text-xs text-white/40 hover:text-white transition">
-          Go back to dashboard
+        {/* BACK */}
+        <p className="mt-6 text-xs text-white/40">
+          You can downgrade or cancel anytime in billing
         </p>
 
       </div>
