@@ -16,7 +16,42 @@ function TierGate({
   children: React.ReactNode;
 }) {
   const levels = ["free", "bronze", "wave", "tsunami"];
+{/* 🔵 STEP 2–4 (WAVE TIER) */}
+<TierGate tier={tier} minTier="wave" rank={rank}>
+  <section className="space-y-6">
 
+    {/* STEP 2 */}
+    <div className="p-4 border border-blue-400/20 rounded-lg">
+      <h2 className="text-xl font-semibold">
+        Step 2: Copy Starter Prompts
+      </h2>
+      <p className="opacity-70 mt-2">
+        Full prompt library unlocked — build your first AI workflows.
+      </p>
+    </div>
+
+    {/* STEP 3 */}
+    <div className="p-4 border border-blue-400/20 rounded-lg">
+      <h2 className="text-xl font-semibold">
+        Step 3: Automate One Task
+      </h2>
+      <p className="opacity-70 mt-2">
+        Connect AI to a real business action (content, leads, or sales).
+      </p>
+    </div>
+
+    {/* STEP 4 */}
+    <div className="p-4 border border-blue-400/20 rounded-lg">
+      <h2 className="text-xl font-semibold">
+        Step 4: First Win System
+      </h2>
+      <p className="opacity-70 mt-2">
+        Turn your first automated output into measurable income flow.
+      </p>
+    </div>
+
+  </section>
+</TierGate>
   const hasAccess =
     levels.indexOf(tier) >= levels.indexOf(minTier);
 
