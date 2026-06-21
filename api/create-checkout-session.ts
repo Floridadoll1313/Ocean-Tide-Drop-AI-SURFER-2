@@ -8,25 +8,36 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
+    const { tier = "wave" } = req.body;
+
+    const prices: any = {
+      wave: 999,
+      tsunami: 1999,
+    };
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
+
+      metadata: {
+        tier,
+      },
 
       line_items: [
         {
           price_data: {
             currency: "usd",
             product_data: {
-              name: "Wave Tier Access 🌊",
-              description: "Unlock AI Business Starter Kit",
+              name: `${tier.toUpperCase()} Tier Access 🌊`,
+              description: "Unlock your AI Business Starter Kit levels",
             },
-            unit_amount: 999,
+            unit_amount: prices[tier] || 999,
           },
           quantity: 1,
         },
       ],
 
-      success_url: `${req.headers.origin}/success`,
+      success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin}/cancel`,
     });
 
