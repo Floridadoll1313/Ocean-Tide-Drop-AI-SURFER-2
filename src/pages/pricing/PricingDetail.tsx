@@ -3,30 +3,40 @@ import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import PageWrapper from '../../components/PageWrapper';
 
-const TIERS: Record<string, { title: string; color: string; glow: string; description: string; }> = {
+const TIERS: Record<string, {
+  title: string;
+  color: string;
+  glow: string;
+  description: string;
+  value?: string[];
+}> = {
   "dawn-patrol": {
     title: "Dawn Patrol",
     color: "text-slate-300",
     glow: "shadow-[0_0_40px_rgba(200,200,255,0.3)]",
-    description: "Initializing your cinematic entry point...",
+    description: "Entry-level access to your AI system.",
+    value: ["Basic tools", "Starter workflows", "Community access"]
   },
   "breakline": {
     title: "Breakline",
     color: "text-[#00eaff]",
     glow: "shadow-[0_0_40px_rgba(0,255,255,0.5)]",
-    description: "Calibrating deeper automations...",
+    description: "Expanded automation and workflow control.",
+    value: ["Automation systems", "AI prompt library", "Growth tools"]
   },
   "hatteras-island": {
     title: "Surfer Elite",
     color: "text-pink-500",
     glow: "shadow-[0_0_40px_rgba(255,0,128,0.5)]",
-    description: "Opening high-touch creative systems...",
+    description: "Advanced creative + business AI systems.",
+    value: ["Revenue systems", "Advanced AI workflows", "Priority access"]
   },
   "cape-point": {
     title: "Cape Point",
     color: "text-yellow-300",
     glow: "shadow-[0_0_40px_rgba(255,215,0,0.5)]",
-    description: "Activating full-stack architecture...",
+    description: "Full-stack AI business architecture.",
+    value: ["Full SaaS system", "Unlimited workflows", "Enterprise tools"]
   },
 };
 
@@ -34,30 +44,28 @@ export default function PricingDetail() {
   const { slug } = useParams<{ slug: string }>();
   const tierId = slug || "dawn-patrol";
   const tier = TIERS[tierId] || TIERS["dawn-patrol"];
+
   const [activated, setActivated] = useState(false);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
   const { user, loginWithGoogle } = useAuth();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setActivated(true);
-    }, 3000);
+    const timer = setTimeout(() => setActivated(true), 1200);
     return () => clearTimeout(timer);
   }, []);
 
   const handleSubscribe = async () => {
     if (!user) {
-      // Require login before checkout
       try {
         await loginWithGoogle();
-      } catch (err) {
-        console.error("Login failed", err);
-        alert("Authentication failed. If you are viewing this in the AI Studio preview, popups may be blocked. Please click the arrow/window icon at the top right to open this app in a new tab and try again.");
+      } catch {
+        alert("Please open in a new tab to continue checkout 🌊");
       }
       return;
     }
 
     setLoadingCheckout(true);
+
     try {
       const resp = await fetch("/api/create-checkout-session", {
         method: "POST",
@@ -65,19 +73,20 @@ export default function PricingDetail() {
         body: JSON.stringify({
           userId: user.uid,
           email: user.email,
-          tierId: tierId,
+          tierId,
         }),
       });
 
       const data = await resp.json();
+
       if (resp.ok && data.url) {
         window.location.href = data.url;
       } else {
-        alert("Checkout configuration missing. Set STRIPE_SECRET_KEY and Stripe Prices in .env");
+        alert("Stripe not configured. Please set up pricing products.");
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to start checkout. Check console for details.");
+      alert("Checkout failed. Check console.");
     } finally {
       setLoadingCheckout(false);
     }
@@ -85,54 +94,96 @@ export default function PricingDetail() {
 
   return (
     <PageWrapper maxWidth="max-w-7xl" showHero={false}>
-      <div className="relative flex items-center justify-center py-10 w-full min-h-[60vh]">
-        {/* BACKGROUND */}
-        <div className="absolute inset-0 opacity-40 blur-[120px]" style={{ background: "radial-gradient(circle at 50% 50%, rgba(0,255,255,0.2), transparent 60%)" }} />
+      <div className="relative flex items-center justify-center py-12 w-full min-h-[70vh] bg-black">
 
-        {/* GLASS ACTIVATION CARD */}
-        <div className={`relative max-w-2xl w-full glass-card p-12 rounded-[3xl] border border-white/10 bg-white/5 text-center backdrop-blur-xl ${tier.glow} transition-all duration-1000 z-20`}>
-          <h1 className={`text-5xl font-black italic uppercase mb-4 drop-shadow-xl ${tier.color}`}>
+        {/* 🌊 BACKGROUND */}
+        <div className="absolute inset-0 opacity-30 blur-[120px]"
+          style={{
+            background: "radial-gradient(circle at 50% 40%, rgba(0,255,255,0.25), transparent 60%)"
+          }}
+        />
+
+        {/* 💳 MAIN CARD */}
+        <div className={`relative max-w-2xl w-full p-10 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl text-center transition-all duration-700 ${tier.glow}`}>
+
+          <h1 className={`text-4xl font-black uppercase mb-3 ${tier.color}`}>
             {tier.title}
           </h1>
-          <p className="text-slate-500 mb-12 uppercase text-[10px] tracking-[0.4em]">Activation Sequence Online</p>
-          <p className="text-slate-300 font-light mb-8">{tier.description}</p>
 
-          {/* ACTIVATION LOADER */}
-          <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mb-10 relative">
-            <div className={`absolute top-0 bottom-0 left-0 w-1/2 ${tier.color.replace("text-", "bg-")} animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]`} />
+          <p className="text-xs tracking-[0.3em] uppercase text-white/40 mb-6">
+            Subscription Tier
+          </p>
+
+          <p className="text-white/70 mb-8">
+            {tier.description}
+          </p>
+
+          {/* 🌊 VALUE STACK */}
+          <div className="mb-8 space-y-2 text-sm text-white/60">
+            {tier.value?.map((v, i) => (
+              <div key={i}>✔ {v}</div>
+            ))}
           </div>
 
-          <Link to="/pricing" className="inline-flex items-center gap-2 text-[#00eaff] text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">
-            ← Back to Tiers
+          {/* 💡 SaaS framing line */}
+          <div className="text-xs text-white/40 mb-8">
+            Cancel anytime • Instant unlock after payment • Secure Stripe checkout
+          </div>
+
+          {/* 💳 CTA */}
+          <button
+            onClick={handleSubscribe}
+            disabled={loadingCheckout}
+            className={`w-full py-4 rounded-2xl font-bold uppercase tracking-widest transition-all ${
+              loadingCheckout
+                ? "opacity-50"
+                : "bg-white text-black hover:bg-cyan-400"
+            }`}
+          >
+            {loadingCheckout
+              ? "Processing..."
+              : user
+              ? "Subscribe & Unlock"
+              : "Sign In to Continue"}
+          </button>
+
+          {/* BACK */}
+          <Link
+            to="/pricing"
+            className="inline-block mt-6 text-xs text-white/40 hover:text-white uppercase tracking-widest"
+          >
+            ← Back to Pricing
           </Link>
         </div>
 
-        {/* ACTIVATION COMPLETE REVEAL OVERLAY */}
+        {/* ⚡ AUTO REVEAL OVERLAY */}
         {activated && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-xl animate-in fade-in duration-1000 z-50">
-            <div className="text-center w-full max-w-md px-6">
-              <div className={`text-5xl font-black uppercase tracking-widest mb-6 ${tier.color} drop-shadow-lg`}>
-                Activation Complete
+          <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-xl z-50">
+            <div className="text-center space-y-6">
+
+              <div className={`text-3xl font-black uppercase ${tier.color}`}>
+                Ready to Upgrade
               </div>
-              <div className={`mx-auto w-32 h-32 rounded-full border-4 ${tier.color.replace('text-', 'border-')} ${tier.glow} animate-pulse shadow-xl`} />
-              <p className="mt-8 text-slate-300 text-sm tracking-widest font-light">
-                Welcome to the {tier.title} tier.
+
+              <p className="text-white/60 text-sm max-w-sm mx-auto">
+                This tier unlocks a complete AI system layer designed for scaling digital income workflows.
               </p>
-              <div className="mt-10 flex flex-col gap-4">
-                <button 
-                  onClick={handleSubscribe} 
-                  disabled={loadingCheckout}
-                  className={`py-4 px-8 rounded-full ${tier.color.replace('text-', 'bg-')}/20 border border-white/20 text-white uppercase tracking-widest text-xs font-bold shadow-lg hover:shadow-xl hover:bg-white/30 transition-all ${loadingCheckout ? 'opacity-50 cursor-wait' : ''}`}
-                >
-                  {loadingCheckout ? "Processing..." : user ? "Subscribe to Enter" : "Sign In to Subscribe"}
-                </button>
-                <Link to="/pricing" className="text-xs text-white/50 hover:text-white tracking-widest uppercase transition-colors">
-                  Cancel
-                </Link>
-              </div>
+
+              <button
+                onClick={handleSubscribe}
+                className="px-8 py-3 bg-white text-black rounded-full font-bold uppercase tracking-widest hover:bg-cyan-400 transition"
+              >
+                Enter {tier.title}
+              </button>
+
+              <Link to="/pricing" className="block text-xs text-white/40 mt-4">
+                Cancel
+              </Link>
+
             </div>
           </div>
         )}
+
       </div>
     </PageWrapper>
   );
