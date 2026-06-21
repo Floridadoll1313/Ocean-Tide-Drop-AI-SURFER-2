@@ -5,32 +5,32 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 export default async function handler(req: any, res: any) {
-  const { email, tierId } = req.body;
+  const { priceId, email, tier } = req.body;
 
-  const session = await stripe.checkout.sessions.create({
-    mode: "subscription",
-    customer_email: email,
-    line_items: [
-      {
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: `Ocean Tide Tier: ${tierId}`,
-          },
-          unit_amount: tierId === "wave" ? 9900 : 2900,
-          recurring: {
-            interval: "month",
-          },
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      customer_email: email,
+
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
         },
-        quantity: 1,
-      },
-    ],
-    metadata: {
-      tier: tierId,
-    },
-    success_url: `${process.env.FRONTEND_URL}/dashboard`,
-    cancel_url: `${process.env.FRONTEND_URL}/pricing`,
-  });
+      ],
 
-  res.json({ url: session.url });
+      metadata: {
+        tier,
+        source: "upgrade_gate",
+      },
+
+      success_url: `${process.env.FRONTEND_URL}/dashboard?success=true`,
+      cancel_url: `${process.env.FRONTEND_URL}/pricing?canceled=true`,
+    });
+
+    res.json({ url: session.url });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ error: "Checkout failed" });
+  }
 }
