@@ -1,31 +1,45 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import { auth } from "../firebase";
 
-// swap this later with Firebase/Supabase auth
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // fake auth check (replace with real auth listener)
+  // 🌊 listen to Firebase session
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
-    setLoading(false);
+    const unsub = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      setLoading(false);
+    });
+
+    return () => unsub();
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+  // 🔑 login
+  const login = (email, password) => {
+    return signInWithEmailAndPassword(auth, email, password);
   };
 
+  // 🧾 register
+  const signup = (email, password) => {
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
+
+  // 🚪 logout
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
+    return signOut(auth);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
