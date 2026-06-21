@@ -1,31 +1,55 @@
 import UpgradeGate from "./UpgradeGate";
 
-const TIERS = {
+/**
+ * 🌊 Tier hierarchy (single source of truth)
+ * Higher number = more access
+ */
+const TIERS: Record<string, number> = {
   free: 0,
   bronze: 1,
   wave: 2,
   tsunami: 3,
 };
 
+type TierKey = keyof typeof TIERS;
+
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  userTier?: string;
+  requiredTier?: TierKey;
+}
+
 export default function ProtectedRoute({
   children,
   userTier = "free",
   requiredTier = "bronze",
-}) {
-  const userLevel = TIERS[userTier] ?? 0;
-  const requiredLevel = TIERS[requiredTier] ?? 1;
+}: ProtectedRouteProps) {
+  /**
+   * 🧠 Normalize tiers safely
+   * prevents crashes from bad DB values
+   */
+  const normalizedUserTier = TIERS[userTier] ?? 0;
+  const normalizedRequiredTier = TIERS[requiredTier] ?? 1;
 
-  if (userLevel < requiredLevel) {
+  const hasAccess = normalizedUserTier >= normalizedRequiredTier;
+
+  /**
+   * 🔒 BLOCK ACCESS → Upgrade UI
+   */
+  if (!hasAccess) {
     return (
       <UpgradeGate
         currentTier={userTier}
         requiredTier={requiredTier}
         upgradeTier={requiredTier}
-        title="This area is locked"
-        description="Upgrade your tide level to unlock full access to this system."
+        title="Locked Behind Your Tide Level"
+        description="Upgrade your plan to unlock this area of your AI system. Higher tiers unlock deeper automation, tools, and revenue systems."
       />
     );
   }
 
-  return children;
+  /**
+   * 🌊 ALLOW ACCESS
+   */
+  return <>{children}</>;
 }
