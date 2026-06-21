@@ -1,11 +1,7 @@
-// 🌊 AI-Business-Starter-Kit.tsx (Step 1 - Bronze Version)
+// 🌊 AI-Business-Starter-Kit.tsx
 
 import React from "react";
 
-/**
- * TierGate (simple version)
- * Controls access by tier level
- */
 function TierGate({
   tier,
   minTier,
@@ -16,42 +12,7 @@ function TierGate({
   children: React.ReactNode;
 }) {
   const levels = ["free", "bronze", "wave", "tsunami"];
-{/* 🔵 STEP 2–4 (WAVE TIER) */}
-<TierGate tier={tier} minTier="wave" rank={rank}>
-  <section className="space-y-6">
 
-    {/* STEP 2 */}
-    <div className="p-4 border border-blue-400/20 rounded-lg">
-      <h2 className="text-xl font-semibold">
-        Step 2: Copy Starter Prompts
-      </h2>
-      <p className="opacity-70 mt-2">
-        Full prompt library unlocked — build your first AI workflows.
-      </p>
-    </div>
-
-    {/* STEP 3 */}
-    <div className="p-4 border border-blue-400/20 rounded-lg">
-      <h2 className="text-xl font-semibold">
-        Step 3: Automate One Task
-      </h2>
-      <p className="opacity-70 mt-2">
-        Connect AI to a real business action (content, leads, or sales).
-      </p>
-    </div>
-
-    {/* STEP 4 */}
-    <div className="p-4 border border-blue-400/20 rounded-lg">
-      <h2 className="text-xl font-semibold">
-        Step 4: First Win System
-      </h2>
-      <p className="opacity-70 mt-2">
-        Turn your first automated output into measurable income flow.
-      </p>
-    </div>
-
-  </section>
-</TierGate>
   const hasAccess =
     levels.indexOf(tier) >= levels.indexOf(minTier);
 
@@ -68,9 +29,6 @@ function TierGate({
   return <>{children}</>;
 }
 
-/**
- * MAIN PAGE
- */
 export default function AIBusinessStarterKit({
   tier = "free",
   rank = 0,
@@ -81,8 +39,8 @@ export default function AIBusinessStarterKit({
   return (
     <div className="space-y-10 p-6 text-white">
 
-      {/* 🟢 PUBLIC SURFACE */}
-      <header className="space-y-2">
+      {/* 🟢 PUBLIC */}
+      <header>
         <h1 className="text-3xl font-bold">
           AI Business Starter Kit
         </h1>
@@ -91,42 +49,48 @@ export default function AIBusinessStarterKit({
         </p>
       </header>
 
-      <section className="p-4 border border-white/10 rounded-lg">
-        <h2 className="text-xl font-semibold">
-          What you’ll build
-        </h2>
-        <p className="opacity-70">
-          A step-by-step system that turns ideas into automated AI income streams.
-        </p>
-      </section>
-
-      {/* 🟤 STEP 1 (BRONZE ONLY) */}
-      <TierGate tier={tier} minTier="bronze" rank={rank}>
+      {/* 🟤 STEP 1 */}
+      <TierGate tier={tier} minTier="bronze">
         <section className="p-4 border border-blue-400/20 rounded-lg">
-          <h2 className="text-xl font-semibold">
-            Step 1: Pick Your AI Role
-          </h2>
-
+          <h2>Step 1: Pick Your AI Role</h2>
           <p className="opacity-70 mt-2">
-            This is your foundation layer. Choose how your AI earns for you:
+            Choose your automation identity.
           </p>
 
-          <ul className="mt-3 space-y-1 opacity-80">
+          <ul className="mt-3 space-y-1">
             <li>• AI Content Builder</li>
             <li>• AI Lead Generator</li>
             <li>• AI Automation Assistant</li>
             <li>• AI Sales Closer System</li>
           </ul>
+        </section>
+      </TierGate>
 
-          <div className="mt-4 p-3 bg-blue-500/10 border border-blue-400/20 rounded">
-            <p className="text-sm">
-              💡 Locked behind your current tide level — upgrade to unlock deeper systems
+      {/* 🔵 STEP 2–4 */}
+      <TierGate tier={tier} minTier="wave">
+        <section className="space-y-6">
+
+          <div>
+            <h2>Step 2: Copy Starter Prompts</h2>
+            <p className="opacity-70">
+              Prompt library unlocked.
             </p>
           </div>
 
-          <button className="mt-4 px-4 py-2 bg-blue-500 rounded">
-            Continue Journey 🌊
-          </button>
+          <div>
+            <h2>Step 3: Automate One Task</h2>
+            <p className="opacity-70">
+              Build your first workflow.
+            </p>
+          </div>
+
+          <div>
+            <h2>Step 4: First Win System</h2>
+            <p className="opacity-70">
+              Turn automation into income.
+            </p>
+          </div>
+
         </section>
       </TierGate>
 
