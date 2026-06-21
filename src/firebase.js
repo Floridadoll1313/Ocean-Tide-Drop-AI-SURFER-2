@@ -1,7 +1,7 @@
 // src/firebase.js
 import { initializeApp } from "firebase/app";
-// This line imports the Firestore database tool
-import { getFirestore } from "firebase/firestore"; 
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth"; // 🔐 ADD THIS
 
 const firebaseConfig = {
   apiKey: "AIzaSyDna4Fq9NSezv-i7AiBWZLmN6ttdP7G25I",
@@ -12,8 +12,11 @@ const firebaseConfig = {
   appId: "1:769231987436:web:8abb6183685fa9bcd07bc9"
 };
 
-// Initialize the core app
+// Initialize app
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore and export it so your other files can see it
+// Firestore (you already had this)
 export const db = getFirestore(app);
+
+// 🔐 ADD THIS
+export const auth = getAuth(app);
