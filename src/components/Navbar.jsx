@@ -7,16 +7,12 @@ export default function Navbar() {
   return (
     <nav className="flex gap-4 p-4 bg-black text-white">
       <Link to="/">Home</Link>
-
-      {/* ALWAYS visible */}
       <Link to="/pricing">Pricing</Link>
 
-      {/* 🔒 MEMBERS ONLY TOOL WALL */}
       {user && (
         <>
           <Link to="/dashboard">Dashboard</Link>
           <Link to="/tools">AI Tools</Link>
-          <Link to="/analytics">Analytics</Link>
         </>
       )}
 
