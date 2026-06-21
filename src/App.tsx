@@ -1,57 +1,40 @@
-import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-import { AuthProvider } from "./hooks/useAuth";
-import ScrollToTop from "./components/ScrollToTop";
-import CalendlyBadge from "./components/CalendlyBadge";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Tools from "./pages/Tools";
 
-// Layout
-import Layout from "./layouts/Layout";
-
-// Supabase Test
-import { testSupabase } from "./lib/supabaseTest";
-
-// Pages
-import Home from "./pages/home/Home";
-import Contact from "./pages/contact/Contact";
-import Services from "./pages/services/Services";
-import Pricing from "./pages/pricing/Pricing";
-import PricingDetail from "./pages/pricing/PricingDetail";
-import Members from "./pages/members/Members";
-import Profile from "./pages/profile/Profile";
-import Dashboard from "./pages/dashboard/Dashboard";
-import Shop from "./pages/shop/Shop";
-import FreeGuideLanding from "./pages/FreeGuideLanding";
-
-function App() {
-  useEffect(() => {
-    testSupabase();
-  }, []);
-
+export default function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <ScrollToTop />
-        <CalendlyBadge />
+    <>
+      <Navbar />
 
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/pricing/:slug" element={<PricingDetail />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/members" element={<Members />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/free-guide" element={<FreeGuideLanding />} />
-          </Route>
-        </Routes>
-      </Router>
-    </AuthProvider>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* 🔒 MEMBERS ONLY ZONE */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/tools"
+          element={
+            <ProtectedRoute>
+              <Tools />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
   );
 }
-
-
-export default App;
