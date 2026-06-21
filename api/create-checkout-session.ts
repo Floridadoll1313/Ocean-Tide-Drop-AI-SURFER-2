@@ -1,50 +1,36 @@
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-06-20",
+});
 
 export default async function handler(req: any, res: any) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  const { email, tierId } = req.body;
 
-  try {
-    const { tier = "wave" } = req.body;
-
-    const prices: any = {
-      wave: 999,
-      tsunami: 1999,
-    };
-
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment",
-
-      metadata: {
-        tier,
-      },
-
-      line_items: [
-        {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: `${tier.toUpperCase()} Tier Access 🌊`,
-              description: "Unlock your AI Business Starter Kit levels",
-            },
-            unit_amount: prices[tier] || 999,
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    customer_email: email,
+    line_items: [
+      {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: `Ocean Tide Tier: ${tierId}`,
           },
-          quantity: 1,
+          unit_amount: tierId === "wave" ? 9900 : 2900,
+          recurring: {
+            interval: "month",
+          },
         },
-      ],
+        quantity: 1,
+      },
+    ],
+    metadata: {
+      tier: tierId,
+    },
+    success_url: `${process.env.FRONTEND_URL}/dashboard`,
+    cancel_url: `${process.env.FRONTEND_URL}/pricing`,
+  });
 
-      success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.origin}/cancel`,
-    });
-
-    res.status(200).json({ id: session.id });
-
-  } catch (err: any) {
-    console.error(err);
-    res.status(500).json({ error: "Checkout failed" });
-  }
+  res.json({ url: session.url });
 }
