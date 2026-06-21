@@ -1,9 +1,15 @@
-// 🌊 AI-Business-Starter-Kit.tsx
-
 import React, { useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
 
 /**
- * TierGate (simple version)
+ * Stripe init
+ */
+const stripePromise = loadStripe(
+  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+);
+
+/**
+ * TierGate
  */
 function TierGate({
   tier,
@@ -32,25 +38,56 @@ function TierGate({
   return <>{children}</>;
 }
 
+/**
+ * MAIN PAGE
+ */
 export default function AIBusinessStarterKit({
   tier = "free",
-  rank = 0,
 }: {
   tier: string;
-  rank?: number;
 }) {
   const [role, setRole] = useState<string | null>(null);
+
+  /**
+   * Stripe checkout handler
+   */
+  async function handleUpgrade() {
+    const stripe = await stripePromise;
+
+    if (!stripe) {
+      alert("Stripe failed to load");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const session = await res.json();
+
+      await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Payment failed to start");
+    }
+  }
 
   return (
     <div className="space-y-10 p-6 text-white">
 
       {/* 🟢 HEADER */}
-      <header className="space-y-2">
+      <header>
         <h1 className="text-3xl font-bold">
           AI Business Starter Kit
         </h1>
         <p className="opacity-70">
-          Surf Edition — start building your AI income wave 🌊
+          Surf Edition — build your AI income wave 🌊
         </p>
       </header>
 
@@ -80,6 +117,7 @@ export default function AIBusinessStarterKit({
       {/* 🟤 STEP 1 */}
       <TierGate tier={tier} minTier="bronze">
         <section className="p-4 border border-blue-400/20 rounded-lg">
+
           <h2 className="text-xl font-semibold">
             Step 1: Pick Your AI Role
           </h2>
@@ -118,10 +156,11 @@ export default function AIBusinessStarterKit({
               </button>
             ))}
           </div>
+
         </section>
       </TierGate>
 
-      {/* 🔵 STEP 2–4 (PREMIUM LOCKED UI) */}
+      {/* 🔵 STEP 2–4 (LOCKED PREMIUM UI) */}
       <TierGate tier={tier} minTier="wave">
         <section className="space-y-6">
 
@@ -129,18 +168,14 @@ export default function AIBusinessStarterKit({
           <div className="relative p-4 border border-blue-400/20 rounded-lg">
             <div className="blur-sm opacity-40">
               <h2>Step 2: Copy Starter Prompts</h2>
-              <p>AI prompt library for instant workflows...</p>
-            </div>
-
-            <div className="absolute top-3 right-3 text-xs opacity-60">
-              Locked 🌊
+              <p>AI prompt library for workflows...</p>
             </div>
 
             <button
-              className="mt-3 px-3 py-1 bg-blue-500 rounded"
-              onClick={() => alert("Upgrade to Wave Tier 🌊")}
+              onClick={handleUpgrade}
+              className="mt-3 px-3 py-1 bg-green-500 rounded"
             >
-              Unlock Wave Tier
+              Unlock Wave Tier 💳
             </button>
           </div>
 
@@ -148,18 +183,14 @@ export default function AIBusinessStarterKit({
           <div className="relative p-4 border border-blue-400/20 rounded-lg">
             <div className="blur-sm opacity-40">
               <h2>Step 3: Automate One Task</h2>
-              <p>Your first AI workflow activation...</p>
-            </div>
-
-            <div className="absolute top-3 right-3 text-xs opacity-60">
-              Locked 🌊
+              <p>First AI workflow activation...</p>
             </div>
 
             <button
-              className="mt-3 px-3 py-1 bg-blue-500 rounded"
-              onClick={() => alert("Upgrade to Wave Tier 🌊")}
+              onClick={handleUpgrade}
+              className="mt-3 px-3 py-1 bg-green-500 rounded"
             >
-              Unlock Wave Tier
+              Unlock Wave Tier 💳
             </button>
           </div>
 
@@ -167,18 +198,14 @@ export default function AIBusinessStarterKit({
           <div className="relative p-4 border border-blue-400/20 rounded-lg">
             <div className="blur-sm opacity-40">
               <h2>Step 4: First Win System</h2>
-              <p>Turn automation into measurable results...</p>
-            </div>
-
-            <div className="absolute top-3 right-3 text-xs opacity-60">
-              Locked 🌊
+              <p>Turn automation into income...</p>
             </div>
 
             <button
-              className="mt-3 px-3 py-1 bg-blue-500 rounded"
-              onClick={() => alert("Upgrade to Wave Tier 🌊")}
+              onClick={handleUpgrade}
+              className="mt-3 px-3 py-1 bg-green-500 rounded"
             >
-              Unlock Wave Tier
+              Unlock Wave Tier 💳
             </button>
           </div>
 
