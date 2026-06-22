@@ -4,33 +4,33 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
 });
 
-export default async function handler(req: any, res: any) {
-  const { priceId, email, tier } = req.body;
+import { PRICING } from "../../../src/config/pricing";
 
-  try {
-    const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
-      customer_email: email,
+export default async function handler(req, res) {
+  const { tierId, email, userId } = req.body;
 
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+  const tier = PRICING[tierId];
 
-      metadata: {
-        tier,
-        source: "upgrade_gate",
-      },
-
-      success_url: `${process.env.FRONTEND_URL}/dashboard?success=true`,
-      cancel_url: `${process.env.FRONTEND_URL}/pricing?canceled=true`,
-    });
-
-    res.json({ url: session.url });
-  } catch (err: any) {
-    console.error(err);
-    res.status(500).json({ error: "Checkout failed" });
+  if (!tier || !tier.stripePriceId) {
+    return res.status(400).json({ error: "Invalid tier" });
   }
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    customer_email: email,
+    line_items: [
+      {
+        price: tier.stripePriceId,
+        quantity: 1,
+      },
+    ],
+    metadata: {
+      tier: tierId,
+      userId,
+    },
+    success_url: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
+    cancel_url: `${process.env.NEXT_PUBLIC_URL}/pricing`,
+  });
+
+  res.json({ url: session.url });
 }
