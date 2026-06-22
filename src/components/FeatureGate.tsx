@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import LockedPreview from "./LockedPreview";
 import UpgradeModal from "./UpgradeModal";
@@ -12,16 +12,24 @@ export default function FeatureGate({
 }) {
   const [open, setOpen] = useState(false);
 
+  /**
+   * 🧠 prevent duplicate tracking spam
+   */
+  const trackedRef = useRef(false);
+
   const userLevel = PRICING[userTier]?.accessLevel ?? 0;
   const requiredLevel = PRICING[requiredTier]?.accessLevel ?? 1;
 
   const isLocked = userLevel < requiredLevel;
 
   /**
-   * 📊 TRACK INTENT (ONLY WHEN LOCKED)
+   * 📊 INTENT TRACKING (ONLY ON FIRST LOCK EVENT)
    */
   useEffect(() => {
     if (!isLocked) return;
+    if (trackedRef.current) return;
+
+    trackedRef.current = true;
 
     trackUpgradeIntent({
       userTier,
@@ -31,12 +39,12 @@ export default function FeatureGate({
   }, [isLocked, userTier, requiredTier]);
 
   /**
-   * 🔐 LOCKED STATE (NETFLIX STYLE)
+   * 🔐 LOCKED STATE (NETFLIX EXPERIENCE)
    */
   if (isLocked) {
     return (
       <>
-        {/* 🌊 Blurred preview + CTA */}
+        {/* 🌊 Blurred preview layer */}
         <LockedPreview
           requiredTier={requiredTier}
           onUpgrade={() => setOpen(true)}
