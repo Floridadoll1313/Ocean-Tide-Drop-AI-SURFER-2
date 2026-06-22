@@ -1,71 +1,42 @@
-import React, { useState } from "react";
+import React from "react";
+import { Lock, Sparkles } from "lucide-react";
+import { PRICING } from "../config/pricing";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, Lock, ArrowRight } from "lucide-react";
 
-export default function UpgradeGate({
-  currentTier,
-  requiredTier,
-  title,
-  description,
-  upgradeTier = "wave",
-}) {
+export default function UpgradeGate({ requiredTier = "bronze", title, description }) {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-
-  const handleUpgrade = async () => {
-    setLoading(true);
-
-    try {
-      // 🌊 send user to pricing page (Stripe handles upgrade)
-      navigate("/pricing?upgrade=" + upgradeTier);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
-    <div className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-[70vh] flex items-center justify-center bg-black overflow-hidden">
 
-      {/* 🌊 glowing background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900 to-cyan-950 opacity-80" />
+      {/* glow background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900 to-cyan-950 opacity-90" />
 
-      <div className="relative z-10 max-w-lg w-full text-center p-10 rounded-3xl border border-cyan-500/20 bg-white/5 backdrop-blur-xl shadow-[0_0_60px_rgba(0,255,255,0.08)] animate-pulse">
+      <div className="relative z-10 max-w-md w-full p-10 text-center rounded-3xl border border-cyan-500/20 bg-white/5 backdrop-blur-xl shadow-[0_0_60px_rgba(0,255,255,0.08)]">
 
-        {/* LOCK ICON */}
-        <div className="mx-auto w-16 h-16 rounded-full bg-cyan-500/10 flex items-center justify-center mb-6 border border-cyan-400/30">
+        <div className="mx-auto w-16 h-16 flex items-center justify-center rounded-full bg-cyan-500/10 border border-cyan-400/30 mb-5">
           <Lock className="text-cyan-300" />
         </div>
 
-        <h2 className="text-3xl font-black text-cyan-300 mb-2">
-          {title || "Locked Wave Zone"}
-        </h2>
+        <h1 className="text-2xl font-black text-cyan-300 mb-2">
+          {title || "Locked Content"}
+        </h1>
 
-        <p className="text-white/60 text-sm mb-2">
-          Required tier: <span className="text-cyan-300 font-bold">{requiredTier}</span>
+        <p className="text-white/60 text-sm mb-6">
+          {description || "Upgrade your tier to unlock this system."}
         </p>
 
-        <p className="text-white/40 text-sm mb-6">
-          {description || "Upgrade your system to unlock deeper access."}
-        </p>
+        <div className="text-xs text-white/40 mb-6">
+          Required: {PRICING[requiredTier]?.label}
+        </div>
 
-        {/* CTA */}
         <button
-          onClick={handleUpgrade}
-          disabled={loading}
-          className="w-full py-4 rounded-2xl bg-cyan-400 text-black font-black hover:bg-cyan-300 transition flex items-center justify-center gap-2"
+          onClick={() => navigate("/pricing?upgrade=" + requiredTier)}
+          className="w-full py-4 bg-cyan-400 text-black font-black rounded-xl hover:bg-cyan-300 transition flex items-center justify-center gap-2"
         >
-          {loading ? (
-            "Redirecting..."
-          ) : (
-            <>
-              Upgrade to Unlock <ArrowRight size={16} />
-            </>
-          )}
+          Upgrade Now <Sparkles size={16} />
         </button>
 
-        <p className="mt-4 text-[10px] uppercase tracking-widest text-white/30">
-          Secure Stripe Upgrade Flow
-        </p>
       </div>
     </div>
   );
