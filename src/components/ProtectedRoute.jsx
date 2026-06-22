@@ -1,5 +1,11 @@
 import UpgradeGate from "./UpgradeGate";
-import { TIERS } from "../utils/tiers";
+
+const TIERS = {
+  free: 0,
+  bronze: 1,
+  wave: 2,
+  tsunami: 3,
+};
 
 export default function ProtectedRoute({
   children,
@@ -14,6 +20,9 @@ export default function ProtectedRoute({
       <UpgradeGate
         currentTier={userTier}
         requiredTier={requiredTier}
+        title="Premium Wave Locked"
+        description="This content lives in a higher frequency tier."
+        upgradeTier={requiredTier}
       />
     );
   }
