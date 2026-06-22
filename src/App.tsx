@@ -1,154 +1,24 @@
-import { Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React from "react";
+import UpgradeGate from "./UpgradeGate";
+import { PRICING } from "../config/pricing";
 
-import Navbar from "./components/Navbar";
-import ProtectedRoute from "./components/ProtectedRoute";
+export default function FeatureGate({
+  userTier = "free",
+  requiredTier = "bronze",
+  children,
+}) {
+  const userLevel = PRICING[userTier]?.accessLevel ?? 0;
+  const requiredLevel = PRICING[requiredTier]?.accessLevel ?? 1;
 
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Tools from "./pages/Tools";
-
-import { supabase } from "./utils/supabase";
-
-export default function App() {
-  const [userTier, setUserTier] = useState("free");
-  const [email, setEmail] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  /**
-   * 🌊 LOAD SESSION + USER TIER
-   */
-  useEffect(() => {
-    async function initUser() {
-      setLoading(true);
-
-      const { data: sessionData } = await supabase.auth.getSession();
-      const userEmail = sessionData?.session?.user?.email;
-
-      if (!userEmail) {
-        setLoading(false);
-        return;
-      }
-
-      setEmail(userEmail);
-
-      const { data: userData, error } = await supabase
-        .from("users")
-        .select("tier")
-        .eq("email", userEmail)
-        .single();
-
-      if (error) {
-        console.warn("Tier fetch error:", error.message);
-      }
-
-      if (userData?.tier) {
-        setUserTier(userData.tier);
-      }
-
-      setLoading(false);
-    }
-
-    initUser();
-  }, []);
-
-  /**
-   * ⚡ REALTIME AUTO-UNLOCK LISTENER
-   */
-  useEffect(() => {
-    if (!email) return;
-
-    const channel = supabase
-      .channel("tier-realtime")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "users",
-          filter: `email=eq.${email}`,
-        },
-        (payload) => {
-          const newTier = payload.new?.tier;
-
-          if (newTier && newTier !== userTier) {
-            console.log("🌊 LIVE TIER UPDATE:", newTier);
-            setUserTier(newTier);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [email, userTier]);
-
-  /**
-   * 🔒 PROTECTED WRAPPER
-   */
-  function Protected({
-    children,
-    requiredTier = "bronze",
-  }: {
-    children: React.ReactNode;
-    requiredTier?: string;
-  }) {
+  if (userLevel < requiredLevel) {
     return (
-      <ProtectedRoute
-        userTier={userTier}
+      <UpgradeGate
         requiredTier={requiredTier}
-      >
-        {children}
-      </ProtectedRoute>
+        title="Premium Feature Locked"
+        description="This feature is part of a higher-tier system."
+      />
     );
   }
 
-  /**
-   * 🌊 LOADING STATE
-   */
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
-        <p className="animate-pulse">
-          Syncing ocean systems... 🌊
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <Navbar userTier={userTier} />
-
-      <Routes>
-
-        {/* 🌊 PUBLIC */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-
-        {/* 🔒 BRONZE+ */}
-        <Route
-          path="/dashboard"
-          element={
-            <Protected requiredTier="bronze">
-              <Dashboard userTier={userTier} />
-            </Protected>
-          }
-        />
-
-        {/* 🔵 WAVE+ */}
-        <Route
-          path="/tools"
-          element={
-            <Protected requiredTier="wave">
-              <Tools userTier={userTier} />
-            </Protected>
-          }
-        />
-
-      </Routes>
-    </>
-  );
+  return children;
 }
