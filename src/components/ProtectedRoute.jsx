@@ -1,11 +1,5 @@
 import UpgradeGate from "./UpgradeGate";
-
-const TIERS = {
-  free: 0,
-  bronze: 1,
-  wave: 2,
-  tsunami: 3,
-};
+import { TIERS } from "../utils/tiers";
 
 export default function ProtectedRoute({
   children,
@@ -20,9 +14,6 @@ export default function ProtectedRoute({
       <UpgradeGate
         currentTier={userTier}
         requiredTier={requiredTier}
-        upgradeTier={requiredTier}
-        title="Premium Content Locked"
-        description="Your current membership does not include access to this system."
       />
     );
   }
