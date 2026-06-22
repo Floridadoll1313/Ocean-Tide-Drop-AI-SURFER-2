@@ -23,8 +23,8 @@ export default function App() {
     async function initUser() {
       setLoading(true);
 
-      const { data } = await supabase.auth.getSession();
-      const userEmail = data?.session?.user?.email;
+      const { data: sessionData } = await supabase.auth.getSession();
+      const userEmail = sessionData?.session?.user?.email;
 
       if (!userEmail) {
         setLoading(false);
@@ -33,11 +33,15 @@ export default function App() {
 
       setEmail(userEmail);
 
-      const { data: userData } = await supabase
+      const { data: userData, error } = await supabase
         .from("users")
         .select("tier")
         .eq("email", userEmail)
         .single();
+
+      if (error) {
+        console.warn("Tier fetch error:", error.message);
+      }
 
       if (userData?.tier) {
         setUserTier(userData.tier);
@@ -51,7 +55,6 @@ export default function App() {
 
   /**
    * ⚡ REALTIME AUTO-UNLOCK LISTENER
-   * Stripe webhook → Supabase → instant UI update
    */
   useEffect(() => {
     if (!email) return;
@@ -69,7 +72,7 @@ export default function App() {
         (payload) => {
           const newTier = payload.new?.tier;
 
-          if (newTier) {
+          if (newTier && newTier !== userTier) {
             console.log("🌊 LIVE TIER UPDATE:", newTier);
             setUserTier(newTier);
           }
@@ -80,7 +83,7 @@ export default function App() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [email]);
+  }, [email, userTier]);
 
   /**
    * 🔒 PROTECTED WRAPPER
@@ -108,7 +111,9 @@ export default function App() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
-        <p>Loading ocean system... 🌊</p>
+        <p className="animate-pulse">
+          Syncing ocean systems... 🌊
+        </p>
       </div>
     );
   }
@@ -123,7 +128,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
-        {/* 🔒 DASHBOARD (BRONZE+) */}
+        {/* 🔒 BRONZE+ */}
         <Route
           path="/dashboard"
           element={
@@ -133,7 +138,7 @@ export default function App() {
           }
         />
 
-        {/* 🔵 TOOLS (WAVE+) */}
+        {/* 🔵 WAVE+ */}
         <Route
           path="/tools"
           element={
