@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
     const tier = PRICING[tierId];
 
-    if (!tier || !tier.stripePriceId) {
+    if (!tier?.stripePriceId) {
       return res.status(400).json({ error: "Invalid tier" });
     }
 
@@ -29,10 +29,10 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing email or userId" });
     }
 
-    // 🧠 Idempotency key
+    // 🧠 Idempotency key (prevents duplicate checkout sessions)
     const idempotencyKey = `checkout:${userId}:${tierId}`;
 
-    // 🔎 Get existing Stripe customer
+    // 🔎 Get latest Stripe customer (if exists)
     const { data: existingSub } = await supabase
       .from("stripe_subscriptions")
       .select("stripe_customer_id")
@@ -54,24 +54,18 @@ export default async function handler(req, res) {
           },
         },
         {
-          idempotencyKey: `stripe:customer:${userId}`,
+          idempotencyKey: `stripe-customer:${userId}`,
         }
       );
 
       customerId = customer.id;
-
-      // 💾 Save customer immediately
-      await supabase.from("stripe_subscriptions").upsert({
-        user_email: email,
-        stripe_customer_id: customer.id,
-        updated_at: new Date().toISOString(),
-      });
     }
 
     // 💳 Create Checkout Session
     const session = await stripe.checkout.sessions.create(
       {
         mode: "subscription",
+
         customer: customerId,
 
         line_items: [
@@ -81,12 +75,12 @@ export default async function handler(req, res) {
           },
         ],
 
+        // 🌊 Core identity binding for webhook
         metadata: {
           tier: tierId,
           userId,
           userEmail: email,
-          checkoutAction: "upgrade",
-          environment: process.env.NODE_ENV,
+          source: "ocean-tide-drop",
         },
 
         subscription_data: {
@@ -109,7 +103,9 @@ export default async function handler(req, res) {
 
     return res.json({ url: session.url });
   } catch (err: any) {
-    console.error("Checkout error:", err);
-    return res.status(500).json({ error: err.message });
+    console.error("create-checkout-session error:", err);
+    return res.status(500).json({
+      error: err?.message ?? "Checkout creation failed",
+    });
   }
 }
