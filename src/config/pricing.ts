@@ -1,22 +1,27 @@
+/**
+ * 🌊 Ocean Tide Pricing Core
+ * Central access control system
+ */
+
 export const PRICING = {
   free: {
-    level: 0,
+    accessLevel: 0,
     name: "Free",
   },
   bronze: {
-    level: 1,
+    accessLevel: 1,
     name: "Bronze",
   },
   wave: {
-    level: 2,
+    accessLevel: 2,
     name: "Wave",
   },
   tsunami: {
-    level: 3,
+    accessLevel: 3,
     name: "Tsunami",
   },
   enterprise: {
-    level: 4,
+    accessLevel: 4,
     name: "Enterprise",
   },
-};
+} as const;
