@@ -5,10 +5,10 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import FeatureGate from "./components/FeatureGate";
 
-import Home from "./pages/home/home";
-import Login from "./pages/login/login";
-import Dashboard from "./pages/dashboard/dashboard";
-import Tools from "./pages/tools/tools";
+import Home from "./pages/home/home.tsx";
+import Login from "./pages/login/login.tsx";
+import Dashboard from "./pages/dashboard/dashboard.tsx";
+import Tools from "./pages/tools/tools.tsx";
 
 import { supabase } from "./utils/supabase";
 
@@ -45,9 +45,7 @@ export default function App() {
         .eq("email", userEmail)
         .single();
 
-      if (userData?.tier) {
-        setUserTier(userData.tier);
-      }
+      if (userData?.tier) setUserTier(userData.tier);
 
       setLoading(false);
     }
@@ -131,11 +129,11 @@ export default function App() {
         <Route
           path="/premium-lab"
           element={
-            <Gate requiredTier="wave">
+            <FeatureGate userTier={userTier} requiredTier="wave">
               <div className="p-10 text-white">
                 Premium AI Lab unlocked 🌊⚡
               </div>
-            </Gate>
+            </FeatureGate>
           }
         />
       </Routes>
