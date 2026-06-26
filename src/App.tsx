@@ -5,10 +5,10 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import FeatureGate from "./components/FeatureGate";
 
-import Home from "./pages/Home"; // 👈 MUST EXIST EXACTLY LIKE THIS
-import Login from "./pages/Login";
-import Dashboard from "./pages/dashboard/dashboard"; // 👈 FIXED PATH
-import Tools from "./pages/Tools";
+import Home from "./pages/home/home";
+import Login from "./pages/login/login";
+import Dashboard from "./pages/dashboard/dashboard";
+import Tools from "./pages/tools/tools";
 
 import { supabase } from "./utils/supabase";
 
@@ -45,9 +45,7 @@ export default function App() {
         .eq("email", userEmail)
         .single();
 
-      if (userData?.tier) {
-        setUserTier(userData.tier);
-      }
+      if (userData?.tier) setUserTier(userData.tier);
 
       setLoading(false);
     }
@@ -70,11 +68,7 @@ export default function App() {
         },
         (payload) => {
           const newTier = payload.new?.tier;
-
-          if (newTier) {
-            console.log("🌊 LIVE UPGRADE:", newTier);
-            setUserTier(newTier);
-          }
+          if (newTier) setUserTier(newTier);
         }
       )
       .subscribe();
