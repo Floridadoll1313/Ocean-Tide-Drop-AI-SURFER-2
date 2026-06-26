@@ -7,25 +7,34 @@ import FeatureGate from "./components/FeatureGate";
 
 import Home from "./pages/home/home";
 import Login from "./pages/login/login";
-import Tools from "./pages/tools/tools";
 import Dashboard from "./pages/dashboard/dashboard";
-import Terminal from "./pages/terminal/terminal";
+import Tools from "./pages/tools/tools";
 
 import { supabase } from "./utils/supabase";
 
 /**
- * 🌊 Tier system
+ * 🌊 TIER SYSTEM
  */
+const TIER_LEVELS: Record<string, number> = {
+  free: 0,
+  bronze: 1,
+  wave: 2,
+  tsunami: 3,
+  enterprise: 4,
+};
+
 export default function App() {
   const [userTier, setUserTier] = useState("free");
   const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   /**
-   * 🌊 Load user session + tier
+   * 🌊 LOAD SESSION
    */
   useEffect(() => {
     async function initUser() {
+      setLoading(true);
+
       const { data } = await supabase.auth.getSession();
       const userEmail = data?.session?.user?.email;
 
@@ -53,8 +62,33 @@ export default function App() {
   }, []);
 
   /**
-   * 🌊 Feature Gate wrapper
+   * ⚡ REALTIME TIER UPDATES
    */
+  useEffect(() => {
+    if (!email) return;
+
+    const channel = supabase
+      .channel("tier-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "users",
+          filter: `email=eq.${email}`,
+        },
+        (payload) => {
+          const newTier = payload.new?.tier;
+          if (newTier) setUserTier(newTier);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [email]);
+
   const Gate = ({
     children,
     requiredTier = "bronze",
@@ -70,27 +104,26 @@ export default function App() {
   };
 
   /**
-   * 🌊 Loading state
+   * 🌊 LOADING SCREEN
    */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
-        <p>🌊 syncing ocean system...</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
+        <p>Syncing ocean system... 🌊</p>
       </div>
     );
   }
 
   return (
     <>
-      {/* 🌊 Navbar */}
       <Navbar userTier={userTier} />
 
       <Routes>
-        {/* 🌊 Public routes */}
+        {/* 🌊 PUBLIC ROUTES */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
-        {/* 🔒 Dashboard (bronze+) */}
+        {/* 🔒 DASHBOARD */}
         <Route
           path="/dashboard"
           element={
@@ -100,7 +133,7 @@ export default function App() {
           }
         />
 
-        {/* 🔵 Tools (wave+) */}
+        {/* 🧰 TOOLS */}
         <Route
           path="/tools"
           element={
@@ -110,28 +143,13 @@ export default function App() {
           }
         />
 
-        {/* 🌊 Terminal (wave+) */}
-        <Route
-          path="/terminal"
-          element={
-            <ProtectedRoute userTier={userTier} requiredTier="wave">
-              <Terminal />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* 🌊 Optional Feature Gate Example */}
+        {/* ⚡ PREMIUM LAB */}
         <Route
           path="/premium-lab"
           element={
             <Gate requiredTier="wave">
-              <div className="min-h-screen bg-slate-950 text-white p-10">
-                <h1 className="text-4xl font-bold">
-                  🌊 AI Terminal Lab Active
-                </h1>
-                <p className="text-slate-400 mt-3">
-                  Experimental systems unlocked.
-                </p>
+              <div className="p-10 text-white">
+                Premium AI Lab unlocked 🌊⚡
               </div>
             </Gate>
           }
