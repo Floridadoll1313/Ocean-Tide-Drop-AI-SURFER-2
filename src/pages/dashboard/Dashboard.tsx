@@ -1,28 +1,23 @@
-import React from 'react';
+import RevenuePanel from "../../components/metrics/RevenuePanel";
+import StripePanel from "../../components/metrics/StripePanel";
+import AICommandTerminal from "../../components/ai/AICommandTerminal";
+import WaveProgress from "../../components/WaveProgress";
 
-export default function Dashboard() {
+export default function Dashboard({ userTier }: { userTier?: string }) {
   return (
     <div className="min-h-screen bg-slate-950 text-white p-8">
       <h1 className="text-4xl font-bold mb-6">
-        🌊 AI Surfer Command Center
+        🌊 Ocean Command Deck
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-slate-900 rounded-xl p-6">
-          <h2 className="text-xl font-semibold">Projects</h2>
-          <p className="text-slate-400 mt-2">0 Active Projects</p>
-        </div>
-
-        <div className="bg-slate-900 rounded-xl p-6">
-          <h2 className="text-xl font-semibold">GitHub Repositories</h2>
-          <p className="text-slate-400 mt-2">Waiting for sync...</p>
-        </div>
-
-        <div className="bg-slate-900 rounded-xl p-6">
-          <h2 className="text-xl font-semibold">Revenue</h2>
-          <p className="text-slate-400 mt-2">$0.00</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <RevenuePanel />
+        <StripePanel />
       </div>
+
+      <WaveProgress tier={userTier || "free"} />
+
+      <AICommandTerminal />
     </div>
   );
 }
