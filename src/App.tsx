@@ -7,7 +7,7 @@ import FeatureGate from "./components/FeatureGate";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard/dashboard";
 import Tools from "./pages/Tools";
 
 import { supabase } from "./utils/supabase";
@@ -94,7 +94,7 @@ export default function App() {
   }, [email]);
 
   /**
-   * 🔐 GLOBAL FEATURE GUARD WRAPPER
+   * 🔐 FEATURE GATE WRAPPER
    */
   const Gate = ({
     children,
@@ -123,12 +123,11 @@ export default function App() {
 
   return (
     <>
-      {/* 🌊 NAVBAR (tier-aware) */}
+      {/* 🌊 NAVBAR */}
       <Navbar userTier={userTier} />
 
       <Routes>
-
-        {/* 🌊 PUBLIC */}
+        {/* 🌊 PUBLIC ROUTES */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
@@ -152,7 +151,7 @@ export default function App() {
           }
         />
 
-        {/* 🌊 EXAMPLE: FEATURE-GATED ROUTE (NEW SYSTEM) */}
+        {/* 🌊 PREMIUM LAB */}
         <Route
           path="/premium-lab"
           element={
@@ -163,7 +162,6 @@ export default function App() {
             </Gate>
           }
         />
-
       </Routes>
     </>
   );
