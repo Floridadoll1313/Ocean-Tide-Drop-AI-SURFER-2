@@ -5,10 +5,10 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import FeatureGate from "./components/FeatureGate";
 
-import Home from "./pages/home/home";
-import Login from "./pages/login/login";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Tools from "./pages/Tools";
 import Dashboard from "./pages/dashboard/dashboard";
-import Tools from "./pages/tools/tools";
 
 import { supabase } from "./utils/supabase";
 
@@ -45,7 +45,9 @@ export default function App() {
         .eq("email", userEmail)
         .single();
 
-      if (userData?.tier) setUserTier(userData.tier);
+      if (userData?.tier) {
+        setUserTier(userData.tier);
+      }
 
       setLoading(false);
     }
