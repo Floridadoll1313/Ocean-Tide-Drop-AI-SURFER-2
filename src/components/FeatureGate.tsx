@@ -5,26 +5,31 @@ import UpgradeModal from "./UpgradeModal";
 import { PRICING } from "../config/pricing";
 import { trackUpgradeIntent } from "../lib/upgradeSignals";
 
+type Tier = keyof typeof PRICING;
+
 export default function FeatureGate({
   userTier = "free",
   requiredTier = "bronze",
   children,
+}: {
+  userTier?: Tier | string;
+  requiredTier?: Tier | string;
+  children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
 
-  /**
-   * 🧠 prevent duplicate tracking spam
-   */
   const trackedRef = useRef(false);
 
-  const userLevel = PRICING[userTier]?.accessLevel ?? 0;
-  const requiredLevel = PRICING[requiredTier]?.accessLevel ?? 1;
+  const safeUserTier = (userTier in PRICING ? userTier : "free") as Tier;
+  const safeRequiredTier = (requiredTier in PRICING
+    ? requiredTier
+    : "bronze") as Tier;
+
+  const userLevel = PRICING[safeUserTier]?.accessLevel ?? 0;
+  const requiredLevel = PRICING[safeRequiredTier]?.accessLevel ?? 1;
 
   const isLocked = userLevel < requiredLevel;
 
-  /**
-   * 📊 INTENT TRACKING (ONLY ON FIRST LOCK EVENT)
-   */
   useEffect(() => {
     if (!isLocked) return;
     if (trackedRef.current) return;
@@ -32,38 +37,30 @@ export default function FeatureGate({
     trackedRef.current = true;
 
     trackUpgradeIntent({
-      userTier,
-      requiredTier,
+      userTier: safeUserTier,
+      requiredTier: safeRequiredTier,
       path: typeof window !== "undefined" ? window.location.pathname : "",
     });
-  }, [isLocked, userTier, requiredTier]);
+  }, [isLocked, safeUserTier, safeRequiredTier]);
 
-  /**
-   * 🔐 LOCKED STATE (NETFLIX EXPERIENCE)
-   */
   if (isLocked) {
     return (
       <>
-        {/* 🌊 Blurred preview layer */}
         <LockedPreview
-          requiredTier={requiredTier}
+          requiredTier={safeRequiredTier}
           onUpgrade={() => setOpen(true)}
         >
           {children}
         </LockedPreview>
 
-        {/* 💳 Upgrade modal */}
         <UpgradeModal
           open={open}
-          tier={requiredTier}
+          tier={safeRequiredTier}
           onClose={() => setOpen(false)}
         />
       </>
     );
   }
 
-  /**
-   * ✅ UNLOCKED STATE
-   */
   return <>{children}</>;
 }
