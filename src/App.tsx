@@ -5,20 +5,12 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import FeatureGate from "./components/FeatureGate";
 
-import Home from "./pages/home/home.tsx";
-import Login from "./pages/login/login.tsx";
-import Dashboard from "./pages/dashboard/dashboard.tsx";
-import Tools from "./pages/tools/tools.tsx";
+import Home from "./pages/home/home";
+import Login from "./pages/login/login";
+import Dashboard from "./pages/dashboard/dashboard";
+import Tools from "./pages/tools/tools";
 
 import { supabase } from "./utils/supabase";
-
-const TIER_LEVELS: Record<string, number> = {
-  free: 0,
-  bronze: 1,
-  wave: 2,
-  tsunami: 3,
-  enterprise: 4,
-};
 
 export default function App() {
   const [userTier, setUserTier] = useState("free");
@@ -45,7 +37,9 @@ export default function App() {
         .eq("email", userEmail)
         .single();
 
-      if (userData?.tier) setUserTier(userData.tier);
+      if (userData?.tier) {
+        setUserTier(userData.tier);
+      }
 
       setLoading(false);
     }
