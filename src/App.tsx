@@ -5,10 +5,10 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import FeatureGate from "./components/FeatureGate";
 
-import Home from "./pages/home";
-import Login from "./pages/login";
-import Dashboard from "./pages/dashboard";
-import Tools from "./pages/tools";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Tools from "./pages/Tools";
 
 import { supabase } from "./utils/supabase";
 
@@ -45,9 +45,7 @@ export default function App() {
         .eq("email", userEmail)
         .single();
 
-      if (userData?.tier) {
-        setUserTier(userData.tier);
-      }
+      if (userData?.tier) setUserTier(userData.tier);
 
       setLoading(false);
     }
@@ -97,7 +95,7 @@ export default function App() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
-        <p>Syncing ocean system... 🌊</p>
+        Syncing ocean system... 🌊
       </div>
     );
   }
