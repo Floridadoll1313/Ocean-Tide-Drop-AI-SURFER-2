@@ -5,16 +5,13 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import FeatureGate from "./components/FeatureGate";
 
-import Home from "./pages/Home";
+import Home from "./pages/Home"; // 👈 MUST EXIST EXACTLY LIKE THIS
 import Login from "./pages/Login";
-import Dashboard from "./pages/dashboard/dashboard";
+import Dashboard from "./pages/dashboard/dashboard"; // 👈 FIXED PATH
 import Tools from "./pages/Tools";
 
 import { supabase } from "./utils/supabase";
 
-/**
- * 🌊 TIER ORDER (fallback safety layer)
- */
 const TIER_LEVELS: Record<string, number> = {
   free: 0,
   bronze: 1,
@@ -28,9 +25,6 @@ export default function App() {
   const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  /**
-   * 🌊 LOAD USER SESSION
-   */
   useEffect(() => {
     async function initUser() {
       setLoading(true);
@@ -61,9 +55,6 @@ export default function App() {
     initUser();
   }, []);
 
-  /**
-   * ⚡ REALTIME UPGRADES (Stripe → Supabase → UI)
-   */
   useEffect(() => {
     if (!email) return;
 
@@ -93,9 +84,6 @@ export default function App() {
     };
   }, [email]);
 
-  /**
-   * 🔐 FEATURE GATE WRAPPER
-   */
   const Gate = ({
     children,
     requiredTier = "bronze",
@@ -110,28 +98,22 @@ export default function App() {
     );
   };
 
-  /**
-   * 🌊 LOADING STATE
-   */
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
-        <p>Syncing ocean system... 🌊</p>
+        Syncing ocean system... 🌊
       </div>
     );
   }
 
   return (
     <>
-      {/* 🌊 NAVBAR */}
       <Navbar userTier={userTier} />
 
       <Routes>
-        {/* 🌊 PUBLIC ROUTES */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
-        {/* 🔒 DASHBOARD (BRONZE+) */}
         <Route
           path="/dashboard"
           element={
@@ -141,7 +123,6 @@ export default function App() {
           }
         />
 
-        {/* 🔵 TOOLS (WAVE+) */}
         <Route
           path="/tools"
           element={
@@ -151,13 +132,12 @@ export default function App() {
           }
         />
 
-        {/* 🌊 PREMIUM LAB */}
         <Route
           path="/premium-lab"
           element={
             <Gate requiredTier="wave">
               <div className="p-10 text-white">
-                Premium AI Lab unlocked🌊⚡
+                Premium AI Lab unlocked 🌊⚡
               </div>
             </Gate>
           }
