@@ -157,7 +157,7 @@ export default function App() {
           element={
             <Gate requiredTier="wave">
               <div className="p-10 text-white">
-                Premium AI Lab unlocked 🌊⚡
+                Premium AI Lab unlocked🌊⚡
               </div>
             </Gate>
           }
