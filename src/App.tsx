@@ -12,9 +12,6 @@ import Tools from "./pages/tools/tools";
 
 import { supabase } from "./utils/supabase";
 
-/**
- * 🌊 TIER SYSTEM
- */
 const TIER_LEVELS: Record<string, number> = {
   free: 0,
   bronze: 1,
@@ -28,9 +25,6 @@ export default function App() {
   const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  /**
-   * 🌊 LOAD SESSION
-   */
   useEffect(() => {
     async function initUser() {
       setLoading(true);
@@ -61,9 +55,6 @@ export default function App() {
     initUser();
   }, []);
 
-  /**
-   * ⚡ REALTIME TIER UPDATES
-   */
   useEffect(() => {
     if (!email) return;
 
@@ -103,9 +94,6 @@ export default function App() {
     );
   };
 
-  /**
-   * 🌊 LOADING SCREEN
-   */
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
@@ -119,11 +107,9 @@ export default function App() {
       <Navbar userTier={userTier} />
 
       <Routes>
-        {/* 🌊 PUBLIC ROUTES */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
-        {/* 🔒 DASHBOARD */}
         <Route
           path="/dashboard"
           element={
@@ -133,7 +119,6 @@ export default function App() {
           }
         />
 
-        {/* 🧰 TOOLS */}
         <Route
           path="/tools"
           element={
@@ -143,7 +128,6 @@ export default function App() {
           }
         />
 
-        {/* ⚡ PREMIUM LAB */}
         <Route
           path="/premium-lab"
           element={
