@@ -2,32 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Google Fonts */
+/* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&family=Space+Grotesk:wght@300;500;700&display=swap');
 
-/* ROOT APP */
+/* Ocean theme base */
 html, body {
   margin: 0;
   padding: 0;
-  background: radial-gradient(circle at 10% 20%, rgba(120,0,255,0.15), transparent 40%),
-              radial-gradient(circle at 90% 80%, rgba(0,200,255,0.15), transparent 40%),
-              #000;
+  background: radial-gradient(circle at 20% 20%, #001a1a, #000);
   color: white;
-  font-family: Inter, system-ui, sans-serif;
-}
-
-/* ROOT WRAPPER */
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* SIMPLE GLASS CARD */
-.glass {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 16px;
+  font-family: Inter, sans-serif;
 }
