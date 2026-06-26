@@ -8,10 +8,15 @@ import FeatureGate from "./components/FeatureGate";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Tools from "./pages/Tools";
+
+// IMPORTANT FIX: match your real file path
 import Dashboard from "./pages/dashboard/dashboard";
 
 import { supabase } from "./utils/supabase";
 
+/**
+ * 🌊 Tier system (AI Surfer access control)
+ */
 const TIER_LEVELS: Record<string, number> = {
   free: 0,
   bronze: 1,
@@ -21,10 +26,13 @@ const TIER_LEVELS: Record<string, number> = {
 };
 
 export default function App() {
-  const [userTier, setUserTier] = useState("free");
+  const [userTier, setUserTier] = useState<string>("free");
   const [email, setEmail] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
+  /**
+   * 🌊 Load user session + tier
+   */
   useEffect(() => {
     async function initUser() {
       setLoading(true);
@@ -55,6 +63,9 @@ export default function App() {
     initUser();
   }, []);
 
+  /**
+   * ⚡ Realtime tier upgrades (Stripe → Supabase → UI)
+   */
   useEffect(() => {
     if (!email) return;
 
@@ -70,7 +81,11 @@ export default function App() {
         },
         (payload) => {
           const newTier = payload.new?.tier;
-          if (newTier) setUserTier(newTier);
+
+          if (newTier) {
+            console.log("🌊 Tier upgraded:", newTier);
+            setUserTier(newTier);
+          }
         }
       )
       .subscribe();
@@ -80,6 +95,9 @@ export default function App() {
     };
   }, [email]);
 
+  /**
+   * 🌊 Feature Gate wrapper
+   */
   const Gate = ({
     children,
     requiredTier = "bronze",
@@ -94,22 +112,33 @@ export default function App() {
     );
   };
 
+  /**
+   * 🌊 Loading screen
+   */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
-        Syncing ocean system... 🌊
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
+        <div className="text-center">
+          <p className="text-lg">Syncing ocean system 🌊</p>
+          <p className="text-sm text-slate-400 mt-2">
+            Loading AI Surfer engine...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <>
+      {/* 🌊 Navbar */}
       <Navbar userTier={userTier} />
 
       <Routes>
+        {/* 🌊 Public routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
+        {/* 🔒 Dashboard (bronze+) */}
         <Route
           path="/dashboard"
           element={
@@ -119,6 +148,7 @@ export default function App() {
           }
         />
 
+        {/* 🔵 Tools (wave+) */}
         <Route
           path="/tools"
           element={
@@ -128,12 +158,18 @@ export default function App() {
           }
         />
 
+        {/* 🌊 Premium sandbox route */}
         <Route
           path="/premium-lab"
           element={
             <Gate requiredTier="wave">
               <div className="p-10 text-white">
-                Premium AI Lab unlocked 🌊⚡
+                <h1 className="text-3xl font-bold">
+                  🌊 AI Terminal Lab Unlocked
+                </h1>
+                <p className="text-slate-400 mt-2">
+                  Experimental systems online.
+                </p>
               </div>
             </Gate>
           }
