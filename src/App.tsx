@@ -9,16 +9,23 @@ import Home from "./pages/home/home";
 import Login from "./pages/login/login";
 import Tools from "./pages/tools/tools";
 import Dashboard from "./pages/dashboard/dashboard";
+import Terminal from "./pages/terminal/terminal";
 
 import { supabase } from "./utils/supabase";
 
+/**
+ * 🌊 Tier system
+ */
 export default function App() {
   const [userTier, setUserTier] = useState("free");
   const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * 🌊 Load user session + tier
+   */
   useEffect(() => {
-    async function load() {
+    async function initUser() {
       const { data } = await supabase.auth.getSession();
       const userEmail = data?.session?.user?.email;
 
@@ -35,14 +42,19 @@ export default function App() {
         .eq("email", userEmail)
         .single();
 
-      if (userData?.tier) setUserTier(userData.tier);
+      if (userData?.tier) {
+        setUserTier(userData.tier);
+      }
 
       setLoading(false);
     }
 
-    load();
+    initUser();
   }, []);
 
+  /**
+   * 🌊 Feature Gate wrapper
+   */
   const Gate = ({
     children,
     requiredTier = "bronze",
@@ -57,6 +69,9 @@ export default function App() {
     );
   };
 
+  /**
+   * 🌊 Loading state
+   */
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
@@ -67,12 +82,15 @@ export default function App() {
 
   return (
     <>
+      {/* 🌊 Navbar */}
       <Navbar userTier={userTier} />
 
       <Routes>
+        {/* 🌊 Public routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
+        {/* 🔒 Dashboard (bronze+) */}
         <Route
           path="/dashboard"
           element={
@@ -82,6 +100,7 @@ export default function App() {
           }
         />
 
+        {/* 🔵 Tools (wave+) */}
         <Route
           path="/tools"
           element={
@@ -91,16 +110,27 @@ export default function App() {
           }
         />
 
+        {/* 🌊 Terminal (wave+) */}
         <Route
           path="/terminal"
+          element={
+            <ProtectedRoute userTier={userTier} requiredTier="wave">
+              <Terminal />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 🌊 Optional Feature Gate Example */}
+        <Route
+          path="/premium-lab"
           element={
             <Gate requiredTier="wave">
               <div className="min-h-screen bg-slate-950 text-white p-10">
                 <h1 className="text-4xl font-bold">
-                  🌊 AI Terminal Engine
+                  🌊 AI Terminal Lab Active
                 </h1>
                 <p className="text-slate-400 mt-3">
-                  Prompt system active. Ready for commands.
+                  Experimental systems unlocked.
                 </p>
               </div>
             </Gate>
