@@ -12,6 +12,9 @@ import Tools from "./pages/Tools";
 
 import { supabase } from "./utils/supabase";
 
+/**
+ * 🌊 Tier System
+ */
 const TIER_LEVELS: Record<string, number> = {
   free: 0,
   bronze: 1,
@@ -21,17 +24,16 @@ const TIER_LEVELS: Record<string, number> = {
 };
 
 export default function App() {
-  const [userTier, setUserTier] = useState<string>("free");
+  const [userTier, setUserTier] = useState("free");
   const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 🌊 Load session + user tier
   useEffect(() => {
     async function initUser() {
       setLoading(true);
 
       const { data } = await supabase.auth.getSession();
-      const userEmail = data?.session?.user?.email ?? null;
+      const userEmail = data?.session?.user?.email;
 
       if (!userEmail) {
         setLoading(false);
@@ -56,7 +58,6 @@ export default function App() {
     initUser();
   }, []);
 
-  // ⚡ Realtime tier updates
   useEffect(() => {
     if (!email) return;
 
@@ -82,7 +83,6 @@ export default function App() {
     };
   }, [email]);
 
-  // 🔒 Feature Gate wrapper
   const Gate = ({
     children,
     requiredTier = "bronze",
@@ -97,7 +97,6 @@ export default function App() {
     );
   };
 
-  // 🌊 Loading state
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
@@ -111,11 +110,9 @@ export default function App() {
       <Navbar userTier={userTier} />
 
       <Routes>
-        {/* 🌴 Public routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
-        {/* 🔐 Protected dashboard */}
         <Route
           path="/dashboard"
           element={
@@ -125,7 +122,6 @@ export default function App() {
           }
         />
 
-        {/* 🧰 Tools */}
         <Route
           path="/tools"
           element={
@@ -135,7 +131,6 @@ export default function App() {
           }
         />
 
-        {/* ⚡ Premium lab */}
         <Route
           path="/premium-lab"
           element={
