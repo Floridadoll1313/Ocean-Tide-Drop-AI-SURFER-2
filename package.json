@@ -1,5 +1,5 @@
 {
-  "name": "ocean-tide-drop-ai-surfer",
+  "name": "ocean-tide-ai-surfer",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -9,11 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "^1.0.0",
-    "@supabase/supabase-js": "^2.45.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.0"
+    "react-router-dom": "^6.26.2",
+    "@supabase/supabase-js": "^2.45.0",
+    "@google/genai": "^1.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
