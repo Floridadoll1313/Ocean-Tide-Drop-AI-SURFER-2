@@ -12,17 +12,6 @@ import Tools from "./pages/Tools";
 
 import { supabase } from "./utils/supabase";
 
-/**
- * 🌊 Tier System
- */
-const TIER_LEVELS: Record<string, number> = {
-  free: 0,
-  bronze: 1,
-  wave: 2,
-  tsunami: 3,
-  enterprise: 4,
-};
-
 export default function App() {
   const [userTier, setUserTier] = useState("free");
   const [email, setEmail] = useState<string | null>(null);
@@ -30,8 +19,6 @@ export default function App() {
 
   useEffect(() => {
     async function initUser() {
-      setLoading(true);
-
       const { data } = await supabase.auth.getSession();
       const userEmail = data?.session?.user?.email;
 
@@ -48,54 +35,13 @@ export default function App() {
         .eq("email", userEmail)
         .single();
 
-      if (userData?.tier) {
-        setUserTier(userData.tier);
-      }
+      if (userData?.tier) setUserTier(userData.tier);
 
       setLoading(false);
     }
 
     initUser();
   }, []);
-
-  useEffect(() => {
-    if (!email) return;
-
-    const channel = supabase
-      .channel("tier-realtime")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "users",
-          filter: `email=eq.${email}`,
-        },
-        (payload) => {
-          const newTier = payload.new?.tier;
-          if (newTier) setUserTier(newTier);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [email]);
-
-  const Gate = ({
-    children,
-    requiredTier = "bronze",
-  }: {
-    children: React.ReactNode;
-    requiredTier?: string;
-  }) => {
-    return (
-      <FeatureGate userTier={userTier} requiredTier={requiredTier}>
-        {children}
-      </FeatureGate>
-    );
-  };
 
   if (loading) {
     return (
@@ -134,11 +80,9 @@ export default function App() {
         <Route
           path="/premium-lab"
           element={
-            <Gate requiredTier="wave">
-              <div className="p-10 text-white">
-                Premium AI Lab unlocked 🌊⚡
-              </div>
-            </Gate>
+            <FeatureGate userTier={userTier} requiredTier="wave">
+              <div className="p-10 text-white">Premium AI Lab 🌊⚡</div>
+            </FeatureGate>
           }
         />
       </Routes>
