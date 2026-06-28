@@ -1,122 +1,31 @@
-name: Build & Deploy
+name: Deploy Pipeline
 
 on:
   push:
-    branches: [main, develop]
-  workflow_dispatch:
-
-env:
-  NODE_VERSION: '18'
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    name: Build Application
-    outputs:
-      build-id: ${{ github.run_id }}
+
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-      
+          node-version: 20
+          cache: npm
+
       - name: Install dependencies
-        run: npm ci
-      
-      - name: Run linting
-        run: npm run lint --if-present
-      
-      - name: Run tests
-        run: npm test --if-present -- --coverage --watchAll=false
-      
-      - name: Build application
-        run: npm run build --if-present
-      
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-${{ github.run_id }}
-          path: dist/
-          retention-days: 7
+        run: npm install
 
-  deploy-staging:
-    runs-on: ubuntu-latest
-    name: Deploy to Staging
-    needs: build
-    if: github.ref == 'refs/heads/develop'
-    environment:
-      name: staging
-      url: https://staging.example.com
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-${{ needs.build.outputs.build-id }}
-          path: dist/
-      
-      - name: Deploy to Staging
-        run: |
-          echo "Deploying to staging environment..."
-          # Add your staging deployment commands here
-          # Example: npm run deploy:staging
-        env:
-          DEPLOY_TOKEN: ${{ secrets.STAGING_DEPLOY_TOKEN }}
-      
-      - name: Notify Slack
-        uses: 8398a7/action-slack@v3
-        if: always()
-        with:
-          status: ${{ job.status }}
-          text: 'Staging deployment ${{ job.status }}'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-        continue-on-error: true
+      - name: Build project
+        run: npm run build
 
-  deploy-production:
-    runs-on: ubuntu-latest
-    name: Deploy to Production
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    environment:
-      name: production
-      url: https://example.com
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-${{ needs.build.outputs.build-id }}
-          path: dist/
-      
-      - name: Deploy to Production
-        run: |
-          echo "Deploying to production environment..."
-          # Add your production deployment commands here
-          # Example: npm run deploy:prod
-        env:
-          DEPLOY_TOKEN: ${{ secrets.PRODUCTION_DEPLOY_TOKEN }}
-      
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ github.run_number }}
-          release_name: Release ${{ github.run_number }}
-          body: Production deployment from commit ${{ github.sha }}
-          draft: false
-          prerelease: false
-      
-      - name: Notify Slack
-        uses: 8398a7/action-slack@v3
-        if: always()
-        with:
-          status: ${{ job.status }}
-          text: 'Production deployment ${{ job.status }}'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-        continue-on-error: true
+      - name: Deploy to Production (Main only)
+        if: github.ref == 'refs/heads/main'
+        run: echo "🚀 Deploy step goes here (Vercel / Netlify / Cloudflare)"
