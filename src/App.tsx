@@ -14,30 +14,42 @@ import { supabase } from "./utils/supabase";
 
 export default function App() {
   const [userTier, setUserTier] = useState("free");
-  const [email, setEmail] = useState<string | null>(null);
+  const [email, setEmail] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function initUser() {
-      const { data } = await supabase.auth.getSession();
-      const userEmail = data?.session?.user?.email;
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const userEmail = sessionData?.session?.user?.email;
 
-      if (!userEmail) {
+        if (!userEmail) {
+          setUserTier("free");
+          setEmail(null);
+          setLoading(false);
+          return;
+        }
+
+        setEmail(userEmail);
+
+        const { data: userData, error } = await supabase
+          .from("users")
+          .select("tier")
+          .eq("email", userEmail)
+          .single();
+
+        if (!error && userData?.tier) {
+          setUserTier(userData.tier);
+        } else {
+          setUserTier("free");
+        }
+
         setLoading(false);
-        return;
+      } catch (err) {
+        console.error("Auth init error:", err);
+        setUserTier("free");
+        setLoading(false);
       }
-
-      setEmail(userEmail);
-
-      const { data: userData } = await supabase
-        .from("users")
-        .select("tier")
-        .eq("email", userEmail)
-        .single();
-
-      if (userData?.tier) setUserTier(userData.tier);
-
-      setLoading(false);
     }
 
     initUser();
@@ -46,7 +58,7 @@ export default function App() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
-        Syncing ocean system... 🌊
+        🌊 Syncing ocean system...
       </div>
     );
   }
@@ -56,9 +68,11 @@ export default function App() {
       <Navbar userTier={userTier} />
 
       <Routes>
+        {/* 🌺 PUBLIC */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
+        {/* 🔐 MEMBERS */}
         <Route
           path="/dashboard"
           element={
@@ -77,11 +91,14 @@ export default function App() {
           }
         />
 
+        {/* ⚡ PREMIUM GATED FEATURE */}
         <Route
           path="/premium-lab"
           element={
             <FeatureGate userTier={userTier} requiredTier="wave">
-              <div className="p-10 text-white">Premium AI Lab 🌊⚡</div>
+              <div className="p-10 text-white">
+                🌊 Premium AI Lab
+              </div>
             </FeatureGate>
           }
         />
