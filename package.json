@@ -1,6 +1,7 @@
 {
-  "name": "ai-surfer",
-  "version": "0.0.0",
+  "name": "otdaisurfer2",
+  "private": true,
+  "version": "1.0.0",
   "main": "server.ts",
   "type": "module",
   "scripts": {
@@ -13,19 +14,19 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
-    "@google/genai": "^2.3.0",
-    "@supabase/supabase-js": "^2.105.4",
+    "@google/genai": "^2.10.0",
+    "@supabase/supabase-js": "^2.108.2",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "firebase": "^12.13.0",
+    "firebase": "^12.15.0",
     "firebase-admin": "^13.10.0",
-    "lucide-react": "^0.344.0",
+    "lucide-react": "^1.22.0",
     "motion": "^12.38.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
     "react-is": "^18.2.0",
     "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.15.0",
+    "react-router-dom": "^7.18.0",
     "recharts": "^3.8.1",
     "remark-gfm": "^4.0.1",
     "stripe": "^22.1.1"
