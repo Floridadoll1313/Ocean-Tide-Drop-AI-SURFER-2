@@ -7,21 +7,12 @@ export default function Navbar() {
   // safe fallback (prevents runtime crashes if userData is undefined)
   const tier = userData?.tier ?? "free";
 
-  const hasToolsAccess =
-    tier === "bronze" ||
-    tier === "wave" ||
-    tier === "tsunami" ||
-    tier === "premium" ||
-    tier === "enterprise";
-
+  // Only members (wave tier and up) can access tools
   const hasMembersAccess =
     tier === "wave" ||
     tier === "tsunami" ||
     tier === "premium" ||
     tier === "enterprise";
-
-  const hasCommandCenterAccess =
-    tier === "tsunami" || tier === "enterprise";
 
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/70 border-b border-cyan-500/20">
@@ -52,21 +43,27 @@ export default function Navbar() {
             </Link>
           )}
 
-          {hasToolsAccess && (
-            <Link className="text-white/80 hover:text-cyan-300" to="/tools">
-              AI Tools
-            </Link>
-          )}
-
+          {/* 🔒 ALL TOOLS BEHIND MEMBERS/STRIPE WALL */}
           {hasMembersAccess && (
-            <Link className="text-white/80 hover:text-cyan-300" to="/members">
-              Members
-            </Link>
+            <>
+              <Link className="text-white/80 hover:text-cyan-300" to="/members">
+                Members
+              </Link>
+
+              <Link className="text-white/80 hover:text-cyan-300" to="/tools">
+                AI Tools
+              </Link>
+
+              <Link className="text-white/80 hover:text-cyan-300" to="/command-center">
+                Command Center
+              </Link>
+            </>
           )}
 
-          {hasCommandCenterAccess && (
-            <Link className="text-white/80 hover:text-cyan-300" to="/command-center">
-              Command Center
+          {/* Show "Upgrade" hint for non-members */}
+          {user && !hasMembersAccess && (
+            <Link className="text-amber-400/80 hover:text-amber-300 font-semibold" to="/pricing">
+              🔒 Unlock Tools
             </Link>
           )}
         </div>
