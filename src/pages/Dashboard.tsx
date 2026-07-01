@@ -1,108 +1,75 @@
-import { useState } from "react";
-import AICommandTerminal from "../components/AICommandTerminal";
-import WidgetCard from "../components/WidgetCard";
-
-type Props = {
-  userTier?: string;
-};
-
-const tierLevel: Record<string, number> = {
-  free: 0,
-  bronze: 1,
-  wave: 2,
-  tsunami: 3,
-  enterprise: 4,
-};
-
-export default function Dashboard({ userTier = "free" }: Props) {
-  const [tab, setTab] = useState("control");
-
-  const level = tierLevel[userTier] ?? 0;
-
+// 1. Clean Premium Subscription Wall
+function PremiumSubscriptionLock() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
-      <h1 className="text-4xl font-bold mb-2">
-        🌊 Ocean OS Control Center
-      </h1>
-
-      <p className="text-slate-400 mb-6">
-        System Tier: <span className="text-white">{userTier}</span>
+    <div className="p-8 rounded-xl border border-slate-800 bg-[#111625] text-center max-w-2xl mx-auto shadow-2xl">
+      <div className="text-3xl mb-3">🌊</div>
+      <h3 className="text-2xl font-bold mb-2 text-white">Unlock Full AI Surfer Access</h3>
+      <p className="text-slate-400 mb-6 max-w-md mx-auto text-sm leading-relaxed">
+        Ready to paddle out into deep water? Gain full access to the interactive canvas, advanced generation modules, and real-time automation streams.
       </p>
-
-      {/* NAV */}
-      <div className="flex gap-2 mb-6 flex-wrap">
-        {["control", "ai", "systems", "analytics"].map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-lg text-sm ${
-              tab === t ? "bg-blue-600" : "bg-slate-800"
-            }`}
-          >
-            {t.toUpperCase()}
-          </button>
-        ))}
+      
+      <div className="p-5 rounded-lg bg-[#0A0E1A] border border-[#00F5FF]/20 shadow-[0_0_15px_rgba(0,245,255,0.02)] max-w-sm mx-auto mb-6">
+        <h4 className="font-bold text-white text-base mb-1">Premium Membership</h4>
+        <div className="flex items-baseline justify-center gap-1 text-white">
+          <span className="text-3xl font-black text-[#00F5FF]">$17</span>
+          <span className="text-xs text-slate-500 font-medium">/ month</span>
+        </div>
+        <p className="text-xs text-slate-400 mt-2">Cancel anytime • Includes all active dashboard tools</p>
       </div>
 
-      {/* CONTROL ROOM */}
-      {tab === "control" && (
-        <div className="grid md:grid-cols-2 gap-4">
-          <WidgetCard
-            title="System Status"
-            desc="All AI systems running stable 🌊"
-          />
+      <button className="w-full max-w-sm bg-[#00F5FF] hover:bg-cyan-400 text-[#0A0E1A] font-bold py-3 px-6 rounded-lg transition shadow-[0_0_15px_rgba(0,245,255,0.2)]">
+        Subscribe for $17/mo
+      </button>
+    </div>
+  );
+}
 
-          <WidgetCard
-            title="User Tier Engine"
-            desc={`Access level: ${level}/4`}
-          />
+// 2. Updated Router View
+function MainView({ view }) {
+  if (view === "tools") {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-extrabold tracking-wide text-white">AI Tools Suite</h2>
         </div>
-      )}
+        
+        {/* FeatureGate now falls back directly to the clean monthly subscription lock */}
+        <FeatureGate fallback={<PremiumSubscriptionLock />}>
+          <ToolsGrid />
+        </FeatureGate>
+      </div>
+    );
+  }
 
-      {/* AI TERMINAL */}
-      {tab === "ai" && (
-        <div className="grid md:grid-cols-2 gap-4">
-          <WidgetCard
-            title="AI Command Core"
-            desc="Run commands, generate outputs, control systems"
-          />
+  if (view === "billing") {
+    return (
+      <div className="bg-[#111625] border border-slate-800 p-6 rounded-xl max-w-xl">
+        <h2 className="text-xl font-bold text-white mb-2">💳 Membership & Billing</h2>
+        <p className="text-slate-400 text-sm mb-4">
+          Manage your recurring subscription plan, update credit card profiles, or review past workspace invoices securely.
+        </p>
+        <button className="bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-4 py-2 rounded-lg text-sm transition">
+          Launch Stripe Billing Portal
+        </button>
+      </div>
+    );
+  }
 
-          <AICommandTerminal />
-        </div>
-      )}
+  if (view === "profile") {
+    return (
+      <div className="bg-[#111625] border border-slate-800 p-6 rounded-xl max-w-xl">
+        <h2 className="text-xl font-bold text-white mb-2">👤 Profile Configurations</h2>
+        <p className="text-slate-400 text-sm">Review your live deployment settings, metadata sync states, and user access parameters.</p>
+      </div>
+    );
+  }
 
-      {/* SYSTEMS */}
-      {tab === "systems" && (
-        <div className="grid md:grid-cols-2 gap-4">
-          <WidgetCard
-            title="Automation Layer"
-            desc="Workflow engine (coming online)"
-            locked={level < 2}
-          />
-
-          <WidgetCard
-            title="AI Agents"
-            desc="Autonomous task execution layer"
-            locked={level < 3}
-          />
-        </div>
-      )}
-
-      {/* ANALYTICS */}
-      {tab === "analytics" && (
-        <div className="grid md:grid-cols-2 gap-4">
-          <WidgetCard
-            title="Performance Metrics"
-            desc="Usage + AI activity tracking"
-          />
-
-          <WidgetCard
-            title="Revenue Insights"
-            desc="Tier conversions + monetization tracking"
-            locked={level < 1}
-          />
-        </div>
-      )}
+  return (
+    <div className="space-y-4">
+      <h2 className="text-3xl font-black text-white tracking-wide">Welcome to the Lineup</h2>
+      <p className="text-slate-400 max-w-xl text-sm leading-relaxed">
+        This is your central control dashboard. Use the side navigation tree to coordinate developer components or track your database configurations.
+      </p>
     </div>
   );
 }

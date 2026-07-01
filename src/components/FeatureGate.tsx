@@ -1,50 +1,31 @@
-import React, { useEffect, useRef, useState } from "react";
+import AuthGate from "./AuthGate";
+import FeatureGate from "./FeatureGate";
+import FreeBaselineModules from "./FreeBaselineModules";
+import PremiumToolCanvas from "./PremiumToolCanvas";
+import VelocityDropUpsell from "./VelocityDropUpsell";
 
-import LockedPreview from "./LockedPreview";
-import UpgradeModal from "./UpgradeModal";
-import { PRICING } from "../config/pricing";
-import { trackUpgradeIntent } from "../lib/upgradeSignals";
+export default function DashboardPage() {
+  return (
+    <AuthGate>
+      {/* Everything inside here requires a logged-in user */}
+      <div style={{ backgroundColor: "#0A0E1A", minHeight: "100vh", color: "#fff", padding: 24 }}>
+        
+        <h1>AI Surfer Dashboard</h1>
 
-export default function FeatureGate({
-  userTier = "free",
-  requiredTier = "bronze",
-  children,
-}: {
-  userTier?: string;
-  requiredTier?: string;
-  children: React.ReactNode;
-}) {
-  const [open, setOpen] = useState(false);
-  const trackedRef = useRef(false);
+        {/* 1. FREE SECTION (Visible to any logged-in user) */}
+        <section style={{ marginBottom: 40 }}>
+          <h2>Baseline Tools</h2>
+          <FreeBaselineModules />
+        </section>
 
-  const userLevel = PRICING[userTier]?.accessLevel ?? 0;
-  const requiredLevel = PRICING[requiredTier]?.accessLevel ?? 1;
+        {/* 2. STRIPE WALLED SECTION (Only visible to paid members) */}
+        <section>
+          <FeatureGate fallback={<VelocityDropUpsell tier1="$249" tier2="$349" />}>
+            <PremiumToolCanvas />
+          </FeatureGate>
+        </section>
 
-  const isLocked = userLevel < requiredLevel;
-
-  useEffect(() => {
-    if (!isLocked || trackedRef.current) return;
-
-    trackedRef.current = true;
-
-    trackUpgradeIntent({
-      userTier,
-      requiredTier,
-      path: window.location.pathname,
-    });
-  }, [isLocked, userTier, requiredTier]);
-
-  if (isLocked) {
-    return (
-      <>
-        <LockedPreview requiredTier={requiredTier} onUpgrade={() => setOpen(true)}>
-          {children}
-        </LockedPreview>
-
-        <UpgradeModal open={open} tier={requiredTier} onClose={() => setOpen(false)} />
-      </>
-    );
-  }
-
-  return <>{children}</>;
+      </div>
+    </AuthGate>
+  );
 }
