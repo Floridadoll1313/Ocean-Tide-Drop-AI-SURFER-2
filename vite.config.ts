@@ -1,21 +1,13 @@
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  test: {
-    globals: true,
-    environment: "jsdom",
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "lcov"],
-      exclude: [
-        "node_modules/",
-        "dist/",
-        "build/",
-        "**/*.d.ts",
-        "**/*.config.*"
-      ]
-    }
+  server: {
+    port: 5173,
+    strictPort: false
+  },
+  optimizeDeps: {
+    include: ["react", "react-dom"]
   }
-})
+});
