@@ -1,164 +1,179 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function DashboardLayout() {
   const [view, setView] = useState("core");
-  const [revenue, setRevenue] = useState(12480);
-  const [leads, setLeads] = useState(87);
-  const [agents, setAgents] = useState(12);
 
-  // 🌊 fake live system pulse
+  // 🌊 SYSTEM METRICS (simulated but realistic)
+  const [state, setState] = useState({
+    revenue: 12840,
+    mrrGrowth: 6.4,
+    leads: 92,
+    conversion: 3.8,
+    agents: 14,
+    uptime: 99.98,
+    activeFlows: 7,
+  });
+
+  // 🌊 LIVE SYSTEM SIMULATION LOOP
   useEffect(() => {
     const interval = setInterval(() => {
-      setRevenue((r) => r + Math.floor(Math.random() * 120));
-      setLeads((l) => l + Math.floor(Math.random() * 2));
-    }, 2500);
+      setState((prev) => ({
+        ...prev,
+        revenue: prev.revenue + Math.floor(Math.random() * 140),
+        leads: prev.leads + Math.floor(Math.random() * 2),
+        conversion: +(prev.conversion + (Math.random() - 0.5) * 0.1).toFixed(2),
+        mrrGrowth: +(prev.mrrGrowth + (Math.random() - 0.5) * 0.2).toFixed(2),
+      }));
+    }, 2200);
 
     return () => clearInterval(interval);
   }, []);
 
+  const panels = useMemo(
+    () => ({
+      core: {
+        title: "Core Intelligence Layer",
+        desc:
+          "AI is continuously analyzing user behavior, pricing elasticity, and conversion probability across all funnels.",
+        items: [
+          "Intent scoring model: ACTIVE",
+          "Revenue optimization engine: RUNNING",
+          "Behavior prediction layer: LEARNING",
+          "Autonomous pricing system: OPTIMIZING",
+        ],
+      },
+
+      agents: {
+        title: "Autonomous AI Swarm",
+        desc:
+          "Independent agents execute growth operations without human intervention.",
+        items: [
+          "LeadHunter Agent → scanning inbound traffic",
+          "Closer Agent → optimizing checkout conversion",
+          "Follow-up Agent → reactivating cold leads",
+          "Pricing Agent → adjusting offer tiers dynamically",
+        ],
+      },
+
+      revenue: {
+        title: "Revenue Control Plane",
+        desc:
+          "Financial performance is being optimized through autonomous feedback loops.",
+        items: [
+          "Dynamic pricing engine: ACTIVE",
+          "MRR stabilization logic: ENABLED",
+          "Upsell triggers: RUNNING",
+          "Revenue prediction model: TRAINING",
+        ],
+      },
+
+      leads: {
+        title: "Live Lead Stream",
+        desc:
+          "Incoming users are being scored and routed in real time.",
+        items: [
+          "High intent SaaS founder → score 94%",
+          "Startup visitor → pricing page depth detected",
+          "Organic traffic → engagement spike",
+          "Returning user → upsell eligible",
+        ],
+      },
+    }),
+    []
+  );
+
+  const active = panels[view];
+
   return (
     <div className="min-h-screen bg-black text-white flex overflow-hidden">
 
-      {/* 🌊 SIDEBAR */}
-      <div className="w-64 border-r border-white/10 p-5 space-y-4 bg-black/60 backdrop-blur">
+      {/* 🌊 SIDEBAR OS */}
+      <div className="w-72 border-r border-white/10 p-5 bg-black/60 backdrop-blur">
 
-        <div className="text-xs text-white/40 tracking-widest">
-          OCEAN TIDE AI OS
+        <div className="text-xs text-white/40 tracking-[0.25em] mb-6">
+          OCEAN TIDE OS
         </div>
 
-        {[
-          ["core", "🌊 Core Intelligence"],
-          ["agents", "🤖 AI Agents"],
-          ["revenue", "💰 Revenue Flow"],
-          ["leads", "📡 Live Leads"],
-          ["signals", "📊 Market Signals"],
-        ].map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => setView(key)}
-            className={`block text-left w-full px-2 py-2 rounded hover:text-cyan-300 ${
-              view === key ? "text-cyan-400 bg-white/5" : "text-white/70"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
+        <div className="space-y-2">
+          {Object.keys(panels).map((key) => (
+            <button
+              key={key}
+              onClick={() => setView(key)}
+              className={`w-full text-left px-3 py-2 rounded transition ${
+                view === key
+                  ? "bg-white/10 text-cyan-300"
+                  : "text-white/60 hover:text-white"
+              }`}
+            >
+              {key === "core" && "🌊 Core Intelligence"}
+              {key === "agents" && "🤖 AI Swarm"}
+              {key === "revenue" && "💰 Revenue Engine"}
+              {key === "leads" && "📡 Live Leads"}
+            </button>
+          ))}
+        </div>
+
+        {/* SYSTEM STATUS */}
+        <div className="mt-8 border-t border-white/10 pt-4 text-xs text-white/40 space-y-1">
+          <div>Uptime: {state.uptime}%</div>
+          <div>Active Flows: {state.activeFlows}</div>
+          <div>Agents: {state.agents}</div>
+        </div>
       </div>
 
       {/* 🌊 MAIN */}
       <div className="flex-1 p-8 relative">
 
-        {/* ambient glow */}
+        {/* ambient ocean glow */}
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div className="absolute w-[600px] h-[600px] bg-cyan-500 blur-3xl rounded-full top-[-200px] left-[100px]" />
           <div className="absolute w-[500px] h-[500px] bg-blue-600 blur-3xl rounded-full bottom-[-200px] right-[100px]" />
         </div>
 
-        {/* HEADER STATS BAR */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        {/* TOP METRICS */}
+        <div className="grid grid-cols-4 gap-4 mb-8">
 
-          <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
-            <div className="text-xs text-white/40">Monthly Revenue</div>
-            <div className="text-2xl font-bold text-cyan-300">
-              ${revenue.toLocaleString()}
-            </div>
-            <div className="text-xs text-white/30">AI optimized flow active</div>
-          </div>
-
-          <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
-            <div className="text-xs text-white/40">Active Leads</div>
-            <div className="text-2xl font-bold text-white">
-              {leads}
-            </div>
-            <div className="text-xs text-white/30">scoring in real time</div>
-          </div>
-
-          <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
-            <div className="text-xs text-white/40">AI Agents</div>
-            <div className="text-2xl font-bold text-cyan-400">
-              {agents}
-            </div>
-            <div className="text-xs text-white/30">autonomous systems running</div>
-          </div>
+          <Metric label="Revenue" value={`$${state.revenue.toLocaleString()}`} />
+          <Metric label="MRR Growth" value={`+${state.mrrGrowth}%`} />
+          <Metric label="Leads" value={state.leads} />
+          <Metric label="Conversion" value={`${state.conversion}%`} />
 
         </div>
 
-        {/* VIEW SWITCH */}
-        <div className="bg-white/5 border border-white/10 p-6 rounded-xl min-h-[400px]">
+        {/* MAIN PANEL */}
+        <div className="border border-white/10 bg-white/5 rounded-xl p-6 min-h-[420px]">
 
-          {view === "core" && (
-            <div>
-              <h1 className="text-3xl font-bold">🌊 Core Intelligence Layer</h1>
-              <p className="text-white/60 mt-3">
-                The system is analyzing conversion behavior, pricing elasticity, and user intent signals.
-              </p>
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold">{active.title}</h1>
+            <p className="text-white/60 mt-2">{active.desc}</p>
+          </div>
 
-              <div className="mt-6 space-y-2 text-sm text-white/70">
-                <div>• Funnel optimization engine: ACTIVE</div>
-                <div>• Pricing autopilot: LEARNING</div>
-                <div>• Behavioral prediction model: RUNNING</div>
+          <div className="space-y-3">
+            {active.items.map((item, i) => (
+              <div
+                key={i}
+                className="bg-black/40 border border-white/10 p-3 rounded"
+              >
+                {item}
               </div>
-            </div>
-          )}
+            ))}
+          </div>
+        </div>
 
-          {view === "agents" && (
-            <div>
-              <h1 className="text-3xl font-bold">🤖 AI Agent Swarm</h1>
-
-              <div className="mt-6 space-y-3">
-                {[
-                  "LeadHunter-7 scanning inbound traffic",
-                  "CloserBot-3 optimizing checkout flow",
-                  "PricingAI adjusting conversion thresholds",
-                  "FollowUp Engine engaging warm leads"
-                ].map((a, i) => (
-                  <div key={i} className="bg-black/40 border border-white/10 p-3 rounded">
-                    {a}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {view === "revenue" && (
-            <div>
-              <h1 className="text-3xl font-bold">💰 Revenue Autopilot</h1>
-              <p className="text-white/60 mt-3">
-                AI is actively adjusting pricing tiers based on user behavior patterns.
-              </p>
-
-              <div className="mt-6 h-40 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl border border-white/10 flex items-center justify-center text-white/40">
-                simulated revenue waveform 📈
-              </div>
-            </div>
-          )}
-
-          {view === "leads" && (
-            <div>
-              <h1 className="text-3xl font-bold">📡 Live Lead Stream</h1>
-
-              <div className="mt-6 space-y-2 text-sm">
-                <div className="text-white/80">High Intent Lead → SaaS Founder (score 91%)</div>
-                <div className="text-white/60">Startup Visitor → Pricing page view</div>
-                <div className="text-white/60">Organic Traffic → Landing page bounce analyzed</div>
-              </div>
-            </div>
-          )}
-
-          {view === "signals" && (
-            <div>
-              <h1 className="text-3xl font-bold">📊 Market Signals</h1>
-
-              <div className="mt-6 space-y-2 text-sm text-white/70">
-                <div>• Conversion rate trending +12%</div>
-                <div>• Pricing sensitivity decreasing</div>
-                <div>• Demand spike detected in AI automation niche</div>
-              </div>
-            </div>
-          )}
-
+        {/* FOOTER SIGNAL */}
+        <div className="mt-6 text-xs text-white/30">
+          AI OS running continuous optimization loop • no manual intervention required
         </div>
       </div>
+    </div>
+  );
+}
+
+function Metric({ label, value }) {
+  return (
+    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+      <div className="text-xs text-white/40">{label}</div>
+      <div className="text-xl font-bold text-cyan-300">{value}</div>
     </div>
   );
 }
