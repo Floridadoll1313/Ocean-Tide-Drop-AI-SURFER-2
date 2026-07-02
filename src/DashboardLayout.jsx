@@ -1,115 +1,125 @@
 import { useEffect, useMemo, useState } from "react";
 
 export default function DashboardLayout() {
-  const [view, setView] = useState("core");
+  const [view, setView] = useState("intelligence");
   const [command, setCommand] = useState("");
 
   const [state, setState] = useState({
-    revenue: 14290,
-    leads: 104,
-    conversion: 4.1,
+    revenue: 15120,
+    leads: 118,
+    conversion: 4.4,
+    agents: 18,
     uptime: 99.99,
-    agents: 16,
   });
 
-  const [logs, setLogs] = useState([
-    "SYSTEM INIT → Ocean Tide AI OS booted",
-    "AGENT SWARM → 16 agents online",
-    "LEAD ENGINE → listening on funnel stream",
+  const [feed, setFeed] = useState([
+    {
+      type: "SYSTEM",
+      msg: "AI OS initialized",
+      level: "info",
+    },
+    {
+      type: "AGENT",
+      msg: "LeadHunter-9 activated scanning pipeline",
+      level: "ok",
+    },
+    {
+      type: "ENGINE",
+      msg: "Revenue optimizer engaged",
+      level: "ok",
+    },
   ]);
 
-  // 🌊 LIVE SYSTEM SIMULATION LOOP
+  const [traces, setTraces] = useState([
+    "TRACE: user_intent_model → HIGH CONFIDENCE BUYER (0.91)",
+    "TRACE: pricing_engine → elasticity adjustment +2.4%",
+    "TRACE: funnel_analysis → drop-off detected at checkout step",
+  ]);
+
+  // 🌊 LIVE SYSTEM SIMULATION ENGINE
   useEffect(() => {
     const interval = setInterval(() => {
-      setState((s) => ({
-        ...s,
-        revenue: s.revenue + Math.floor(Math.random() * 160),
-        leads: s.leads + (Math.random() > 0.6 ? 1 : 0),
-        conversion: +(s.conversion + (Math.random() - 0.5) * 0.1).toFixed(2),
-      }));
-
       const events = [
-        "Lead scored HIGH INTENT → routing to conversion agent",
-        "Pricing engine adjusted tier elasticity",
-        "Agent Closer-3 engaged checkout user",
-        "New inbound session detected → analyzing behavior",
-        "Upsell trigger fired → email sequence deployed",
+        {
+          type: "LEAD",
+          msg: "High-intent visitor scored 0.94 routed to Closer AI",
+        },
+        {
+          type: "AGENT",
+          msg: "CloserBot-3 executed conversion sequence",
+        },
+        {
+          type: "ENGINE",
+          msg: "Dynamic pricing model updated successfully",
+        },
+        {
+          type: "SYSTEM",
+          msg: "Behavioral clustering recalculated across 1,240 sessions",
+        },
       ];
 
-      setLogs((l) => [
-        events[Math.floor(Math.random() * events.length)],
-        ...l.slice(0, 8),
+      const newEvent = events[Math.floor(Math.random() * events.length)];
+
+      setFeed((f) => [newEvent, ...f.slice(0, 10)]);
+
+      setState((s) => ({
+        ...s,
+        revenue: s.revenue + Math.floor(Math.random() * 180),
+        leads: s.leads + (Math.random() > 0.7 ? 1 : 0),
+        conversion: +(s.conversion + (Math.random() - 0.5) * 0.12).toFixed(2),
+      }));
+
+      setTraces((t) => [
+        `TRACE: decision_engine → ${Math.random().toString(36).substring(2, 10)} | score ${(Math.random() * 0.2 + 0.8).toFixed(2)}`,
+        ...t.slice(0, 6),
       ]);
-    }, 2000);
+    }, 1800);
 
     return () => clearInterval(interval);
   }, []);
 
   const panels = useMemo(
     () => ({
-      core: {
+      intelligence: {
         title: "Core Intelligence Layer",
-        desc: "Real-time inference engine analyzing behavioral + revenue signals.",
-        items: [
-          "Intent model: ACTIVE",
-          "Revenue optimizer: RUNNING",
-          "Behavior prediction: STREAMING",
-          "Autonomous decision engine: ONLINE",
-        ],
+        desc:
+          "Real-time decision engine processing behavioral, financial, and intent signals across all systems.",
       },
       agents: {
-        title: "AI Agent Swarm",
-        desc: "Independent agents executing growth tasks in parallel.",
-        items: [
-          "LeadHunter → scanning traffic",
-          "CloserBot → optimizing conversions",
-          "FollowUp Engine → reactivating users",
-          "Pricing AI → adjusting tiers dynamically",
-        ],
+        title: "Autonomous Agent Swarm",
+        desc:
+          "Independent AI agents executing parallel growth operations.",
       },
       revenue: {
-        title: "Revenue Control System",
-        desc: "Autonomous financial optimization layer.",
-        items: [
-          "Dynamic pricing: ENABLED",
-          "Upsell automation: ACTIVE",
-          "Revenue forecasting: RUNNING",
-          "Conversion optimization loop: CLOSED",
-        ],
-      },
-      leads: {
-        title: "Live Lead Stream",
-        desc: "Every visitor is scored, tracked, and routed automatically.",
-        items: [
-          "Founder traffic → score 94%",
-          "Startup visitor → high engagement",
-          "Organic user → pricing page view",
-          "Returning user → upsell eligible",
-        ],
+        title: "Revenue Control Plane",
+        desc:
+          "Autonomous monetization and optimization system.",
       },
     }),
     []
   );
 
-  const active = panels[view];
-
   function runCommand() {
     if (!command.trim()) return;
 
-    const newLog = `COMMAND EXECUTED → ${command}`;
-    setLogs((l) => [newLog, ...l]);
+    const action = {
+      type: "COMMAND",
+      msg: `EXECUTED: ${command}`,
+      level: "warn",
+    };
 
+    setFeed((f) => [action, ...f]);
     setCommand("");
   }
 
   return (
     <div className="min-h-screen bg-black text-white flex">
 
-      {/* 🌊 SIDEBAR */}
-      <div className="w-72 border-r border-white/10 p-5 bg-black/60 backdrop-blur">
+      {/* 🌊 LEFT NAV */}
+      <div className="w-72 border-r border-white/10 p-5 bg-black/70">
 
-        <div className="text-xs text-white/40 tracking-[0.25em] mb-6">
-          OCEAN TIDE AI OS
+        <div className="text-xs tracking-[0.3em] text-white/40 mb-6">
+          AI OPERATING SYSTEM
         </div>
 
         {Object.keys(panels).map((key) => (
@@ -126,75 +136,96 @@ export default function DashboardLayout() {
           </button>
         ))}
 
-        {/* SYSTEM STATS */}
-        <div className="mt-8 text-xs text-white/40 space-y-1 border-t border-white/10 pt-4">
+        <div className="mt-6 text-xs text-white/40 border-t border-white/10 pt-4 space-y-1">
           <div>Uptime: {state.uptime}%</div>
           <div>Agents: {state.agents}</div>
+          <div>System Mode: AUTONOMOUS</div>
         </div>
       </div>
 
-      {/* 🌊 MAIN */}
-      <div className="flex-1 p-6 grid grid-cols-3 gap-4">
+      {/* 🌊 CENTER */}
+      <div className="flex-1 p-6 space-y-4">
 
-        {/* LEFT MAIN PANEL */}
-        <div className="col-span-2 space-y-4">
+        {/* TOP METRICS */}
+        <div className="grid grid-cols-4 gap-3">
+          <Metric label="Revenue" value={`$${state.revenue}`} />
+          <Metric label="Leads" value={state.leads} />
+          <Metric label="Conversion" value={`${state.conversion}%`} />
+          <Metric label="Agents" value={state.agents} />
+        </div>
 
-          {/* METRICS */}
-          <div className="grid grid-cols-4 gap-3">
-            <Metric label="Revenue" value={`$${state.revenue}`} />
-            <Metric label="Leads" value={state.leads} />
-            <Metric label="Conv" value={`${state.conversion}%`} />
-            <Metric label="Agents" value={state.agents} />
-          </div>
+        {/* INTELLIGENCE PANEL */}
+        <div className="border border-white/10 bg-white/5 rounded-xl p-5">
+          <h1 className="text-xl font-bold">{panels[view].title}</h1>
+          <p className="text-white/60 text-sm mt-1">
+            {panels[view].desc}
+          </p>
 
-          {/* CORE VIEW */}
-          <div className="border border-white/10 bg-white/5 rounded-xl p-5 min-h-[340px]">
-            <h1 className="text-xl font-bold">{active.title}</h1>
-            <p className="text-white/60 text-sm mt-1">{active.desc}</p>
-
-            <div className="mt-4 space-y-2">
-              {active.items.map((i, idx) => (
-                <div key={idx} className="bg-black/40 border border-white/10 p-2 rounded text-sm">
-                  {i}
-                </div>
-              ))}
+          <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+            <div className="border border-white/10 bg-black/40 p-2 rounded">
+              Decision Engine: ACTIVE
             </div>
-          </div>
-
-          {/* COMMAND BAR */}
-          <div className="border border-white/10 bg-black/40 rounded-xl p-3 flex gap-2">
-            <input
-              value={command}
-              onChange={(e) => setCommand(e.target.value)}
-              placeholder="Enter system command… (e.g. optimize pricing)"
-              className="flex-1 bg-transparent outline-none text-sm"
-            />
-            <button
-              onClick={runCommand}
-              className="bg-cyan-500 text-black px-4 py-2 rounded text-sm font-semibold"
-            >
-              RUN
-            </button>
+            <div className="border border-white/10 bg-black/40 p-2 rounded">
+              Signal Processor: ONLINE
+            </div>
+            <div className="border border-white/10 bg-black/40 p-2 rounded">
+              Funnel Intelligence: RUNNING
+            </div>
+            <div className="border border-white/10 bg-black/40 p-2 rounded">
+              Predictive Model: LEARNING
+            </div>
           </div>
         </div>
 
-        {/* RIGHT LIVE SYSTEM FEED */}
-        <div className="border border-white/10 bg-white/5 rounded-xl p-4 h-[600px] overflow-hidden">
+        {/* COMMAND BAR */}
+        <div className="flex gap-2">
+          <input
+            value={command}
+            onChange={(e) => setCommand(e.target.value)}
+            placeholder="Enter system command (e.g. optimize funnel, deploy agent)"
+            className="flex-1 bg-black border border-white/10 px-3 py-2 rounded text-sm"
+          />
+          <button
+            onClick={runCommand}
+            className="bg-cyan-500 text-black px-4 py-2 rounded font-semibold"
+          >
+            EXECUTE
+          </button>
+        </div>
 
-          <div className="text-xs text-white/40 mb-3 tracking-widest">
-            LIVE SYSTEM FEED
+        {/* TRACE VIEW */}
+        <div className="border border-white/10 bg-black/40 rounded-xl p-4">
+          <div className="text-xs text-white/40 mb-2 tracking-widest">
+            DECISION TRACE LAYER
           </div>
 
-          <div className="space-y-2 text-xs">
-            {logs.map((log, i) => (
-              <div
-                key={i}
-                className="border border-white/10 bg-black/40 p-2 rounded"
-              >
-                {log}
+          <div className="space-y-1 text-xs text-white/70">
+            {traces.map((t, i) => (
+              <div key={i} className="border border-white/10 p-2 rounded">
+                {t}
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* 🌊 RIGHT FEED */}
+      <div className="w-96 border-l border-white/10 p-4 bg-black/60">
+
+        <div className="text-xs text-white/40 mb-3 tracking-widest">
+          LIVE SYSTEM EVENT STREAM
+        </div>
+
+        <div className="space-y-2 text-xs">
+          {feed.map((f, i) => (
+            <div
+              key={i}
+              className="border border-white/10 bg-black/40 p-2 rounded"
+            >
+              <div className="text-white/40">{f.type}</div>
+              <div>{f.msg}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
