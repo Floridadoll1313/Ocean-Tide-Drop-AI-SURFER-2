@@ -1,118 +1,43 @@
-import { useEffect, useState } from "react";
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 
-export default function AITerminal() {
-  const [logs, setLogs] = useState<string[]>([]);
-  const [input, setInput] = useState("");
+dotenv.config();
 
-  // 🌊 boot sequence (makes it feel "alive")
-  useEffect(() => {
-    const boot = [
-      "🌊 Booting Ocean Tide AI OS...",
-      "🧠 Initializing agent swarm...",
-      "🤖 142 AI agents online",
-      "📡 Connecting revenue engine...",
-      "⚡ System ready",
-    ];
+const app = express();
 
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < boot.length) {
-        setLogs((prev) => [...prev, boot[i]]);
-        i++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 600);
+app.use(cors());
+app.use(express.json());
 
-    return () => clearInterval(interval);
-  }, []);
+// 🌊 HEALTH CHECK
+app.get("/health", (req, res) => {
+  res.json({
+    status: "ok",
+    system: "Ocean Tide Drop AI",
+    time: new Date().toISOString(),
+  });
+});
 
-  // 🌊 fake AI command brain
-  const runCommand = (cmd: string) => {
-    const c = cmd.toLowerCase();
+// 🤖 AI STATUS ENDPOINT (fake but structured for later AI wiring)
+app.get("/api/status", (req, res) => {
+  res.json({
+    agents: 142,
+    leads: 18,
+    revenue: "$3,480/mo simulated",
+    uptime: "99.98%",
+    mode: "AI Operating System Layer 1",
+  });
+});
 
-    let response = "Unknown command. Try: status, agents, revenue, scale";
+// 💰 STRIPE / BILLING HOOK PLACEHOLDER (real hook later)
+app.post("/api/webhook/stripe", (req, res) => {
+  console.log("Stripe event received:", req.body);
+  res.sendStatus(200);
+});
 
-    if (c === "status") response = "🟢 All systems operational. Ocean OS stable.";
-    if (c === "agents") response = "🤖 142 agents active across funnel + sales + optimization.";
-    if (c === "revenue") response = "💰 Revenue engine compounding at +3.4% hourly.";
-    if (c === "scale") response = "⚡ Scaling protocols engaged. Expanding conversion loops.";
-    if (c === "help") response = "Commands: status | agents | revenue | scale";
+// 🚀 START SERVER
+const PORT = process.env.PORT || 3001;
 
-    setLogs((prev) => [...prev, `> ${cmd}`, response]);
-  };
-
-  const submit = () => {
-    if (!input.trim()) return;
-    runCommand(input);
-    setInput("");
-  };
-
-  return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
-
-      {/* 🌊 HEADER */}
-      <div className="border-b border-white/10 p-4 flex justify-between items-center">
-        <div className="font-bold">
-          🌊 Ocean Tide AI Terminal
-        </div>
-
-        <div className="text-xs text-white/40">
-          LIVE SYSTEM INTERFACE
-        </div>
-      </div>
-
-      {/* 🌊 MAIN TERMINAL */}
-      <div className="flex-1 p-6 overflow-auto font-mono text-sm space-y-2">
-
-        {logs.map((log, i) => (
-          <div
-            key={i}
-            className="text-white/70 animate-pulse"
-          >
-            {log}
-          </div>
-        ))}
-
-        {/* blinking cursor feel */}
-        <div className="text-cyan-400 animate-pulse">
-          ▌
-        </div>
-      </div>
-
-      {/* 🌊 COMMAND BAR */}
-      <div className="border-t border-white/10 p-4 flex gap-2">
-
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && submit()}
-          placeholder="Enter command... (status / agents / revenue / scale)"
-          className="flex-1 bg-black border border-white/20 px-3 py-2 rounded text-sm text-white"
-        />
-
-        <button
-          onClick={submit}
-          className="bg-cyan-500 text-black px-4 py-2 rounded font-semibold"
-        >
-          Run
-        </button>
-      </div>
-
-      {/* 🌊 QUICK COMMANDS */}
-      <div className="p-3 border-t border-white/10 flex gap-2 flex-wrap">
-
-        {["status", "agents", "revenue", "scale", "help"].map((cmd) => (
-          <button
-            key={cmd}
-            onClick={() => runCommand(cmd)}
-            className="text-xs px-3 py-1 bg-white/10 hover:bg-cyan-500/30 rounded"
-          >
-            {cmd}
-          </button>
-        ))}
-
-      </div>
-    </div>
-  );
-}
+app.listen(PORT, () => {
+  console.log(`🌊 AI OS Server running on http://localhost:${PORT}`);
+});
