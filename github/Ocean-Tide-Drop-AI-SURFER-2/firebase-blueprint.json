@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the digital collective",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique ID of the user" },
+        "displayName": { "type": "string", "description": "The display name of the user" },
+        "email": { "type": "string", "format": "email", "description": "The email address of the user" },
+        "photoURL": { "type": "string", "format": "uri", "description": "The profile photo URL of the user" },
+        "bio": { "type": "string", "description": "A short biography of the user" },
+        "location": { "type": "string", "description": "The geographic location of the user" },
+        "role": { "type": "string", "enum": ["user", "admin"], "description": "The role of the user" },
+        "subscriptionStatus": { "type": "string", "enum": ["none", "active", "canceled"], "description": "Membership status" }
+      },
+      "required": ["uid", "email"]
+    },
+    "ChatMessage": {
+      "title": "Chat Message",
+      "description": "A message sent in the member chat",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string", "description": "The UID of the sender" },
+        "username": { "type": "string", "description": "The username of the sender" },
+        "content": { "type": "string", "description": "The content of the message" },
+        "created_at": { "type": "string", "format": "date-time", "description": "When the message was sent" }
+      },
+      "required": ["user_id", "username", "content", "created_at"]
+    },
+    "MemorialStory": {
+      "title": "Memorial Story",
+      "description": "A story or memory shared in the sanctuary",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the person sharing" },
+        "content": { "type": "string", "description": "The content of the story" },
+        "created_at": { "type": "string", "format": "date-time", "description": "When the story was shared" }
+      },
+      "required": ["name", "content", "created_at"]
+    },
+    "PublicUser": {
+      "title": "Public User",
+      "description": "Publicly visible user profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique ID of the user" },
+        "displayName": { "type": "string", "description": "The display name of the user" },
+        "photoURL": { "type": "string", "format": "uri", "description": "The profile photo URL of the user" },
+        "bio": { "type": "string", "description": "A short biography of the user" },
+        "location": { "type": "string", "description": "The geographic location of the user" }
+      },
+      "required": ["uid", "displayName"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "A record of a payment made by a user",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The UID of the user who made the payment" },
+        "amount": { "type": "number", "description": "The amount paid in cents" },
+        "currency": { "type": "string", "description": "The currency of the payment" },
+        "status": { "type": "string", "description": "The status of the payment (e.g., succeeded, pending)" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the payment was created" },
+        "stripeSessionId": { "type": "string", "description": "The Stripe session ID for reference" },
+        "tierId": { "type": "string", "description": "The ID of the subscription tier purchased" }
+      },
+      "required": ["userId", "amount", "currency", "status", "createdAt"]
+    },
+    "ToolWork": {
+      "title": "Tool Work",
+      "description": "A record of work performed by a user with a tool",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The UID of the user" },
+        "toolName": { "type": "string", "description": "The name of the tool used" },
+        "action": { "type": "string", "description": "The action performed" },
+        "result": { "type": "string", "description": "The result of the action" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When the work was performed" }
+      },
+      "required": ["userId", "toolName", "action", "result", "timestamp"]
+    },
+    "PricingTier": {
+      "title": "Pricing Tier",
+      "description": "A dynamic subscription pricing tier configured in the database",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Dynamic ID of the subscription tier" },
+        "name": { "type": "string", "description": "Display name of the tier" },
+        "price": { "type": "string", "description": "Monthly or periodic price string" },
+        "period": { "type": "string", "description": "Billing period (e.g. /month)" },
+        "description": { "type": "string", "description": "A brief description of this plan" },
+        "features": { "type": "array", "description": "A list of features included in this tier" },
+        "color": { "type": "string", "description": "Tailwind color framing or glow classes" },
+        "popular": { "type": "boolean", "description": "Whether this plan is popular or featured" },
+        "stripePriceId": { "type": "string", "description": "Active Stripe Price ID for this tier" }
+      },
+      "required": ["id", "name", "price", "period"]
+    }
+  },
+  "firestore": {
+    "/pricing_tiers/{tierId}": {
+      "schema": "PricingTier",
+      "description": "Subscription pricing plans managed dynamically"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/users_public/{userId}": {
+      "schema": "PublicUser",
+      "description": "Public user profiles (no PII)"
+    },
+    "/chat_messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Public member chat messages"
+    },
+    "/memorial_stories/{storyId}": {
+      "schema": "MemorialStory",
+      "description": "Public memorial stories"
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "User payment records"
+    },
+    "/users/{userId}/work/{workId}": {
+      "schema": "ToolWork",
+      "description": "User tool activity logs"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "AI Surfer",
+  "description": "A high-performance AI agency for brand systems, automation, and cinematic web design.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
