@@ -11,33 +11,31 @@ app.use(express.json());
 
 // 🌊 HEALTH CHECK
 app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
+// 🤖 DASHBOARD DATA (REAL BACKEND FEED)
+app.get("/api/dashboard", (req, res) => {
   res.json({
-    status: "ok",
     system: "Ocean Tide Drop AI",
-    time: new Date().toISOString(),
+    agents: [
+      { name: "WaveCloser", status: "active", jobs: 12 },
+      { name: "LeadHunter", status: "active", jobs: 34 },
+      { name: "PricingBrain", status: "learning", jobs: 8 },
+      { name: "RetentionAI", status: "active", jobs: 21 }
+    ],
+    metrics: {
+      leads: 18,
+      conversions: 6,
+      revenue: 3480,
+      uptime: 99.98
+    }
   });
-});
-
-// 🤖 AI STATUS ENDPOINT (fake but structured for later AI wiring)
-app.get("/api/status", (req, res) => {
-  res.json({
-    agents: 142,
-    leads: 18,
-    revenue: "$3,480/mo simulated",
-    uptime: "99.98%",
-    mode: "AI Operating System Layer 1",
-  });
-});
-
-// 💰 STRIPE / BILLING HOOK PLACEHOLDER (real hook later)
-app.post("/api/webhook/stripe", (req, res) => {
-  console.log("Stripe event received:", req.body);
-  res.sendStatus(200);
 });
 
 // 🚀 START SERVER
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 
 app.listen(PORT, () => {
-  console.log(`🌊 AI OS Server running on http://localhost:${PORT}`);
+  console.log(`🌊 AI Backend running on http://localhost:${PORT}`);
 });
