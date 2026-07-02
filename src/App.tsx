@@ -1,17 +1,32 @@
 import { useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { bootAI } from "./services/ai";
-console.log("ENV OBJECT:", import.meta.env);
-console.log("GEMINI KEY:", import.meta.env.VITE_GEMINI_API_KEY);
+
+import Home from "./pages/home/Home";
+import Pricing from "./pages/pricing/Pricing";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Login from "./pages/login/login";
+import Members from "./pages/members/Members";
+import Billing from "./pages/billing/Billing";
+
 export default function App() {
   useEffect(() => {
     bootAI();
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center">
-      <h1 className="text-xl font-bold">
-        🌊 AI Surfer Running
-      </h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* 🌊 Public Ocean */}
+        <Route path="/" element={<Home />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* 🔐 Protected SaaS Core */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/members" element={<Members />} />
+        <Route path="/billing" element={<Billing />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
