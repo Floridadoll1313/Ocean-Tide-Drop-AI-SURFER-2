@@ -29,6 +29,7 @@
     "lucide-react": "^0.294.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.18.1",
     "vite-node": "^6.0.0"
   },
   "devDependencies": {
