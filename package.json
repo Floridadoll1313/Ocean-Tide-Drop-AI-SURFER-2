@@ -6,6 +6,9 @@
   "main": "index.html",
   "homepage": "https://otdaisurfer.surf",
   "scripts": {
+    "scripts": {
+  "dev": "tsx src/server/app.ts"
+}
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
