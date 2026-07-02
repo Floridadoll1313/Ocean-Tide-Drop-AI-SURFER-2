@@ -7,6 +7,10 @@
   "homepage": "https://otdaisurfer.surf",
   "scripts": {
     "scripts": {
+"scripts": {
+  "dev": "vite",
+  "server": "tsx src/server/app.ts"
+}
   "dev": "tsx src/server/app.ts"
 }
     "dev": "vite",
