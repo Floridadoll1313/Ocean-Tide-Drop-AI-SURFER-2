@@ -13,7 +13,7 @@ export default function Billing() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          customerId: userData?.uid, 
+          customerId: userData?.uid,
         }),
       });
 
