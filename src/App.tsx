@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { bootAI } from "./services/ai";
 
 import Home from "./pages/home/Home";
@@ -15,18 +15,16 @@ export default function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* 🌊 Public Ocean */}
-        <Route path="/" element={<Home />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/login" element={<Login />} />
+    <Routes>
+      {/* 🌊 Public */}
+      <Route path="/" element={<Home />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/login" element={<Login />} />
 
-        {/* 🔐 Protected SaaS Core */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/members" element={<Members />} />
-        <Route path="/billing" element={<Billing />} />
-      </Routes>
-    </BrowserRouter>
+      {/* 🔐 SaaS Core */}
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/members" element={<Members />} />
+      <Route path="/billing" element={<Billing />} />
+    </Routes>
   );
 }
