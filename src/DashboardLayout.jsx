@@ -1,6 +1,7 @@
 import { useState } from "react";
+import OceanPulse from "./components/OceanPulse";
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout() {
   const [view, setView] = useState("control");
 
   const menu = [
@@ -14,85 +15,123 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="min-h-screen bg-black text-white flex">
 
-      {/* SIDEBAR */}
+      {/* 🌊 SIDEBAR */}
       <div className="w-64 border-r border-white/10 p-4">
-        <div className="font-bold mb-6">🌊 Ocean Tide OS</div>
+        <div className="text-xl font-bold mb-6">
+          🌊 Ocean Tide OS
+        </div>
 
         <div className="space-y-2">
-          {menu.map((m) => (
+          {menu.map((item) => (
             <button
-              key={m.id}
-              onClick={() => setView(m.id)}
-              className={`w-full text-left px-3 py-2 rounded ${
-                view === m.id ? "bg-cyan-500 text-black" : "hover:bg-white/10"
+              key={item.id}
+              onClick={() => setView(item.id)}
+              className={`w-full text-left px-3 py-2 rounded transition ${
+                view === item.id
+                  ? "bg-cyan-500 text-black font-semibold"
+                  : "hover:bg-white/10 text-white/70"
               }`}
             >
-              {m.label}
+              {item.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* MAIN */}
-      <div className="flex-1 p-6">
+      {/* 🌊 MAIN PANEL */}
+      <div className="flex-1 p-6 overflow-auto">
 
         {/* HEADER */}
         <div className="border-b border-white/10 pb-4 mb-6">
           <h1 className="text-2xl font-bold">
             {view === "control" && "Control Center"}
             {view === "agents" && "AI Agent Fleet"}
-            {view === "leads" && "Lead Flow System"}
+            {view === "leads" && "Lead Intelligence System"}
             {view === "revenue" && "Revenue Engine"}
             {view === "settings" && "System Settings"}
           </h1>
+
+          <p className="text-white/50 text-sm mt-1">
+            Ocean Tide AI is actively running autonomous optimization cycles.
+          </p>
         </div>
 
-        {/* VIEW */}
-        <div className="space-y-4">
+        {/* 🌊 CONTROL CENTER */}
+        {view === "control" && (
+          <div className="space-y-6">
 
-          {view === "control" && (
-            <div className="grid md:grid-cols-3 gap-4">
-              <Card title="Active Agents" value="142" />
-              <Card title="Leads Today" value="18" />
-              <Card title="Revenue" value="$4,320" />
+            {/* LIVE SYSTEM HEARTBEAT */}
+            <OceanPulse />
+
+            {/* STATUS STRIP */}
+            <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-sm text-white/70">
+              🔴 System Status: Autonomous • Learning • Optimizing funnels in real time • No manual intervention required
             </div>
-          )}
 
-          {view === "agents" && (
-            <Panel text="🤖 AI Agents are running autonomous sales + optimization loops." />
-          )}
+            {/* LIVE ACTIVITY FEED */}
+            <div className="space-y-3">
+              <h2 className="text-lg font-semibold">Live Activity Feed</h2>
 
-          {view === "leads" && (
-            <Panel text="📈 Lead scoring engine is actively qualifying traffic in real time." />
-          )}
+              <Feed text="🤖 Agent WaveCloser-9 closed a $199 upgrade" />
+              <Feed text="📈 Lead scored 94% intent from pricing page" />
+              <Feed text="⚙️ Pricing engine adjusted conversion threshold (+2.1%)" />
+              <Feed text="🌊 New visitor entered funnel → AI routing activated" />
+            </div>
+          </div>
+        )}
 
-          {view === "revenue" && (
-            <Panel text="💰 Revenue system optimizing pricing and conversion paths." />
-          )}
+        {/* 🤖 AGENTS */}
+        {view === "agents" && (
+          <Panel
+            title="AI Agent Fleet"
+            text="142 autonomous agents are currently running sales, lead scoring, and optimization workflows across your system."
+          />
+        )}
 
-          {view === "settings" && (
-            <Panel text="⚙️ System configuration panel (AI behavior, pricing, funnels)." />
-          )}
+        {/* 📈 LEADS */}
+        {view === "leads" && (
+          <Panel
+            title="Lead Intelligence System"
+            text="AI is analyzing visitor behavior, scoring intent, and prioritizing high-value prospects in real time."
+          />
+        )}
 
-        </div>
+        {/* 💰 REVENUE */}
+        {view === "revenue" && (
+          <Panel
+            title="Revenue Engine"
+            text="Dynamic pricing, conversion optimization, and upgrade triggers are continuously running."
+          />
+        )}
+
+        {/* ⚙️ SETTINGS */}
+        {view === "settings" && (
+          <Panel
+            title="System Settings"
+            text="Configure AI behavior, pricing logic, funnel rules, and agent autonomy levels."
+          />
+        )}
+
       </div>
     </div>
   );
 }
 
-function Card({ title, value }) {
+/* 🌊 LIVE FEED ITEM */
+function Feed({ text }) {
   return (
-    <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
-      <div className="text-white/60 text-sm">{title}</div>
-      <div className="text-2xl font-bold mt-1">{value}</div>
+    <div className="bg-white/5 border border-white/10 p-3 rounded-lg text-sm">
+      {text}
     </div>
   );
 }
 
-function Panel({ text }) {
+/* 🌊 SIMPLE PANEL */
+function Panel({ title, text }) {
   return (
     <div className="bg-white/5 border border-white/10 p-6 rounded-xl">
-      {text}
+      <h2 className="text-xl font-semibold mb-2">{title}</h2>
+      <p className="text-white/60">{text}</p>
     </div>
   );
 }
