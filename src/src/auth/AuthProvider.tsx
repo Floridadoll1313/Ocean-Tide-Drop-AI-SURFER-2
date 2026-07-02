@@ -1,11 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-/**
- * 🌊 Safe Auth Context (Firebase-ready but crash-proof)
- * This prevents build failures when firebase isn't installed yet.
- */
-
-const AuthContext = createContext(null);
+const AuthContext = createContext({
+  user: null,
+  loading: true
+});
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -16,11 +14,10 @@ export function AuthProvider({ children }) {
 
     async function initAuth() {
       try {
-        // ⚠️ Safe dynamic import so build doesn't crash
         const firebaseModule = await import("firebase/auth").catch(() => null);
 
         if (!firebaseModule) {
-          console.warn("Firebase not installed — running in fallback auth mode");
+          console.warn("Firebase missing — fallback auth mode active");
           setLoading(false);
           return;
         }
