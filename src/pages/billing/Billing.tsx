@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/auth";
 
 export default function Billing() {
   const { user, userData } = useAuth();
@@ -53,7 +53,7 @@ export default function Billing() {
         </p>
 
         <div className="text-xs text-white/40">
-          Signed in as: {user.email || "Guest"}
+          Signed in as: {user?.email || "Guest"}
         </div>
 
         <button
