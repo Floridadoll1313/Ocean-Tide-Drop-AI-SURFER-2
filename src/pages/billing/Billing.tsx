@@ -11,18 +11,27 @@ export default function Billing() {
     try {
       const res = await fetch("/api/stripe/create-portal-session", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          customerId: userData?.uid,
+          customerId: userData?.stripeCustomerId, // FIXED (not uid)
         }),
       });
 
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || "Server error");
+      }
+
       const data = await res.json();
+
+      console.log("Stripe portal response:", data);
 
       if (data?.url) {
         window.location.href = data.url;
       } else {
-        alert("Billing portal not configured or missing URL");
+        alert("No billing portal URL returned from server");
       }
     } catch (err) {
       console.error("Billing portal error:", err);
@@ -49,11 +58,11 @@ export default function Billing() {
         </h1>
 
         <p className="text-white/60 text-sm">
-          Manage your subscription, payment method, and upgrades.
+          Manage subscription, payment method, upgrades
         </p>
 
         <div className="text-xs text-white/40">
-          Signed in as: {user?.email || "Guest"}
+          Signed in as: {user?.email}
         </div>
 
         <button
