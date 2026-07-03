@@ -1,8 +1,12 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
-import { getMessaging } from 'firebase/messaging';
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut
+} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -14,33 +18,23 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+
+// Core services
 export const auth = getAuth(app);
+export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// Google OAuth Provider
+// Google OAuth
 export const googleProvider = new GoogleAuthProvider();
-googleProvider.addScope('https://www.googleapis.com/auth/calendar');
-googleProvider.addScope('https://www.googleapis.com/auth/tasks');
-googleProvider.addScope('https://www.googleapis.com/auth/chat');
-googleProvider.addScope('https://www.googleapis.com/auth/spreadsheets');
-googleProvider.addScope('https://www.googleapis.com/auth/presentations');
-googleProvider.addScope('https://www.googleapis.com/auth/documents');
-googleProvider.addScope('https://mail.google.com/');
-googleProvider.addScope('https://www.googleapis.com/auth/drive');
-googleProvider.addScope('https://www.googleapis.com/auth/forms.body');
-googleProvider.addScope('https://www.googleapis.com/auth/forms.responses.readonly');
-googleProvider.addScope('https://www.googleapis.com/auth/forms');
 
-// Initialize messaging only if supported
-let messaging: any = null;
-if ('serviceWorker' in navigator) {
-  try {
-    messaging = getMessaging(app);
-  } catch (e) {
-    console.log('Messaging not available:', e);
-  }
-}
-export { messaging, signInWithPopup, signOut };
+// ⚠️ Keep scopes lean for stability
+googleProvider.addScope("https://www.googleapis.com/auth/drive");
+googleProvider.addScope("https://www.googleapis.com/auth/documents");
+googleProvider.addScope("https://www.googleapis.com/auth/spreadsheets");
+
+// OPTIONAL: only add these if absolutely needed
+// googleProvider.addScope("https://www.googleapis.com/auth/calendar");
+
+export { signInWithPopup, signOut };
 
 export default app;
