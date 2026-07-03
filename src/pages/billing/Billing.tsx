@@ -1,21 +1,27 @@
 import { useState } from "react";
-import { useAuth } from "@/auth";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Billing() {
   const { user, userData } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const openPortal = async () => {
+    if (!user) return;
+
+    if (!userData?.stripeCustomerId) {
+      alert("No Stripe customer found. Please complete checkout first.");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await fetch("/api/stripe/create-portal-session", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          customerId: userData?.stripeCustomerId, // FIXED (not uid)
+          customerId: userData.stripeCustomerId,
+          email: user.email,
         }),
       });
 
@@ -25,8 +31,6 @@ export default function Billing() {
       }
 
       const data = await res.json();
-
-      console.log("Stripe portal response:", data);
 
       if (data?.url) {
         window.location.href = data.url;
@@ -62,7 +66,7 @@ export default function Billing() {
         </p>
 
         <div className="text-xs text-white/40">
-          Signed in as: {user?.email}
+          Signed in as: {user.email}
         </div>
 
         <button
