@@ -6,7 +6,11 @@ on:
   pull_request:
     branches: [main, develop]
   schedule:
-    - cron: '0 2 * * 0' # Weekly on Sunday
+    - cron: '0 2 * * 0'
+
+permissions:
+  contents: read
+  security-events: write
 
 jobs:
   dependency-check:
@@ -14,16 +18,16 @@ jobs:
     name: Dependency Vulnerability Scan
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Audit dependencies
         run: npm audit --audit-level=moderate
         continue-on-error: true
@@ -33,7 +37,7 @@ jobs:
     name: Container & Code Vulnerability Scan
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Trivy scan
         uses: aquasecurity/trivy-action@master
         with:
@@ -41,27 +45,30 @@ jobs:
           scan-ref: '.'
           format: 'sarif'
           output: 'trivy-results.sarif'
-      
+
       - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
 
   codeql:
     runs-on: ubuntu-latest
     name: CodeQL Analysis
+
     permissions:
+      contents: read
       security-events: write
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
-          languages: 'javascript'
-      
+          languages: javascript
+
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
-      
+        uses: github/codeql-action/autobuild@v3
+
       - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
