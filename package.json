@@ -26,10 +26,12 @@
   "license": "MIT",
   "dependencies": {
     "@google/genai": "^2.10.0",
+    "@supabase/supabase-js": "^2.110.0",
     "autoprefixer": "^10.5.2",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "firebase": "^12.15.0",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.294.0",
     "react": "^19.0.0",
