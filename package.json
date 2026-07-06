@@ -9,11 +9,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "tsx src/server/app.ts",
     "lint": "eslint .",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
-    "test:supabase": "node testSupabase.ts"
+    "test:supabase": "node testSupabase.ts",
+    "server": "tsx src/server/app.ts"
   },
   "keywords": [
     "react",
@@ -26,8 +26,10 @@
   "license": "MIT",
   "dependencies": {
     "@google/genai": "^2.10.0",
-    "@vitejs/plugin-react-oxc": "^0.4.3",
     "autoprefixer": "^10.5.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.294.0",
     "react": "^19.0.0",
@@ -37,27 +39,25 @@
   },
   "devDependencies": {
     "@eslint/js": "^8.0.0",
-    "@types/node": "^20.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.19.43",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.0.0",
+    "@vitejs/plugin-react-oxc": "^0.4.3",
     "eslint": "^8.0.0",
     "jsdom": "^22.0.0",
+    "nodemon": "^3.1.14",
     "postcss": "^8.0.0",
     "tailwindcss": "^3.0.0",
-    "tsx": "^4.0.0",
-    "typescript": "^5.0.0",
+    "tsx": "^4.22.4",
+    "typescript": "^5.9.3",
     "vite": "^8.1.2",
     "vitest": "^4.1.9"
   },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
-  },
-  "allowScripts": {
-    "@google/genai@2.10.0": true,
-    "esbuild@0.28.1": true,
-    "protobufjs@7.6.4": true,
-    "tsx@4.22.4": true
   }
 }
