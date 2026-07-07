@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ```tsx
 export default function Home() {
   return (
@@ -102,3 +103,18 @@ export default function Home() {
   );
 }
 ```
+=======
+import homepageDesign from "../assets/otd-ai-surfer-homepage-concept.png";
+
+export default function Landing() {
+  return (
+    <main className="min-h-screen bg-blue-900">
+      <img
+        src={homepageDesign}
+        alt="Ocean Tide Drop AI SURFER homepage design"
+        className="w-full h-auto object-cover"
+      />
+    </main>
+  );
+}
+>>>>>>> 62041e2 (Add landing page)
