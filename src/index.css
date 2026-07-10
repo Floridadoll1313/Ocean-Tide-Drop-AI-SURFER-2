@@ -2,86 +2,108 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color-scheme: dark;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   background: #020617;
+  color: white;
 }
-
 
 html {
   scroll-behavior: smooth;
 }
 
-
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #020617;
-  color: white;
+  background:
+    radial-gradient(circle at top right, rgba(6, 182, 212, 0.18), transparent 35%),
+    radial-gradient(circle at bottom left, rgba(37, 99, 235, 0.15), transparent 35%),
+    #020617;
 }
 
-
-* {
-  box-sizing: border-box;
-}
-
-
-/* Ocean Glass Panels */
-
+/* Ocean glass panels */
 .glass-panel {
-  background: rgba(255,255,255,0.05);
+  background: rgba(15, 23, 42, 0.55);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
-
 
 .glass-panel-heavy {
-  background: rgba(15,23,42,0.75);
-  backdrop-filter: blur(25px);
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(2, 6, 23, 0.75);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(34, 211, 238, 0.15);
 }
 
-
-/* Glow Effects */
-
+/* AI glow effects */
 .text-glow {
   text-shadow:
-    0 0 10px rgba(34,211,238,0.5),
-    0 0 30px rgba(34,211,238,0.3);
+    0 0 10px rgba(34, 211, 238, 0.5),
+    0 0 30px rgba(59, 130, 246, 0.35);
 }
 
-
-.ocean-glow {
-  box-shadow:
-    0 0 40px rgba(34,211,238,0.15);
+.ai-card {
+  background: linear-gradient(
+    145deg,
+    rgba(15, 23, 42, 0.9),
+    rgba(2, 6, 23, 0.9)
+  );
+  border: 1px solid rgba(34, 211, 238, 0.15);
+  transition: all 0.3s ease;
 }
 
-
-/* Smooth buttons */
-
-button,
-a {
-  transition:
-    all 0.25s ease;
+.ai-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(34, 211, 238, 0.5);
+  box-shadow: 0 0 35px rgba(34, 211, 238, 0.15);
 }
 
+/* Dashboard ocean background */
+.dashboard-bg {
+  background:
+    linear-gradient(
+      rgba(2, 6, 23, 0.75),
+      rgba(2, 6, 23, 0.95)
+    ),
+    radial-gradient(
+      circle at top,
+      rgba(34, 211, 238, 0.18),
+      transparent 40%
+    );
+}
 
-/* Hide scrollbars but keep scrolling */
+/* Buttons */
+.ai-button {
+  background: linear-gradient(
+    90deg,
+    #22d3ee,
+    #3b82f6
+  );
+  color: #020617;
+  font-weight: 800;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+}
 
+.ai-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(34, 211, 238, 0.45);
+}
+
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
-
 
 ::-webkit-scrollbar-track {
   background: #020617;
 }
 
-
 ::-webkit-scrollbar-thumb {
-  background: rgba(34,211,238,0.35);
+  background: linear-gradient(
+    #22d3ee,
+    #2563eb
+  );
   border-radius: 20px;
 }
