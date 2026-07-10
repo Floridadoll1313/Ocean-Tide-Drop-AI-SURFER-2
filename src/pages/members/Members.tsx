@@ -1,133 +1,309 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import {
+  Waves,
+  LayoutDashboard,
+  Bot,
+  Workflow,
+  FolderKanban,
+  Users,
+  TrendingUp,
+  CreditCard,
+  Settings,
+  LogOut,
+  Sparkles,
+  Compass,
+} from "lucide-react";
+
 
 export default function Members() {
-  const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(true);
-  const [activeUser, setActiveUser] = useState<any>(null);
-  const [launchingTool, setLaunchingTool] = useState<string | null>(null);
+  const location = useLocation();
 
-  useEffect(() => {
-    // simulate auth/session load
-    setTimeout(() => {
-      setLoading(false);
-      // setActiveUser({ id: "demo" }); // enable if needed
-    }, 800);
-  }, []);
 
-  const loginAsGuest = () => {
-    setActiveUser({ id: "guest" });
-  };
+  const menuItems = [
 
-  const loginWithGoogle = () => {
-    setActiveUser({ id: "google-user" });
-  };
+    {
+      name: "Command Center",
+      path: "/dashboard",
+      icon: LayoutDashboard,
+    },
 
-  const handleSaveWork = async (toolId: string) => {
-    try {
-      console.log("Saving work for:", toolId);
-    } catch (err) {
-      console.error("Error saving work:", err);
-    }
+    {
+      name: "AI Tools",
+      path: "/tools",
+      icon: Bot,
+    },
 
-    setTimeout(() => {
-      setLaunchingTool(null);
-      navigate(`/members/tool/${toolId}`);
-    }, 2000);
-  };
+    {
+      name: "Automation Hub",
+      path: "/automation",
+      icon: Workflow,
+    },
 
-  // 🌊 LOADING STATE
-  if (loading) {
-    return (
-      <div className="w-full text-left py-10 px-6 animate-pulse">
-        <div className="h-16 w-64 bg-cyan-400/20 rounded-md mb-12"></div>
+    {
+      name: "Projects",
+      path: "/projects",
+      icon: FolderKanban,
+    },
 
-        <div className="flex gap-4 mb-12">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-10 w-24 bg-white/5 rounded-full" />
-          ))}
-        </div>
+    {
+      name: "Lead Navigator",
+      path: "/leads",
+      icon: Users,
+    },
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div
-              key={i}
-              className="h-64 bg-white/5 rounded-3xl border border-white/5"
-            />
-          ))}
-        </div>
-      </div>
-    );
-  }
+    {
+      name: "Revenue Dashboard",
+      path: "/analytics",
+      icon: TrendingUp,
+    },
 
-  // 🌊 NOT LOGGED IN STATE
-  if (!activeUser) {
-    return (
-      <div className="w-full min-h-screen flex flex-col items-center justify-center p-6 text-center bg-black">
-        <div className="max-w-2xl border border-cyan-500/10 bg-zinc-950/40 rounded-[3rem] backdrop-blur-md p-10 relative overflow-hidden">
+    {
+      name: "Billing",
+      path: "/billing",
+      icon: CreditCard,
+    },
 
-          <div className="absolute inset-0 bg-cyan-500/10 blur-[80px] rounded-full pointer-events-none" />
+    {
+      name: "Settings",
+      path: "/settings",
+      icon: Settings,
+    },
 
-          <span className="text-[10px] text-cyan-400 uppercase tracking-[0.4em]">
-            AI Surfer Portal
-          </span>
+  ];
 
-          <h1 className="text-4xl font-black uppercase text-white mt-6">
-            MEMBERS AREA
-          </h1>
 
-          <p className="text-white/80 mt-4 mb-8 text-sm">
-            Access is reserved for active members.
-          </p>
 
-          <div className="flex gap-3 justify-center">
-            <button
-              onClick={loginAsGuest}
-              className="px-4 py-2 rounded-xl bg-black border border-white/10 text-white"
-            >
-              Guest Mode
-            </button>
-
-            <button
-              onClick={loginWithGoogle}
-              className="px-6 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold"
-            >
-              Join Now
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // 🌊 MAIN MEMBERS UI (SAFE WRAPPER)
   return (
-    <div className="w-full min-h-screen bg-black text-white p-6">
-      <h1 className="text-3xl font-bold mb-6">Members Dashboard</h1>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <button
-          onClick={() => handleSaveWork("tool-1")}
-          className="p-4 rounded-xl bg-white/5 border border-white/10"
-        >
-          Launch Tool 1
-        </button>
+    <div className="min-h-screen bg-slate-950 text-white flex">
 
-        <button
-          onClick={() => handleSaveWork("tool-2")}
-          className="p-4 rounded-xl bg-white/5 border border-white/10"
-        >
-          Launch Tool 2
-        </button>
 
-        <button
-          onClick={() => handleSaveWork("tool-3")}
-          className="p-4 rounded-xl bg-white/5 border border-white/10"
-        >
-          Launch Tool 3
-        </button>
+      {/* Ocean Glow Background */}
+
+      <div className="fixed inset-0 pointer-events-none">
+
+        <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-500/20 blur-[140px] rounded-full" />
+
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/20 blur-[140px] rounded-full" />
+
       </div>
+
+
+
+
+
+      {/* Sidebar */}
+
+      <aside className="hidden md:flex w-72 flex-col border-r border-white/10 bg-slate-950/80 backdrop-blur-xl relative z-10">
+
+
+        {/* Logo */}
+
+        <div className="p-6 border-b border-white/10">
+
+          <div className="flex items-center gap-3">
+
+            <div className="w-12 h-12 rounded-2xl bg-cyan-400/20 flex items-center justify-center">
+
+              <Waves className="text-cyan-400 w-7 h-7" />
+
+            </div>
+
+
+            <div>
+
+              <h1 className="font-black text-lg">
+                OCEAN TIDE DROP
+              </h1>
+
+              <p className="text-xs text-cyan-400 font-bold tracking-widest">
+                AI SURFER
+              </p>
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+
+
+
+
+        {/* Navigation */}
+
+        <nav className="flex-1 p-4 space-y-2">
+
+
+          {menuItems.map((item) => {
+
+            const Icon = item.icon;
+
+            const active =
+              location.pathname === item.path;
+
+
+            return (
+
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`
+                  flex items-center gap-3 px-4 py-3 rounded-xl
+                  transition-all
+                  ${
+                    active
+                    ? "bg-cyan-400 text-slate-950 font-bold shadow-lg shadow-cyan-500/20"
+                    : "text-white/70 hover:bg-white/5 hover:text-white"
+                  }
+                `}
+              >
+
+                <Icon className="w-5 h-5" />
+
+                <span>
+                  {item.name}
+                </span>
+
+
+              </Link>
+
+            );
+
+          })}
+
+
+        </nav>
+
+
+
+
+
+
+
+        {/* Bottom Member Card */}
+
+        <div className="p-4">
+
+
+          <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-5">
+
+
+            <Sparkles className="text-cyan-300 mb-3" />
+
+
+            <h3 className="font-bold">
+              Ride The AI Wave
+            </h3>
+
+
+            <p className="text-xs text-white/60 mt-2">
+              Your AI crew is ready to help your business grow.
+            </p>
+
+
+          </div>
+
+
+
+
+          <button className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-white/10 hover:bg-white/5 transition">
+
+            <LogOut className="w-4 h-4" />
+
+            Logout
+
+          </button>
+
+
+        </div>
+
+
+      </aside>
+
+
+
+
+
+
+
+
+      {/* Main Content */}
+
+      <main className="flex-1 relative z-10">
+
+
+        {/* Top Header */}
+
+        <header className="h-20 border-b border-white/10 bg-slate-950/60 backdrop-blur-xl flex items-center justify-between px-6">
+
+
+          <div>
+
+            <p className="text-xs text-cyan-400 font-bold tracking-widest">
+              MEMBERS AREA
+            </p>
+
+
+            <h2 className="text-xl font-black">
+              AI Surfer Command Deck
+            </h2>
+
+
+          </div>
+
+
+
+
+          <div className="flex items-center gap-3">
+
+
+            <Compass className="text-cyan-400" />
+
+
+            <div className="text-right">
+
+              <p className="text-sm font-bold">
+                Captain Account
+              </p>
+
+              <p className="text-xs text-white/50">
+                Active Member
+              </p>
+
+            </div>
+
+
+          </div>
+
+
+        </header>
+
+
+
+
+
+
+        {/* Pages Render Here */}
+
+        <div className="p-6 md:p-10">
+
+
+          <Outlet />
+
+
+        </div>
+
+
+
+      </main>
+
+
+
     </div>
+
   );
+
 }
