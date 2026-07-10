@@ -1,298 +1,257 @@
 import {
   Bot,
-  Plus,
-  Activity,
-  MessageSquare,
-  Database,
   Sparkles,
-  Settings
+  Plus,
+  ShipWheel
 } from "lucide-react";
+
+import { useState } from "react";
 
 
 export default function Agents() {
 
-  const agents = [
-    {
-      name: "Customer Support Surfer",
-      description: "Handles customer questions and support conversations.",
-      status: "Ready",
-    },
-    {
-      name: "Sales Wave AI",
-      description: "Helps qualify leads and identify opportunities.",
-      status: "Building",
-    },
-    {
-      name: "Content Captain",
-      description: "Creates marketing ideas, posts, and campaigns.",
-      status: "Coming Soon",
-    }
-  ];
+
+  const [showBuilder, setShowBuilder] = useState(false);
 
 
   return (
 
-    <div className="min-h-screen dashboard-bg p-6 md:p-10">
+    <div className="p-6 md:p-10">
 
 
-      <div className="max-w-7xl mx-auto">
+      {/* Header */}
+
+      <div className="
+        rounded-3xl
+        bg-white/5
+        border
+        border-white/10
+        p-8
+        mb-8
+      ">
 
 
-        {/* Header */}
+        <div className="flex items-center gap-4">
 
-        <div className="flex flex-col md:flex-row justify-between gap-6 mb-10">
+          <Bot
+            className="text-cyan-400"
+            size={45}
+          />
 
 
           <div>
 
-            <div className="flex items-center gap-3">
-
-              <Bot className="w-12 h-12 text-cyan-400"/>
-
-              <h1 className="text-4xl font-black">
-                AI Agents Harbor
-              </h1>
-
-            </div>
+            <h1 className="
+              text-4xl
+              font-black
+            ">
+              AI Agent Harbor
+            </h1>
 
 
-            <p className="text-white/60 mt-3 max-w-xl">
-              Build, manage, and deploy your AI crew from one command deck.
+            <p className="
+              text-white/60
+              mt-2
+            ">
+              Build your digital crew.
+              Create AI workers for your business.
             </p>
 
 
           </div>
 
 
+        </div>
 
-          <button className="ai-button px-6 py-3 flex items-center gap-2">
 
-            <Plus className="w-5 h-5"/>
+      </div>
 
-            Create Agent
+
+
+
+      {!showBuilder && (
+
+        <div className="
+          rounded-3xl
+          bg-gradient-to-br
+          from-cyan-400/20
+          to-blue-500/10
+          border
+          border-cyan-400/20
+          p-10
+          text-center
+        ">
+
+
+          <ShipWheel
+            className="
+            mx-auto
+            text-cyan-400
+            mb-5
+            "
+            size={60}
+          />
+
+
+          <h2 className="
+            text-3xl
+            font-black
+          ">
+            Your Harbor is Empty
+          </h2>
+
+
+          <p className="
+            text-white/60
+            mt-3
+          ">
+            Launch your first AI crew member.
+          </p>
+
+
+
+          <button
+
+            onClick={() => setShowBuilder(true)}
+
+            className="
+            mt-6
+            px-8
+            py-4
+            rounded-full
+            bg-cyan-400
+            text-black
+            font-black
+            flex
+            gap-3
+            items-center
+            mx-auto
+            "
+
+          >
+
+            <Plus size={22}/>
+
+            Create AI Agent
 
           </button>
 
 
         </div>
 
+      )}
 
 
 
 
-        {/* Agent Stats */}
-
-        <div className="grid md:grid-cols-4 gap-6 mb-12">
 
 
-          <div className="ai-card rounded-2xl p-6">
+      {showBuilder && (
 
-            <Activity className="text-cyan-400 mb-4"/>
+        <div className="
+          rounded-3xl
+          bg-white/5
+          border
+          border-white/10
+          p-8
+        ">
 
-            <h2 className="text-3xl font-bold">
-              0
+
+          <div className="flex items-center gap-3 mb-8">
+
+
+            <Sparkles
+              className="text-cyan-400"
+            />
+
+
+            <h2 className="
+              text-2xl
+              font-black
+            ">
+              Agent Builder
             </h2>
 
-            <p className="text-white/50">
-              Active Agents
-            </p>
-
-          </div>
-
-
-
-          <div className="ai-card rounded-2xl p-6">
-
-            <MessageSquare className="text-cyan-400 mb-4"/>
-
-            <h2 className="text-3xl font-bold">
-              0
-            </h2>
-
-            <p className="text-white/50">
-              Conversations
-            </p>
-
-          </div>
-
-
-
-
-          <div className="ai-card rounded-2xl p-6">
-
-            <Database className="text-cyan-400 mb-4"/>
-
-            <h2 className="text-3xl font-bold">
-              0
-            </h2>
-
-            <p className="text-white/50">
-              Knowledge Sources
-            </p>
 
           </div>
 
 
 
 
-          <div className="ai-card rounded-2xl p-6">
 
-            <Sparkles className="text-cyan-400 mb-4"/>
-
-            <h2 className="text-3xl font-bold">
-              AI
-            </h2>
-
-            <p className="text-white/50">
-              Intelligence Level
-            </p>
-
-          </div>
+          <div className="grid gap-5">
 
 
-        </div>
+            <input
+              className="
+              bg-black/20
+              border
+              border-white/10
+              rounded-xl
+              p-4
+              "
+              placeholder="Agent Name"
+            />
 
 
 
+            <input
+              className="
+              bg-black/20
+              border
+              border-white/10
+              rounded-xl
+              p-4
+              "
+              placeholder="Business Type"
+            />
 
 
 
-        {/* Agent Fleet */}
+            <textarea
 
-        <h2 className="text-3xl font-bold mb-6">
-          Your AI Crew
-        </h2>
+              className="
+              bg-black/20
+              border
+              border-white/10
+              rounded-xl
+              p-4
+              min-h-32
+              "
+
+              placeholder="
+              What should this AI agent do?
+              "
+
+            />
 
 
 
-        <div className="grid md:grid-cols-3 gap-6">
 
+            <button
 
-          {agents.map((agent)=> (
+              className="
+              bg-cyan-400
+              text-black
+              font-black
+              rounded-xl
+              py-4
+              "
 
-            <div
-              key={agent.name}
-              className="ai-card rounded-3xl p-7"
             >
 
+              Launch Agent 🚀
 
-              <div className="
-                flex
-                justify-between
-                items-start
-              ">
+            </button>
 
 
-                <div className="
-                  w-14
-                  h-14
-                  rounded-2xl
-                  bg-cyan-400/10
-                  flex
-                  items-center
-                  justify-center
-                ">
-
-                  <Bot className="text-cyan-400 w-7 h-7"/>
-
-                </div>
-
-
-
-                <span className="
-                  text-xs
-                  rounded-full
-                  bg-white/10
-                  px-3
-                  py-1
-                  text-cyan-300
-                ">
-
-                  {agent.status}
-
-                </span>
-
-
-              </div>
-
-
-
-
-              <h3 className="
-                text-xl
-                font-bold
-                mt-6
-              ">
-
-                {agent.name}
-
-              </h3>
-
-
-
-              <p className="
-                text-white/60
-                mt-3
-              ">
-
-                {agent.description}
-
-              </p>
-
-
-
-
-              <div className="
-                flex
-                gap-3
-                mt-6
-              ">
-
-
-                <button className="
-                  flex-1
-                  bg-white/5
-                  hover:bg-cyan-400
-                  hover:text-slate-950
-                  py-3
-                  rounded-xl
-                  font-bold
-                  transition
-                ">
-
-                  Open
-
-                </button>
-
-
-
-                <button className="
-                  px-4
-                  bg-white/5
-                  rounded-xl
-                  hover:bg-white/10
-                ">
-
-                  <Settings className="w-5 h-5"/>
-
-                </button>
-
-
-              </div>
-
-
-
-            </div>
-
-          ))}
+          </div>
 
 
         </div>
 
+      )}
 
-
-
-      </div>
 
 
     </div>
