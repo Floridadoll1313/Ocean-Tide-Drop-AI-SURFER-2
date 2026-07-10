@@ -46,7 +46,7 @@
     "@types/node": "^20.19.43",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^4.0.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "@vitejs/plugin-react-oxc": "^0.4.3",
     "eslint": "^8.0.0",
     "jsdom": "^22.0.0",
