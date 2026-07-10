@@ -1,105 +1,98 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
-import Home from "./pages/home/Home";
+import Landing from "./pages/landing/Landing";
 import Login from "./pages/login/Login";
+
 import Dashboard from "./pages/dashboard/Dashboard";
 
-import AuthGate from "./auth/AuthGate";
+import MembersLayout from "./components/members/MembersLayout";
 
 
-// Optional members pages
-import Workspace from "./pages/workspace/Workspace";
-import Billing from "./pages/billing/Billing";
-import Members from "./pages/members/Members";
+// Member tools
+import Agents from "./pages/members/Agents";
+import Automation from "./pages/members/Automation";
+import Workspace from "./pages/members/Workspace";
+import Revenue from "./pages/members/Revenue";
+import Leads from "./pages/members/Leads";
+import Scanner from "./pages/members/Scanner";
 
 
 export default function App() {
 
   return (
 
-    <BrowserRouter>
-
-      <Routes>
+    <Routes>
 
 
-        {/* PUBLIC WEBSITE */}
+      {/* Public Website */}
 
-        <Route 
-          path="/" 
-          element={<Home />} 
-        />
+      <Route
+        path="/"
+        element={<Landing />}
+      />
 
 
-        {/* LOGIN */}
-
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+      <Route
+        path="/login"
+        element={<Login />}
+      />
 
 
 
-        {/* MEMBERS AREA */}
+      {/* Members Area */}
+
+      <Route
+        element={<MembersLayout />}
+      >
+
 
         <Route
           path="/dashboard"
-          element={
-            <AuthGate>
-              <Dashboard />
-            </AuthGate>
-          }
+          element={<Dashboard />}
         />
-
 
 
         <Route
-          path="/members"
-          element={
-            <AuthGate>
-              <Members />
-            </AuthGate>
-          }
+          path="/members/agents"
+          element={<Agents />}
         />
 
-
-
-        {/* AI WORKSPACE */}
 
         <Route
-          path="/workspace"
-          element={
-            <AuthGate>
-              <Workspace />
-            </AuthGate>
-          }
+          path="/members/automation"
+          element={<Automation />}
         />
 
-
-
-        {/* BILLING */}
 
         <Route
-          path="/billing"
-          element={
-            <AuthGate>
-              <Billing />
-            </AuthGate>
-          }
+          path="/members/workspace"
+          element={<Workspace />}
         />
 
-
-
-        {/* FALLBACK */}
 
         <Route
-          path="*"
-          element={<Home />}
+          path="/members/revenue"
+          element={<Revenue />}
         />
 
 
-      </Routes>
+        <Route
+          path="/members/leads"
+          element={<Leads />}
+        />
 
-    </BrowserRouter>
+
+        <Route
+          path="/members/scanner"
+          element={<Scanner />}
+        />
+
+
+      </Route>
+
+
+    </Routes>
 
   );
+
 }
