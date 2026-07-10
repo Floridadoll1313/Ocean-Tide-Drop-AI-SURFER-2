@@ -1,282 +1,328 @@
-import { Link } from "react-router-dom";
 import {
   Bot,
-  Terminal,
-  Compass,
-  CreditCard,
-  User,
-  CloudSun,
-  BookOpen,
-  Image,
-  ShoppingBag,
-  Headphones,
+  Workflow,
+  DollarSign,
+  Users,
   Sparkles,
-  Waves,
-  BrainCircuit,
-  Ship,
-  Zap,
-  ShieldCheck,
+  Rocket,
+  Waves
 } from "lucide-react";
 
+
 export default function Dashboard() {
-  const tools = [
+
+
+  const stats = [
     {
-      title: "AI Tools Hub",
-      description: "Access your collection of AI-powered business tools.",
+      title: "AI Agents",
+      value: "0",
       icon: Bot,
-      link: "/tools",
-      color: "cyan",
+      text: "Create your first AI worker"
     },
     {
-      title: "AI Terminal",
-      description: "Your advanced AI workspace and command console.",
-      icon: Terminal,
-      link: "/terminal",
-      color: "blue",
+      title: "Automations",
+      value: "0",
+      icon: Workflow,
+      text: "Workflows running"
     },
     {
-      title: "AI Commander",
-      description: "Launch AI missions, workflows, and automation tasks.",
-      icon: Ship,
-      link: "/commander",
-      color: "purple",
+      title: "Leads",
+      value: "0",
+      icon: Users,
+      text: "Prospects captured"
     },
     {
-      title: "Prompt Studio",
-      description: "Create powerful AI prompts and workflows.",
-      icon: BrainCircuit,
-      link: "/prompting",
-      color: "green",
-    },
-    {
-      title: "MCP Center",
-      description: "Connect intelligent systems and AI integrations.",
-      icon: Zap,
-      link: "/mcp",
-      color: "orange",
+      title: "Revenue",
+      value: "$0",
+      icon: DollarSign,
+      text: "AI powered income"
     },
   ];
 
-  const business = [
-    {
-      title: "Billing Center",
-      description: "Manage subscriptions and payments.",
-      icon: CreditCard,
-      link: "/billing",
-    },
-    {
-      title: "AI Forecast",
-      description: "View predictions and business insights.",
-      icon: CloudSun,
-      link: "/forecast",
-    },
-    {
-      title: "Profile",
-      description: "Manage your member account.",
-      icon: User,
-      link: "/profile",
-    },
-  ];
-
-  const creator = [
-    {
-      title: "AI Diary",
-      description: "Capture ideas, plans, and creative journeys.",
-      icon: BookOpen,
-      link: "/diary",
-    },
-    {
-      title: "Gallery",
-      description: "Store and manage AI creations.",
-      icon: Image,
-      link: "/gallery",
-    },
-    {
-      title: "AI Shop",
-      description: "Explore products and resources.",
-      icon: ShoppingBag,
-      link: "/shop",
-    },
-    {
-      title: "Support",
-      description: "Get help from the AI Surfer crew.",
-      icon: Headphones,
-      link: "/support",
-    },
-  ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6 md:p-10">
 
-      {/* Header */}
-      <div className="max-w-7xl mx-auto">
+    <div className="p-6 md:p-10">
 
-        <div className="rounded-3xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 border border-white/10 p-8 mb-10">
 
-          <div className="flex items-center gap-4 mb-4">
-            <Waves className="w-12 h-12 text-cyan-400" />
+      {/* Welcome */}
 
-            <div>
-              <h1 className="text-4xl md:text-5xl font-black">
-                AI Surfer Command Center
+      <div className="
+        rounded-3xl
+        p-8
+        bg-white/5
+        border
+        border-white/10
+        mb-8
+      ">
+
+        <div className="flex flex-col md:flex-row justify-between gap-6">
+
+
+          <div>
+
+            <div className="flex items-center gap-3">
+
+              <Waves className="text-cyan-400 w-10 h-10"/>
+
+              <h1 className="
+                text-4xl
+                font-black
+              ">
+                Command Center
               </h1>
 
-              <p className="text-white/60 mt-2">
-                Your digital captain's bridge for AI tools, automation, and growth.
-              </p>
             </div>
+
+
+            <p className="mt-4 text-white/60 max-w-xl">
+
+              Welcome back, Surfer.
+              Your AI business fleet is ready
+              for launch.
+
+            </p>
+
+
           </div>
 
-          <div className="flex flex-wrap gap-4 mt-6">
 
-            <div className="flex items-center gap-2 bg-black/30 px-5 py-3 rounded-full">
-              <ShieldCheck className="text-green-400 w-5 h-5" />
-              Member Active
-            </div>
 
-            <div className="flex items-center gap-2 bg-black/30 px-5 py-3 rounded-full">
-              <Sparkles className="text-cyan-400 w-5 h-5" />
-              AI Systems Online
-            </div>
+          <div className="
+            rounded-2xl
+            bg-cyan-400
+            text-black
+            px-6
+            py-4
+            font-black
+            flex
+            items-center
+            gap-2
+          ">
 
-            <div className="flex items-center gap-2 bg-black/30 px-5 py-3 rounded-full">
-              <Compass className="text-blue-400 w-5 h-5" />
-              Ocean Navigation Ready
-            </div>
+            🌊 WAVE MEMBER
 
           </div>
+
+
         </div>
-
-
-        {/* AI Fleet */}
-        <section className="mb-12">
-
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-            <Bot className="text-cyan-400"/>
-            AI Fleet
-          </h2>
-
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            {tools.map((tool) => {
-
-              const Icon = tool.icon;
-
-              return (
-                <Link
-                  key={tool.title}
-                  to={tool.link}
-                  className="group bg-slate-900 border border-white/10 rounded-3xl p-6 hover:border-cyan-400/50 hover:-translate-y-1 transition-all"
-                >
-
-                  <Icon className="w-10 h-10 text-cyan-400 mb-5 group-hover:scale-110 transition"/>
-
-                  <h3 className="text-xl font-bold mb-2">
-                    {tool.title}
-                  </h3>
-
-                  <p className="text-white/60 text-sm">
-                    {tool.description}
-                  </p>
-
-                </Link>
-              );
-            })}
-
-          </div>
-
-        </section>
-
-
-
-        {/* Business */}
-        <section className="mb-12">
-
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-            <Ship className="text-blue-400"/>
-            Business Deck
-          </h2>
-
-
-          <div className="grid md:grid-cols-3 gap-6">
-
-            {business.map((item)=>{
-
-              const Icon = item.icon;
-
-              return (
-                <Link
-                  key={item.title}
-                  to={item.link}
-                  className="bg-slate-900 border border-white/10 rounded-3xl p-6 hover:border-blue-400/50 transition-all"
-                >
-
-                  <Icon className="w-9 h-9 text-blue-400 mb-4"/>
-
-                  <h3 className="font-bold text-xl">
-                    {item.title}
-                  </h3>
-
-                  <p className="text-white/60 text-sm mt-2">
-                    {item.description}
-                  </p>
-
-                </Link>
-              );
-
-            })}
-
-          </div>
-
-        </section>
-
-
-
-        {/* Creator */}
-        <section>
-
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-            <Sparkles className="text-purple-400"/>
-            Creator Cove
-          </h2>
-
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-            {creator.map((item)=>{
-
-              const Icon = item.icon;
-
-              return (
-                <Link
-                  key={item.title}
-                  to={item.link}
-                  className="bg-slate-900 border border-white/10 rounded-3xl p-6 hover:border-purple-400/50 transition-all"
-                >
-
-                  <Icon className="w-8 h-8 text-purple-400 mb-4"/>
-
-                  <h3 className="font-bold">
-                    {item.title}
-                  </h3>
-
-                  <p className="text-white/60 text-sm mt-2">
-                    {item.description}
-                  </p>
-
-                </Link>
-              );
-
-            })}
-
-          </div>
-
-        </section>
 
 
       </div>
 
+
+
+
+
+      {/* Stats */}
+
+      <div className="
+        grid
+        grid-cols-1
+        md:grid-cols-2
+        lg:grid-cols-4
+        gap-6
+      ">
+
+
+        {stats.map((stat)=>{
+
+          const Icon = stat.icon;
+
+
+          return (
+
+            <div
+              key={stat.title}
+              className="
+              rounded-3xl
+              bg-white/5
+              border
+              border-white/10
+              p-6
+              "
+            >
+
+
+              <Icon
+                className="
+                text-cyan-400
+                mb-5
+                "
+                size={35}
+              />
+
+
+              <h2 className="
+                text-4xl
+                font-black
+              ">
+                {stat.value}
+              </h2>
+
+
+              <h3 className="
+                font-bold
+                mt-2
+              ">
+                {stat.title}
+              </h3>
+
+
+              <p className="
+                text-sm
+                text-white/50
+                mt-2
+              ">
+                {stat.text}
+              </p>
+
+
+            </div>
+
+          );
+
+
+        })}
+
+
+      </div>
+
+
+
+
+
+      {/* AI Launch Area */}
+
+      <div className="
+        mt-10
+        rounded-3xl
+        bg-gradient-to-br
+        from-cyan-400/20
+        to-blue-500/10
+        border
+        border-cyan-400/20
+        p-8
+      ">
+
+
+        <div className="
+          flex
+          items-center
+          gap-4
+        ">
+
+          <Sparkles
+            className="text-cyan-400"
+            size={40}
+          />
+
+
+          <div>
+
+            <h2 className="
+              text-3xl
+              font-black
+            ">
+              Launch Your First AI Worker
+            </h2>
+
+
+            <p className="
+              text-white/60
+              mt-2
+            ">
+              Build agents that answer,
+              automate, sell, and support.
+            </p>
+
+          </div>
+
+
+        </div>
+
+
+
+        <button
+          className="
+          mt-6
+          flex
+          items-center
+          gap-3
+          px-8
+          py-4
+          rounded-full
+          bg-cyan-400
+          text-black
+          font-black
+          "
+        >
+
+          <Rocket size={22}/>
+
+          Create AI Agent
+
+        </button>
+
+
+      </div>
+
+
+
+      {/* Usage */}
+
+      <div className="
+        mt-8
+        rounded-3xl
+        bg-white/5
+        border
+        border-white/10
+        p-6
+      ">
+
+
+        <div className="
+          flex
+          justify-between
+          mb-3
+        ">
+
+          <span>
+            AI Usage
+          </span>
+
+          <span className="text-cyan-400">
+            0%
+
+          </span>
+
+        </div>
+
+
+        <div className="
+          h-4
+          rounded-full
+          bg-white/10
+        ">
+
+          <div
+            className="
+            h-full
+            w-0
+            rounded-full
+            bg-cyan-400
+            "
+          />
+
+        </div>
+
+
+      </div>
+
+
+
     </div>
+
   );
+
 }
