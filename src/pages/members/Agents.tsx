@@ -1,61 +1,48 @@
+import { useEffect, useState } from "react";
+import { supabase } from "../../lib/supabase";
 import {
   Bot,
-  Sparkles,
   Plus,
-  ShipWheel,
-  Trash2
+  Sparkles,
+  Trash2,
+  Waves
 } from "lucide-react";
 
-import { useEffect, useState } from "react";
 
-import { supabase } from "../../lib/supabase";
-
-
-type Agent = {
+interface Agent {
   id: string;
   name: string;
   business_type: string;
   purpose: string;
   status: string;
-};
-
-
+  created_at: string;
+}
 
 
 export default function Agents() {
 
-
-  const [showBuilder, setShowBuilder] = useState(false);
-
-
   const [agents, setAgents] = useState<Agent[]>([]);
 
-
   const [name, setName] = useState("");
-
   const [businessType, setBusinessType] = useState("");
-
   const [purpose, setPurpose] = useState("");
 
   const [loading, setLoading] = useState(false);
 
 
 
-
-
-  async function loadAgents(){
-
+  const loadAgents = async () => {
 
     const {
-      data:{
+      data: {
         user
       }
     } = await supabase.auth.getUser();
 
 
-
-    if(!user) return;
-
+    if (!user) {
+      return;
+    }
 
 
     const {
@@ -66,40 +53,53 @@ export default function Agents() {
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", {
-        ascending:false
+        ascending: false
       });
 
 
 
-    if(error){
-
-      console.error(error);
+    if (error) {
+      console.error(
+        "Loading agents failed:",
+        error
+      );
 
       return;
-
     }
-
 
 
     setAgents(data || []);
 
-
-  }
-
+  };
 
 
 
 
+  useEffect(() => {
 
-  async function createAgent(){
+    loadAgents();
+
+  }, []);
 
 
-    if(!name || !businessType || !purpose){
 
-      alert("Please complete your AI agent details.");
+
+
+
+  const createAgent = async () => {
+
+
+    if (
+      !name ||
+      !businessType ||
+      !purpose
+    ) {
+
+      alert(
+        "Please complete all AI Agent fields."
+      );
 
       return;
-
     }
 
 
@@ -116,14 +116,15 @@ export default function Agents() {
 
 
 
-    if(!user){
+    if (!user) {
 
-      alert("Please login first.");
+      alert(
+        "You must be logged in first."
+      );
 
       setLoading(false);
 
       return;
-
     }
 
 
@@ -136,15 +137,17 @@ export default function Agents() {
       .from("agents")
       .insert({
 
-        user_id:user.id,
+        user_id: user.id,
 
-        name:name,
+        name,
 
-        business_type:businessType,
+        business_type:
+          businessType,
 
-        purpose:purpose,
+        purpose,
 
-        status:"active"
+        status:
+          "active"
 
       });
 
@@ -154,9 +157,16 @@ export default function Agents() {
 
     if(error){
 
-      console.error(error);
+      console.error(
+        "Create agent error:",
+        error
+      );
 
-      alert(error.message);
+
+      alert(
+        error.message
+      );
+
 
       setLoading(false);
 
@@ -174,7 +184,6 @@ export default function Agents() {
 
     setPurpose("");
 
-    setShowBuilder(false);
 
 
     await loadAgents();
@@ -182,36 +191,47 @@ export default function Agents() {
 
     setLoading(false);
 
-
-  }
-
+  };
 
 
 
 
-  async function deleteAgent(id:string){
 
 
-    await supabase
+
+  const deleteAgent = async (
+    id:string
+  ) => {
+
+
+    const {
+      error
+    } = await supabase
       .from("agents")
       .delete()
-      .eq("id", id);
+      .eq(
+        "id",
+        id
+      );
+
+
+
+    if(error){
+
+      console.error(
+        error
+      );
+
+      return;
+
+    }
 
 
     loadAgents();
 
 
-  }
+  };
 
-
-
-
-
-  useEffect(()=>{
-
-    loadAgents();
-
-  },[]);
 
 
 
@@ -220,48 +240,32 @@ export default function Agents() {
 
   return (
 
-    <div className="p-6 md:p-10">
+    <div className="min-h-screen dashboard-bg text-white p-6 md:p-10">
+
+
+      <div className="max-w-7xl mx-auto">
 
 
 
-      <div className="
-        rounded-3xl
-        bg-white/5
-        border
-        border-white/10
-        p-8
-        mb-8
-      ">
+        <div className="flex items-center gap-4 mb-8">
 
+          <div className="p-4 rounded-2xl bg-cyan-400/10">
 
-        <div className="flex items-center gap-4">
+            <Waves className="w-10 h-10 text-cyan-400"/>
 
-
-          <Bot
-            className="text-cyan-400"
-            size={45}
-          />
+          </div>
 
 
           <div>
 
-
-            <h1 className="
-              text-4xl
-              font-black
-            ">
+            <h1 className="text-4xl font-black">
               AI Agent Harbor
             </h1>
 
 
-            <p className="
-              text-white/60
-              mt-2
-            ">
-              Build your digital crew.
-              Create AI workers for your business.
+            <p className="text-white/60 mt-2">
+              Build your digital AI crew and deploy automation workers.
             </p>
-
 
           </div>
 
@@ -269,80 +273,128 @@ export default function Agents() {
         </div>
 
 
-      </div>
 
 
 
 
 
-      {!showBuilder && (
+        <div className="ai-card rounded-3xl p-8 mb-10">
 
 
-      <div className="
-          rounded-3xl
-          bg-gradient-to-br
-          from-cyan-400/20
-          to-blue-500/10
-          border
-          border-cyan-400/20
-          p-10
-          text-center
-        ">
+          <div className="flex items-center gap-3 mb-6">
+
+            <Plus className="text-cyan-400"/>
+
+            <h2 className="text-2xl font-bold">
+              Create New AI Agent
+            </h2>
+
+          </div>
 
 
-          <ShipWheel
-            className="
-            mx-auto
-            text-cyan-400
-            mb-5
-            "
-            size={60}
+
+
+
+          <div className="grid md:grid-cols-2 gap-5">
+
+
+            <input
+
+              className="p-4 rounded-xl bg-white/10 border border-white/10"
+
+              placeholder="Agent name"
+
+              value={name}
+
+              onChange={(e)=>
+                setName(e.target.value)
+              }
+
+            />
+
+
+
+            <input
+
+              className="p-4 rounded-xl bg-white/10 border border-white/10"
+
+              placeholder="Business type"
+
+              value={businessType}
+
+              onChange={(e)=>
+                setBusinessType(e.target.value)
+              }
+
+            />
+
+
+
+          </div>
+
+
+
+
+
+          <textarea
+
+            className="w-full mt-5 p-4 rounded-xl bg-white/10 border border-white/10 min-h-32"
+
+            placeholder="What should this AI agent do?"
+
+            value={purpose}
+
+            onChange={(e)=>
+              setPurpose(e.target.value)
+            }
+
           />
 
 
 
-          <h2 className="
-            text-3xl
-            font-black
-          ">
-            {agents.length === 0 
-              ? "Your Harbor is Empty"
-              : "Your AI Fleet Is Ready"
+
+
+
+          <button
+
+            onClick={createAgent}
+
+            disabled={loading}
+
+            className="mt-6 px-8 py-4 rounded-xl bg-cyan-400 text-black font-bold hover:scale-105 transition"
+
+          >
+
+            {loading
+              ? "Launching..."
+              : "Launch AI Agent 🚀"
             }
+
+          </button>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div className="mb-6 flex items-center gap-3">
+
+
+          <Sparkles className="text-cyan-400"/>
+
+
+          <h2 className="text-3xl font-bold">
+            Your AI Fleet
           </h2>
 
 
-
-          <button
-
-            onClick={()=>setShowBuilder(true)}
-
-            className="
-            mt-6
-            px-8
-            py-4
-            rounded-full
-            bg-cyan-400
-            text-black
-            font-black
-            flex
-            gap-3
-            items-center
-            mx-auto
-            "
-
-          >
-
-            <Plus size={22}/>
-
-            Create AI Agent
-
-          </button>
-
-
         </div>
 
-      )}
 
 
 
@@ -350,176 +402,119 @@ export default function Agents() {
 
 
 
-      {showBuilder && (
-
-        <div className="
-          rounded-3xl
-          bg-white/5
-          border
-          border-white/10
-          p-8
-          mb-10
-        ">
+        {
+          agents.length === 0 ? (
 
 
-          <div className="flex items-center gap-3 mb-8">
+            <div className="ai-card rounded-3xl p-10 text-center">
 
 
-            <Sparkles className="text-cyan-400"/>
+              <Bot className="mx-auto w-14 h-14 text-cyan-400 mb-4"/>
 
 
-            <h2 className="
-              text-2xl
-              font-black
-            ">
-              Agent Builder
-            </h2>
+              <p className="text-white/60">
+                No AI agents launched yet. Create your first digital crew member.
+              </p>
 
 
-          </div>
+            </div>
 
 
+          ) : (
 
 
-
-          <div className="grid gap-5">
-
+            <div className="grid md:grid-cols-3 gap-6">
 
 
-            <input
-              value={name}
-              onChange={(e)=>setName(e.target.value)}
-              className="bg-black/20 border border-white/10 rounded-xl p-4"
-              placeholder="Agent Name"
-            />
+              {
+                agents.map((agent)=>(
 
 
-
-            <input
-              value={businessType}
-              onChange={(e)=>setBusinessType(e.target.value)}
-              className="bg-black/20 border border-white/10 rounded-xl p-4"
-              placeholder="Business Type"
-            />
+                  <div
+                    key={agent.id}
+                    className="ai-card rounded-3xl p-6"
+                  >
 
 
+                    <div className="flex justify-between">
 
-            <textarea
 
-              value={purpose}
+                      <Bot className="text-cyan-400 w-8 h-8"/>
 
-              onChange={(e)=>setPurpose(e.target.value)}
 
-              className="bg-black/20 border border-white/10 rounded-xl p-4 min-h-32"
+                      <button
 
-              placeholder="What should this AI agent do?"
+                        onClick={()=>
+                          deleteAgent(agent.id)
+                        }
 
-            />
+                        className="text-red-400"
+
+                      >
+
+                        <Trash2 size={18}/>
+
+                      </button>
+
+
+                    </div>
 
 
 
 
 
-            <button
+                    <h3 className="text-xl font-bold mt-5">
 
-              onClick={createAgent}
+                      {agent.name}
 
-              disabled={loading}
+                    </h3>
 
-              className="
-              bg-cyan-400
-              text-black
-              font-black
-              rounded-xl
-              py-4
-              "
 
-            >
 
-              {loading 
-              ? "Launching..."
-              : "Launch Agent 🚀"
+                    <p className="text-cyan-300 mt-2">
+
+                      {agent.business_type}
+
+                    </p>
+
+
+
+
+                    <p className="text-white/60 mt-4">
+
+                      {agent.purpose}
+
+                    </p>
+
+
+
+
+                    <span className="inline-block mt-5 px-3 py-1 rounded-full bg-white/10 text-xs">
+
+                      {agent.status}
+
+                    </span>
+
+
+
+                  </div>
+
+
+                ))
+
               }
 
 
-            </button>
+            </div>
 
 
-          </div>
+          )
 
+        }
 
-        </div>
-
-
-      )}
-
-
-
-
-
-
-      <div className="grid md:grid-cols-3 gap-6">
-
-
-      {agents.map((agent)=>(
-
-
-        <div
-          key={agent.id}
-          className="
-          rounded-3xl
-          bg-white/5
-          border
-          border-white/10
-          p-6
-          "
-        >
-
-
-          <Bot className="text-cyan-400 mb-4"/>
-
-
-          <h3 className="text-xl font-black">
-            {agent.name}
-          </h3>
-
-
-          <p className="text-white/60">
-            {agent.business_type}
-          </p>
-
-
-          <p className="mt-3">
-            {agent.purpose}
-          </p>
-
-
-
-          <button
-
-            onClick={()=>deleteAgent(agent.id)}
-
-            className="mt-5 text-red-400 flex gap-2"
-
-          >
-
-            <Trash2 size={18}/>
-
-            Delete
-
-          </button>
-
-
-
-        </div>
-
-
-      ))}
 
 
       </div>
-
-
 
 
     </div>
