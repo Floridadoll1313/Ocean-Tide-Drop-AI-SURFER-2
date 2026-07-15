@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Landing from "./pages/landing/Landing";
 import Login from "./pages/login/Login";
-
+import Pricing from "./pages/pricing/Pricing";
 import Dashboard from "./pages/dashboard/Dashboard";
 
 import MembersLayout from "./components/members/MembersLayout";
