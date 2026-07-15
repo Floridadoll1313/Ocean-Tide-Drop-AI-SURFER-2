@@ -36,7 +36,10 @@ export default function App() {
         path="/login"
         element={<Login />}
       />
-
+<Route
+  path="/pricing"
+  element={<Pricing />}
+/>
 
 
       {/* Members Area */}
