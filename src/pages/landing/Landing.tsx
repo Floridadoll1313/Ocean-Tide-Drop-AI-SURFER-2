@@ -1034,3 +1034,405 @@ export default function Landing() {
 
 
       </section>
+      {/* AI PLATFORM PREVIEW */}
+
+      <section className="relative py-24">
+
+
+        <div className="max-w-7xl mx-auto px-6">
+
+
+          <div className="text-center mb-14">
+
+
+            <div className="flex justify-center mb-5">
+
+              <Sparkles className="w-12 h-12 text-cyan-400" />
+
+            </div>
+
+
+            <h2 className="text-4xl md:text-5xl font-black">
+
+              The AI Surfer Platform
+
+            </h2>
+
+
+            <p className="mt-5 text-white/60 max-w-3xl mx-auto text-lg">
+
+              Everything you need to launch your AI-powered business
+              systems from one command center.
+
+            </p>
+
+
+          </div>
+
+
+
+
+
+
+          <div className="grid lg:grid-cols-3 gap-8">
+
+
+
+            <div className="rounded-3xl bg-white/5 border border-white/10 p-8">
+
+
+              <Bot className="text-cyan-400 w-12 h-12 mb-5" />
+
+
+              <h3 className="text-2xl font-black">
+
+                AI Agent Harbor
+
+              </h3>
+
+
+              <p className="text-white/60 mt-4">
+
+                Deploy AI assistants that help your customers,
+                answer questions, and support your daily operations.
+
+              </p>
+
+
+            </div>
+
+
+
+
+
+            <div className="rounded-3xl bg-white/5 border border-white/10 p-8">
+
+
+              <Workflow className="text-blue-400 w-12 h-12 mb-5" />
+
+
+              <h3 className="text-2xl font-black">
+
+                Automation Waves
+
+              </h3>
+
+
+              <p className="text-white/60 mt-4">
+
+                Create smart workflows that connect your favorite
+                business tools together.
+
+              </p>
+
+
+            </div>
+
+
+
+
+
+
+            <div className="rounded-3xl bg-white/5 border border-white/10 p-8">
+
+
+              <Globe className="text-purple-400 w-12 h-12 mb-5" />
+
+
+              <h3 className="text-2xl font-black">
+
+                Global AI Growth
+
+              </h3>
+
+
+              <p className="text-white/60 mt-4">
+
+                Build systems ready for customers anywhere,
+                anytime.
+
+              </p>
+
+
+            </div>
+
+
+          </div>
+
+
+
+        </div>
+
+
+      </section>
+
+
+
+
+
+
+
+      {/* MEMBER AREA PREVIEW */}
+
+
+
+      <section className="relative py-24">
+
+
+        <div className="max-w-7xl mx-auto px-6">
+
+
+          <div className="rounded-[3rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-900/40 to-blue-900/40 p-10 md:p-16">
+
+
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+
+
+
+              <div>
+
+
+                <div className="flex items-center gap-3 mb-5">
+
+
+                  <Waves className="text-cyan-400 w-10 h-10" />
+
+
+                  <span className="text-cyan-300 font-bold tracking-widest">
+
+                    MEMBER COMMAND CENTER
+
+                  </span>
+
+
+                </div>
+
+
+
+
+
+                <h2 className="text-4xl md:text-5xl font-black">
+
+                  Your AI Operations Deck
+
+                </h2>
+
+
+
+
+                <p className="mt-6 text-white/70 text-lg">
+
+
+                  Members get access to AI tools,
+                  automation systems, project tracking,
+                  revenue dashboards, and growth resources.
+
+
+                </p>
+
+
+
+
+
+                <Link
+
+                  to="/login"
+
+                  className="inline-flex items-center gap-3 mt-8 px-8 py-4 rounded-full bg-cyan-400 text-black font-bold"
+
+                >
+
+                  Enter Command Center
+
+                  <ArrowRight />
+
+                </Link>
+
+
+
+              </div>
+
+
+
+
+
+              <div className="rounded-3xl bg-black/30 border border-white/10 p-8">
+
+
+                <div className="space-y-5">
+
+
+
+                  <div className="flex justify-between border-b border-white/10 pb-4">
+
+                    <span>
+                      AI Agents
+                    </span>
+
+                    <span className="text-cyan-400">
+                      Ready
+                    </span>
+
+                  </div>
+
+
+
+
+
+                  <div className="flex justify-between border-b border-white/10 pb-4">
+
+                    <span>
+                      Automation
+                    </span>
+
+                    <span className="text-cyan-400">
+                      Connected
+                    </span>
+
+                  </div>
+
+
+
+
+
+                  <div className="flex justify-between border-b border-white/10 pb-4">
+
+                    <span>
+                      Revenue Tracking
+                    </span>
+
+                    <span className="text-cyan-400">
+                      Active
+                    </span>
+
+                  </div>
+
+
+
+
+
+                  <div className="flex justify-between">
+
+                    <span>
+                      Business Growth
+                    </span>
+
+                    <span className="text-cyan-400">
+                      Rising
+                    </span>
+
+                  </div>
+
+
+                </div>
+
+
+              </div>
+
+
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+
+
+
+
+
+
+      {/* TESTIMONIALS */}
+
+
+      <section className="relative py-24">
+
+
+        <div className="max-w-7xl mx-auto px-6">
+
+
+          <div className="text-center mb-12">
+
+
+            <h2 className="text-4xl font-black">
+
+              Built For Business Builders
+
+            </h2>
+
+
+            <p className="text-white/60 mt-4">
+
+              AI tools designed around real entrepreneurs.
+
+            </p>
+
+
+          </div>
+
+
+
+
+
+          <div className="grid md:grid-cols-3 gap-6">
+
+
+
+            {[
+
+              "AI finally makes sense for my business.",
+              "Automation saved me hours every week.",
+              "The future of business feels accessible."
+
+            ].map((quote) => (
+
+
+              <div
+
+                key={quote}
+
+                className="rounded-3xl bg-white/5 border border-white/10 p-8"
+
+              >
+
+
+                <div className="flex mb-4">
+
+                  {[1,2,3,4,5].map((star)=>(
+                    <Star
+                      key={star}
+                      className="w-5 h-5 text-cyan-400 fill-cyan-400"
+                    />
+                  ))}
+
+                </div>
+
+
+                <p className="text-white/70">
+
+                  "{quote}"
+
+                </p>
+
+
+              </div>
+
+
+            ))}
+
+
+
+          </div>
+
+
+        </div>
+
+
+      </section>
