@@ -1,278 +1,317 @@
+import { Link } from "react-router-dom";
 import {
   Bot,
-  FolderKanban,
-  Github,
-  TrendingUp,
-  Users,
-  Zap,
-  ShieldCheck,
-  Waves,
-  ArrowRight,
   Sparkles,
+  Zap,
+  TrendingUp,
+  ShieldCheck,
+  Users,
+  ArrowRight,
+  Waves,
+  CheckCircle,
+  Globe,
+  Rocket,
+  Brain,
+  Workflow,
+  BarChart3,
+  MessageSquare,
+  Star,
 } from "lucide-react";
 
-export default function Dashboard() {
+
+export default function Landing() {
+
+
+  const services = [
+    {
+      icon: Bot,
+      title: "AI Agents",
+      description:
+        "Custom AI assistants that help answer questions, manage tasks, and support your business 24/7.",
+    },
+    {
+      icon: Workflow,
+      title: "Automation Hub",
+      description:
+        "Connect your tools and create workflows that save time and remove repetitive work.",
+    },
+    {
+      icon: TrendingUp,
+      title: "Growth Command Center",
+      description:
+        "Track customers, leads, revenue, and opportunities from one AI-powered dashboard.",
+    },
+  ];
+
+
+  const benefits = [
+    "AI assistants built for your business",
+    "Automated customer communication",
+    "Lead tracking and organization",
+    "Business growth analytics",
+    "Secure member workspace",
+    "Future-ready AI technology",
+  ];
+
+
+  const stats = [
+    {
+      number: "24/7",
+      label: "AI Support",
+    },
+    {
+      number: "∞",
+      label: "Automation Possibilities",
+    },
+    {
+      number: "1",
+      label: "AI Command Center",
+    },
+    {
+      number: "100%",
+      label: "Built For Growth",
+    },
+  ];
+
+
+
   return (
-    <div className="min-h-screen bg-slate-950 text-white relative overflow-hidden">
 
-      {/* Ocean Background Glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/40 via-slate-950 to-blue-950/50" />
-
-      <div className="absolute top-20 left-20 w-72 h-72 bg-cyan-500/20 rounded-full blur-[120px]" />
-      <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/20 rounded-full blur-[140px]" />
+    <div className="min-h-screen bg-slate-950 text-white overflow-hidden">
 
 
-      <div className="relative z-10 p-6 md:p-10 max-w-7xl mx-auto">
+      {/* HERO SECTION */}
+
+      <section className="relative min-h-screen flex items-center">
 
 
-        {/* Header */}
-        <div className="mb-10">
+        {/* Ocean Background */}
 
-          <div className="flex items-center gap-3 mb-4">
-            <Waves className="w-10 h-10 text-cyan-400" />
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-950 via-slate-950 to-blue-950" />
+
+
+        <div className="absolute top-20 left-10 w-80 h-80 bg-cyan-400/20 rounded-full blur-[120px]" />
+
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/20 rounded-full blur-[140px]" />
+
+
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 w-full">
+
+
+
+          {/* Navigation */}
+
+
+          <nav className="flex items-center justify-between mb-20">
+
+
+            <div className="flex items-center gap-3">
+
+              <div className="p-3 rounded-2xl bg-cyan-400/10 border border-cyan-400/20">
+
+                <Waves className="text-cyan-400 w-8 h-8" />
+
+              </div>
+
+
+              <div>
+
+                <h2 className="font-black text-xl">
+                  Ocean Tide Drop
+                </h2>
+
+                <p className="text-cyan-400 text-xs tracking-[0.3em]">
+                  AI SURFER
+                </p>
+
+              </div>
+
+            </div>
+
+
+
+            <div className="hidden md:flex items-center gap-8 text-white/70">
+
+              <Link
+                to="/pricing"
+                className="hover:text-cyan-400 transition"
+              >
+                Pricing
+              </Link>
+
+
+              <Link
+                to="/login"
+                className="hover:text-cyan-400 transition"
+              >
+                Login
+              </Link>
+
+
+            </div>
+
+
+          </nav>
+
+
+
+
+
+          {/* Hero Content */}
+
+
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+
+
 
             <div>
-              <h1 className="text-4xl md:text-5xl font-black">
-                AI Surfer Command Center
+
+
+
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-400/20 mb-6">
+
+                <Sparkles className="w-5 h-5 text-cyan-400" />
+
+                <span className="text-cyan-300 text-sm font-semibold">
+                  AI Tools For Modern Businesses
+                </span>
+
+              </div>
+
+
+
+
+
+              <h1 className="text-5xl md:text-7xl font-black leading-tight">
+
+                Ride The Next Wave Of
+
+                <span className="block text-cyan-400">
+                  AI Business Growth
+                </span>
+
               </h1>
 
-              <p className="text-cyan-400 font-semibold tracking-widest text-sm">
-                MEMBER DASHBOARD
-              </p>
-            </div>
-          </div>
 
 
-          <p className="text-white/60 max-w-2xl">
-            Welcome aboard. Your AI crew, automation systems, projects, and
-            business growth tools are ready to ride the next wave.
-          </p>
 
-        </div>
 
+              <p className="mt-6 text-xl text-white/60 max-w-xl leading-relaxed">
 
+                Ocean Tide Drop AI SURFER helps entrepreneurs automate,
+                organize, and grow using powerful artificial intelligence
+                systems built for the future.
 
-        {/* Main Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-
-
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6">
-
-            <FolderKanban className="text-cyan-400 w-8 h-8 mb-4" />
-
-            <h2 className="text-xl font-bold">
-              Projects
-            </h2>
-
-            <p className="text-3xl font-black mt-3">
-              0
-            </p>
-
-            <p className="text-white/50 text-sm">
-              Active Projects
-            </p>
-
-          </div>
-
-
-
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6">
-
-            <Bot className="text-blue-400 w-8 h-8 mb-4" />
-
-            <h2 className="text-xl font-bold">
-              AI Agents
-            </h2>
-
-            <p className="text-3xl font-black mt-3">
-              0
-            </p>
-
-            <p className="text-white/50 text-sm">
-              Your AI Crew
-            </p>
-
-          </div>
-
-
-
-
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6">
-
-            <Github className="text-purple-400 w-8 h-8 mb-4" />
-
-            <h2 className="text-xl font-bold">
-              GitHub
-            </h2>
-
-            <p className="text-lg font-bold mt-4 text-yellow-300">
-              Waiting Sync
-            </p>
-
-            <p className="text-white/50 text-sm">
-              Repository Connection
-            </p>
-
-          </div>
-
-
-
-
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6">
-
-            <TrendingUp className="text-green-400 w-8 h-8 mb-4" />
-
-            <h2 className="text-xl font-bold">
-              Revenue
-            </h2>
-
-            <p className="text-3xl font-black mt-3">
-              $0
-            </p>
-
-            <p className="text-white/50 text-sm">
-              Growth Tracking
-            </p>
-
-          </div>
-
-
-        </div>
-
-
-
-
-
-        {/* AI Tools Section */}
-
-        <div className="grid lg:grid-cols-3 gap-6 mb-10">
-
-
-          <div className="lg:col-span-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
-
-
-            <div className="flex items-center gap-3 mb-6">
-
-              <Sparkles className="text-cyan-400 w-7 h-7"/>
-
-              <h2 className="text-2xl font-black">
-                Your AI Ocean Tools
-              </h2>
-
-            </div>
-
-
-            <div className="grid md:grid-cols-2 gap-5">
-
-
-              <button className="text-left bg-slate-900/70 hover:bg-cyan-500/10 border border-white/10 rounded-2xl p-5 transition">
-
-                <Zap className="text-cyan-400 mb-3"/>
-
-                <h3 className="font-bold text-lg">
-                  Automation Hub
-                </h3>
-
-                <p className="text-white/50 text-sm mt-2">
-                  Connect workflows and let AI handle repetitive tasks.
-                </p>
-
-                <ArrowRight className="mt-4 text-cyan-400"/>
-
-              </button>
-
-
-
-
-
-              <button className="text-left bg-slate-900/70 hover:bg-blue-500/10 border border-white/10 rounded-2xl p-5 transition">
-
-                <Users className="text-blue-400 mb-3"/>
-
-                <h3 className="font-bold text-lg">
-                  Lead Navigator
-                </h3>
-
-                <p className="text-white/50 text-sm mt-2">
-                  Track prospects and grow your customer current.
-                </p>
-
-                <ArrowRight className="mt-4 text-blue-400"/>
-
-              </button>
-
-
-
-            </div>
-
-
-          </div>
-
-
-
-
-
-          {/* Security Panel */}
-
-          <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border border-cyan-400/20 rounded-3xl p-8">
-
-
-            <ShieldCheck className="w-10 h-10 text-cyan-300 mb-5"/>
-
-
-            <h2 className="text-2xl font-black mb-3">
-              Member Security
-            </h2>
-
-
-            <p className="text-white/60 text-sm leading-relaxed">
-
-              Your AI workspace is protected. Authentication,
-              subscriptions, and member tools connect here.
-
-            </p>
-
-
-            <div className="mt-6 bg-black/20 rounded-xl p-4">
-
-              <p className="text-xs uppercase tracking-widest text-cyan-300">
-                Account Status
               </p>
 
-              <p className="font-bold mt-2">
-                Active Member
-              </p>
+
+
+
+
+              <div className="mt-10 flex flex-wrap gap-4">
+
+
+                <Link
+
+                  to="/pricing"
+
+                  className="flex items-center gap-2 px-8 py-4 rounded-full bg-cyan-400 text-black font-bold hover:bg-cyan-300 transition"
+
+                >
+
+                  Start Your AI Journey
+
+                  <ArrowRight />
+
+                </Link>
+
+
+
+
+                <Link
+
+                  to="/login"
+
+                  className="px-8 py-4 rounded-full border border-white/20 hover:bg-white/10 transition"
+
+                >
+
+                  Member Login
+
+                </Link>
+
+
+              </div>
+
 
             </div>
+
+
+
+
+
+            {/* AI SURFER CARD */}
+
+
+            <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 shadow-2xl">
+
+
+              <div className="flex items-center gap-3 mb-6">
+
+                <Rocket className="text-cyan-400 w-10 h-10" />
+
+                <h2 className="text-3xl font-black">
+
+                  Your AI Surfboard
+
+                </h2>
+
+              </div>
+
+
+              <p className="text-white/60 mb-8">
+
+                One powerful workspace connecting your AI assistants,
+                automation systems, and business tools.
+
+              </p>
+
+
+
+              <div className="space-y-4">
+
+
+                {benefits.map((item) => (
+
+                  <div
+                    key={item}
+                    className="flex items-center gap-3"
+                  >
+
+                    <CheckCircle className="text-cyan-400 w-5 h-5" />
+
+                    <span>
+                      {item}
+                    </span>
+
+
+                  </div>
+
+                ))}
+
+
+              </div>
+
+
+            </div>
+
 
 
           </div>
 
 
-
         </div>
 
 
-
-
-        {/* Bottom Banner */}
-
-        <div className="rounded-3xl border border-cyan-400/20 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 p-8">
-
-          <h2 className="text-3xl font-black mb-3">
-            🌊 Ready to Ride the AI Wave?
-          </h2>
-
-          <p className="text-white/60 max-w-2xl">
-            Your command center is the launch point for AI assistants,
-            automations, revenue tools, and your digital growth journey.
-          </p>
-
-        </div>
-
-
-      </div>
-
-    </div>
-  );
-}
+      </section>
