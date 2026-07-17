@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import {
   Bot,
   Sparkles,
+<<<<<<< HEAD
   Zap,
   TrendingUp,
   ShieldCheck,
@@ -16,6 +17,9 @@ import {
   BarChart3,
   MessageSquare,
   Star,
+=======
+  
+>>>>>>> 6c8da3e (Rebuild Ocean Tide Drop AI Surfer landing page)
 } from "lucide-react";
 
 
