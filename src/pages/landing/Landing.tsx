@@ -698,7 +698,7 @@ export default function Landing() {
 
 
 
-                  <div className="
+                                   <div className="
                     mt-6
                     flex
                     items-center
@@ -709,7 +709,7 @@ export default function Landing() {
 
                     Learn More
 
-                                      <ArrowRight
+                    <ArrowRight
                       className="
                         w-4
                         h-4
@@ -718,12 +718,15 @@ export default function Landing() {
 
                   </div>
 
+
+                </div>
+
               );
 
 
             })}
 
-                   </div>
+          </div>
 
         </div>
 
