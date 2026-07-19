@@ -709,7 +709,7 @@ export default function Landing() {
 
                     Learn More
 
-                    <ArrowRight
+                                      <ArrowRight
                       className="
                         w-4
                         h-4
@@ -726,13 +726,17 @@ export default function Landing() {
 
             })}
 
-
           </div>
-
 
         </div>
 
-
       </section>
-      
-            
+
+    </div>
+  </div>
+  );
+}
+
+                
+
+           
