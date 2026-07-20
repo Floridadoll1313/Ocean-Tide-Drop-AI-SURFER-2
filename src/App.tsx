@@ -23,7 +23,6 @@ export default function App() {
 
     <Routes>
 
-
       {/* Public Website */}
 
       <Route
@@ -49,7 +48,6 @@ export default function App() {
       <Route
         element={<MembersLayout />}
       >
-
 
         <Route
           path="/dashboard"
@@ -92,9 +90,7 @@ export default function App() {
           element={<Scanner />}
         />
 
-
       </Route>
-
 
     </Routes>
 
