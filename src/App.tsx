@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
-import Landing from "./pages/landing/Landing";
+import NewLanding from "./pages/landing/NewLanding";
 import Login from "./pages/login/Login";
 import Pricing from "./pages/pricing/Pricing";
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -28,7 +28,7 @@ export default function App() {
 
       <Route
         path="/"
-        element={<Landing />}
+        element={<NewLanding />}
       />
 
 
@@ -36,10 +36,12 @@ export default function App() {
         path="/login"
         element={<Login />}
       />
-<Route
-  path="/pricing"
-  element={<Pricing />}
-/>
+
+
+      <Route
+        path="/pricing"
+        element={<Pricing />}
+      />
 
 
       {/* Members Area */}
