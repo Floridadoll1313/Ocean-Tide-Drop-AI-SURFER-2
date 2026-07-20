@@ -259,6 +259,7 @@ export default function Landing() {
                   text-sm
                   font-semibold
                 ">
+                  
                   AI Tools For Modern Businesses
                 </span>
 
