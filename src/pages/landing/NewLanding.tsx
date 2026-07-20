@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Bot, Zap, Users, BarChart3, Waves } from "lucide-react";
-
+import OceanBackground from "../../components/landing/OceanBackground";
 import homepageConcept from "../../assets/images/otd-ai-surfer-homepage-concept.png";
 import cyberWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
 
@@ -49,7 +49,12 @@ export default function NewLanding() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-slate-950 text-white">
+return (
+  <main className="relative min-h-screen text-white overflow-hidden">
 
+    <OceanBackground />
+
+    ...
       {/* HERO */}
       <section
         className="relative min-h-screen flex items-center"
