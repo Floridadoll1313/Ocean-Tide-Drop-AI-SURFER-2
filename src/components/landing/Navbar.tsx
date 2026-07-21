@@ -5,7 +5,7 @@ export default function Navbar() {
     <motion.nav
       initial={{ opacity: 0, y: -30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1 }}
+      transition={{ duration: 0.8 }}
       className="
         fixed
         top-6
@@ -20,14 +20,13 @@ export default function Navbar() {
         bg-white/10
         backdrop-blur-xl
         px-6
-        py-4
+        py-3
         shadow-2xl
       "
     >
 
       <div className="flex items-center justify-between">
 
-        {/* Logo */}
         <div className="flex items-center gap-3">
 
           <img
@@ -36,36 +35,28 @@ export default function Navbar() {
             className="h-12 w-auto"
           />
 
-          <span className="hidden md:block font-bold text-lg">
+          <span className="font-bold text-white hidden sm:block">
             AI SURFER
           </span>
 
         </div>
 
 
-        {/* Links */}
-        <div className="hidden md:flex items-center gap-8 text-sm">
+        <div className="flex items-center gap-4">
 
           <a
-            href="#crew"
-            className="text-white/90 hover:text-cyan-300 transition"
+            href="/pricing"
+            className="
+              hidden
+              md:block
+              text-white/90
+              hover:text-cyan-300
+              transition
+            "
           >
-            AI Crew
+            Pricing
           </a>
 
-          <a
-            href="#solutions"
-            className="text-white/90 hover:text-cyan-300 transition"
-          >
-            Solutions
-          </a>
-
-          <a
-            href="#membership"
-            className="text-white/90 hover:text-cyan-300 transition"
-          >
-            Membership
-          </a>
 
           <a
             href="/login"
@@ -74,8 +65,8 @@ export default function Navbar() {
               bg-cyan-400
               px-5
               py-2
-              text-slate-950
               font-bold
+              text-slate-950
               hover:scale-105
               transition
             "

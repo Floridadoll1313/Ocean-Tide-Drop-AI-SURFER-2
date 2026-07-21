@@ -5,28 +5,32 @@ export default function Hero() {
   return (
     <section
       className="
-        relative
         min-h-screen
         flex
         items-center
-        overflow-hidden
         px-6
+        pt-32
       "
     >
 
-      <div className="max-w-6xl mx-auto w-full pt-24">
+      <div className="max-w-6xl mx-auto w-full">
 
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          initial={{
+            opacity: 0,
+            y: 40
+          }}
+          animate={{
+            opacity: 1,
+            y: 0
+          }}
+          transition={{
+            duration: 1
+          }}
           className="max-w-3xl"
         >
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: .4 }}
+          <div
             className="
               inline-flex
               items-center
@@ -35,16 +39,16 @@ export default function Hero() {
               border
               border-cyan-300/30
               bg-white/10
-              backdrop-blur
+              backdrop-blur-xl
               px-5
               py-2
               text-cyan-200
               mb-8
             "
           >
-            <Sparkles size={18}/>
-            The Future of Business AI
-          </motion.div>
+            <Sparkles size={18} />
+            AI Solutions For Growing Businesses
+          </div>
 
 
           <h1
@@ -53,13 +57,14 @@ export default function Hero() {
               md:text-7xl
               font-black
               leading-tight
+              text-white
             "
           >
 
-            Ride The Future.
+            Helping Small Businesses
 
             <span className="block text-cyan-300">
-              Catch The AI Wave.
+              Catch The AI Wave
             </span>
 
           </h1>
@@ -70,13 +75,13 @@ export default function Hero() {
               mt-8
               text-xl
               text-slate-200
-              max-w-2xl
               leading-relaxed
+              max-w-2xl
             "
           >
-            Ocean Tide Drop AI SURFER helps businesses harness
-            AI agents, automation, and intelligent systems to
-            save time, capture opportunities, and grow.
+            Ocean Tide Drop AI SURFER creates AI agents,
+            automation systems, and intelligent tools that
+            help businesses save time, capture leads, and grow.
           </p>
 
 
@@ -89,84 +94,57 @@ export default function Hero() {
             "
           >
 
-            <button
+            <a
+              href="#wave-check"
               className="
-                group
+                flex
+                items-center
+                gap-3
                 rounded-full
                 bg-cyan-400
                 px-8
                 py-4
-                text-slate-950
                 font-bold
-                flex
-                items-center
-                gap-3
+                text-slate-950
                 hover:scale-105
                 transition
               "
             >
-              Start Surfing Free
 
-              <ArrowRight
-                className="
-                  group-hover:translate-x-1
-                  transition
-                "
-              />
+              Get My Free AI Wave Check™
 
-            </button>
+              <ArrowRight size={20}/>
+
+            </a>
 
 
-            <button
+            <a
+              href="#solutions"
               className="
                 rounded-full
                 border
                 border-white/30
                 bg-white/10
-                backdrop-blur
+                backdrop-blur-xl
                 px-8
                 py-4
                 font-bold
+                text-white
                 hover:bg-white/20
                 transition
               "
             >
-              Explore AI Solutions
-            </button>
 
+              Explore AI Solutions
+
+            </a>
 
           </div>
 
 
         </motion.div>
 
-
       </div>
-
-
-      {/* Floating glow */}
-
-      <motion.div
-        animate={{
-          y: [0, -20, 0]
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity
-        }}
-        className="
-          absolute
-          right-10
-          bottom-32
-          hidden
-          lg:block
-          w-80
-          h-80
-          rounded-full
-          bg-cyan-400/20
-          blur-3xl
-        "
-      />
 
     </section>
   );
