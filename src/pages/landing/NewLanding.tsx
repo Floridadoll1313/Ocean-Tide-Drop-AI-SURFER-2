@@ -8,7 +8,7 @@ import {
   Waves
 } from "lucide-react";
 
-import homepageConcept from "../../assets/images/otd-ai-surfer-homepage-concept.png";
+import homepageConcept from "../../assets/images/ocean_ai_yacht.png";
 import cyberWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
 
 import OceanBackground from "../../components/landing/OceanBackground";
@@ -117,12 +117,11 @@ export default function NewLanding() {
           "
         >
 
-          <img
-            src="/ocean_tide_logo.png"
-            alt="Ocean Tide Drop AI SURFER"
-            className="w-44 mb-8"
-          />
-
+ <img
+  src="/ocean_tide_logo.png"
+  alt="Ocean Tide Drop AI SURFER"
+  className="w-44 mb-8"
+/>
 
           <h1
             className="
