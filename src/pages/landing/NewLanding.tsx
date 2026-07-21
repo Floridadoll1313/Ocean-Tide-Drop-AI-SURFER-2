@@ -1,5 +1,12 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Bot, Zap, Users, BarChart3, Waves } from "lucide-react";
+import {
+  ArrowRight,
+  Bot,
+  Zap,
+  Users,
+  BarChart3,
+  Waves
+} from "lucide-react";
 
 import homepageConcept from "../../assets/images/otd-ai-surfer-homepage-concept.png";
 import cyberWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
@@ -56,22 +63,30 @@ export default function NewLanding() {
 
   return (
 
-    <main className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+    <div className="relative min-h-screen overflow-x-hidden bg-slate-950 text-white">
 
+      {/* Ocean Background Layer */}
       <OceanBackground />
 
+      {/* Navigation */}
       <Navbar />
 
 
       {/* HERO */}
 
       <section
-        className="relative min-h-screen flex items-center"
+        className="
+        relative
+        min-h-screen
+        flex
+        items-center
+        overflow-hidden
+        "
         style={{
           backgroundImage: `
           linear-gradient(
           rgba(2,12,30,.55),
-          rgba(2,12,30,.88)
+          rgba(2,12,30,.90)
           ),
           url(${homepageConcept})
           `,
@@ -81,21 +96,17 @@ export default function NewLanding() {
       >
 
         <motion.div
-
           initial={{
-            opacity:0,
-            y:40
+            opacity: 0,
+            y: 40
           }}
-
           animate={{
-            opacity:1,
-            y:0
+            opacity: 1,
+            y: 0
           }}
-
           transition={{
-            duration:1
+            duration: 1
           }}
-
           className="
           relative
           z-10
@@ -104,9 +115,7 @@ export default function NewLanding() {
           px-6
           py-32
           "
-
         >
-
 
           <img
             src="/ocean_tide_logo.png"
@@ -115,12 +124,14 @@ export default function NewLanding() {
           />
 
 
-          <h1 className="
-          text-5xl
-          md:text-7xl
-          font-black
-          leading-tight
-          ">
+          <h1
+            className="
+            text-5xl
+            md:text-7xl
+            font-black
+            leading-tight
+            "
+          >
 
             Helping Businesses
 
@@ -131,29 +142,25 @@ export default function NewLanding() {
           </h1>
 
 
-
-          <p className="
-          mt-8
-          max-w-2xl
-          text-xl
-          text-slate-200
-          ">
-
+          <p
+            className="
+            mt-8
+            max-w-2xl
+            text-xl
+            text-slate-200
+            "
+          >
             Ocean Tide Drop AI SURFER builds AI agents,
             automation systems, and intelligent tools that
             help businesses save time, capture leads, and grow.
-
           </p>
-
 
 
           <div className="mt-10 flex flex-wrap gap-5">
 
 
             <a
-
               href="#wave-check"
-
               className="
               rounded-full
               bg-cyan-400
@@ -167,7 +174,6 @@ export default function NewLanding() {
               hover:scale-105
               transition
               "
-
             >
 
               Get My Free AI Wave Check™
@@ -177,11 +183,8 @@ export default function NewLanding() {
             </a>
 
 
-
             <a
-
               href="#solutions"
-
               className="
               rounded-full
               border
@@ -192,7 +195,6 @@ export default function NewLanding() {
               hover:bg-white/10
               transition
               "
-
             >
 
               Explore AI Solutions
@@ -206,15 +208,18 @@ export default function NewLanding() {
         </motion.div>
 
 
+        <motion.img
 
-        <motion.div
+          src={cyberWave}
+
+          alt="AI ocean wave"
 
           animate={{
-            y:[0,-15,0]
+            y:[0,-20,0]
           }}
 
           transition={{
-            duration:5,
+            duration:6,
             repeat:Infinity
           }}
 
@@ -222,18 +227,12 @@ export default function NewLanding() {
           absolute
           bottom-0
           right-0
+          w-[500px]
           opacity-40
+          pointer-events-none
           "
 
-        >
-
-          <img
-            src={cyberWave}
-            alt="AI ocean wave"
-            className="w-[500px]"
-          />
-
-        </motion.div>
+        />
 
 
       </section>
@@ -245,7 +244,13 @@ export default function NewLanding() {
 
       <section
         id="solutions"
-        className="py-24 px-6 bg-slate-900"
+        className="
+        relative
+        z-10
+        py-24
+        px-6
+        bg-slate-900/90
+        "
       >
 
         <div className="max-w-6xl mx-auto">
@@ -268,7 +273,6 @@ export default function NewLanding() {
               Powerful AI systems designed to help your business move faster.
             </p>
 
-
           </div>
 
 
@@ -281,50 +285,50 @@ export default function NewLanding() {
           ">
 
 
-            {aiCrew.map((item)=>{
+          {aiCrew.map((item)=>{
 
-              const Icon=item.icon;
-
-
-              return (
-
-                <motion.div
-
-                  key={item.title}
-
-                  whileHover={{
-                    y:-8
-                  }}
-
-                  className="
-                  rounded-3xl
-                  bg-white/10
-                  backdrop-blur
-                  p-6
-                  border
-                  border-white/10
-                  "
-
-                >
-
-                  <Icon className="text-cyan-300 mb-5"/>
+            const Icon = item.icon;
 
 
-                  <h3 className="text-xl font-bold mb-3">
-                    {item.title}
-                  </h3>
+            return (
+
+              <motion.div
+
+                key={item.title}
+
+                whileHover={{
+                  y:-8
+                }}
+
+                className="
+                rounded-3xl
+                bg-white/10
+                backdrop-blur
+                p-6
+                border
+                border-white/10
+                "
+
+              >
+
+                <Icon className="text-cyan-300 mb-5"/>
 
 
-                  <p className="text-slate-300">
-                    {item.text}
-                  </p>
+                <h3 className="text-xl font-bold mb-3">
+                  {item.title}
+                </h3>
 
 
-                </motion.div>
+                <p className="text-slate-300">
+                  {item.text}
+                </p>
 
-              );
 
-            })}
+              </motion.div>
+
+            );
+
+          })}
 
 
           </div>
@@ -338,17 +342,19 @@ export default function NewLanding() {
 
 
 
+      {/* MEMBERSHIP */}
 
-      {/* MEMBERSHIP WAVES */}
-
-      <section className="
-      py-24
-      px-6
-      bg-gradient-to-b
-      from-slate-900
-      to-cyan-950
-      ">
-
+      <section
+        className="
+        relative
+        z-10
+        py-24
+        px-6
+        bg-gradient-to-b
+        from-slate-900
+        to-cyan-950
+        "
+      >
 
         <div className="max-w-6xl mx-auto">
 
@@ -358,12 +364,10 @@ export default function NewLanding() {
           text-4xl
           font-bold
           mb-14
-          ">
-
+          "
+          >
             Choose Your Wave
-
           </h2>
-
 
 
           <div className="
@@ -374,39 +378,32 @@ export default function NewLanding() {
           ">
 
 
-            {waves.map((wave)=>(
+          {waves.map((wave)=>(
 
-              <div
+            <div
+              key={wave.name}
+              className="
+              rounded-3xl
+              bg-white/10
+              p-7
+              border
+              border-white/10
+              "
+            >
 
-                key={wave.name}
-
-                className="
-                rounded-3xl
-                bg-white/10
-                p-7
-                border
-                border-white/10
-                "
-
-              >
-
-                <h3 className="text-2xl font-bold text-cyan-300">
-
-                  {wave.name}
-
-                </h3>
+              <h3 className="text-2xl font-bold text-cyan-300">
+                {wave.name}
+              </h3>
 
 
-                <p className="mt-4 text-slate-200">
-
-                  {wave.text}
-
-                </p>
+              <p className="mt-4 text-slate-200">
+                {wave.text}
+              </p>
 
 
-              </div>
+            </div>
 
-            ))}
+          ))}
 
 
           </div>
@@ -420,38 +417,30 @@ export default function NewLanding() {
 
 
 
-
-      {/* CTA */}
+      {/* FINAL CTA */}
 
       <section
-
         id="wave-check"
-
         className="
+        relative
+        z-10
         py-24
         px-6
         text-center
         "
-
       >
 
         <h2 className="text-5xl font-bold">
-
           Ready To Ride The Next Wave?
-
         </h2>
 
 
         <p className="mt-6 text-xl text-slate-300">
-
           Join Ocean Tide Drop AI SURFER and bring AI power to your business.
-
         </p>
 
 
-
         <button
-
           className="
           mt-10
           rounded-full
@@ -461,7 +450,6 @@ export default function NewLanding() {
           text-slate-950
           font-bold
           "
-
         >
 
           Launch My AI Journey
@@ -472,7 +460,7 @@ export default function NewLanding() {
       </section>
 
 
-    </main>
+    </div>
 
   );
 

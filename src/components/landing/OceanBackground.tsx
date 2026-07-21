@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 export default function OceanBackground() {
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-slate-950">
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-slate-950">
 
       <div
         className="
