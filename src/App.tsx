@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import WaveCheck from "./pages/wavecheck/WaveCheck";
 
 import NewLanding from "./pages/landing/NewLanding";
 import Login from "./pages/login/Login";
@@ -22,6 +23,10 @@ export default function App() {
   return (
 
     <Routes>
+<Route
+  path="/wave-check"
+  element={<WaveCheck />}
+/>
 
       {/* Public Website */}
 
