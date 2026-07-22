@@ -66,7 +66,7 @@ export default function WaveCheck() {
 
             <button
               onClick={() => setStarted(true)}
-              className="px-8 py-4 rounded-full bg-cyan-400 text-black font-bold text-lg hover:scale-105 transition"
+              className="px-8 py-4 rounded-full bg-cyan-400 text-black font-bold text-lg"
             >
               Catch My Wave 🏄‍♀️
             </button>
@@ -74,16 +74,28 @@ export default function WaveCheck() {
         ) : finished ? (
           <>
             <h2 className="text-5xl font-bold mb-6">
-              🌊 Your AI Wave Score
+              🌊 Your AI Wave Report
             </h2>
 
             <p className="text-3xl text-cyan-300 mb-4">
               {score} / 12
             </p>
 
+            <h3 className="text-3xl font-bold mb-4">
+              {score <= 5
+                ? "🌱 Beginner Wave"
+                : score <= 9
+                ? "🚀 Rising AI Swell"
+                : "🌊 Tsunami AI Ready"}
+            </h3>
+
             <p className="text-lg text-cyan-100">
               Your AI journey has been mapped. The next wave is waiting.
             </p>
+
+            <button className="mt-8 px-8 py-4 rounded-full bg-cyan-400 text-black font-bold">
+              📩 Send My AI Action Plan
+            </button>
           </>
         ) : (
           <>
@@ -100,7 +112,7 @@ export default function WaveCheck() {
                 <button
                   key={answer}
                   onClick={() => chooseAnswer(index)}
-                  className="p-4 rounded-xl bg-white/10 hover:bg-cyan-400 hover:text-black transition text-lg"
+                  className="p-4 rounded-xl bg-white/10 hover:bg-cyan-400 hover:text-black transition"
                 >
                   {answer}
                 </button>
