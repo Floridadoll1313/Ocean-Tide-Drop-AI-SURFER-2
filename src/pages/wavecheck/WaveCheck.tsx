@@ -1,15 +1,58 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 
+const questions = [
+  {
+    question: "What best describes your business right now?",
+    answers: [
+      "🌱 Just starting out",
+      "🚀 Growing and looking for efficiency",
+      "⚙️ Already using some automation",
+      "🌊 Ready for advanced AI systems",
+    ],
+  },
+  {
+    question: "How are you currently handling repetitive tasks?",
+    answers: [
+      "✋ Mostly manual work",
+      "📋 Some tools and templates",
+      "🤖 A few automations",
+      "🧠 AI is part of our workflow",
+    ],
+  },
+  {
+    question: "What is your biggest AI goal?",
+    answers: [
+      "Save time",
+      "Get more customers",
+      "Improve operations",
+      "Build a complete AI-powered business",
+    ],
+  },
+];
+
 export default function WaveCheck() {
   const [started, setStarted] = useState(false);
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [finished, setFinished] = useState(false);
+
+  const chooseAnswer = (index: number) => {
+    setScore((current) => current + index + 1);
+
+    if (questionIndex < questions.length - 1) {
+      setQuestionIndex((current) => current + 1);
+    } else {
+      setFinished(true);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-950 via-blue-900 to-black text-white flex items-center justify-center px-6">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-3xl text-center"
+        className="max-w-3xl w-full text-center"
       >
         {!started ? (
           <>
@@ -18,8 +61,7 @@ export default function WaveCheck() {
             </h1>
 
             <p className="text-xl text-cyan-200 mb-8">
-              Discover where your business is on the AI wave
-              and find the next automation opportunities waiting below the surface.
+              Discover your business AI readiness level.
             </p>
 
             <button
@@ -29,15 +71,41 @@ export default function WaveCheck() {
               Catch My Wave 🏄‍♀️
             </button>
           </>
-        ) : (
+        ) : finished ? (
           <>
-            <h2 className="text-4xl font-bold mb-4">
-              🌊 Wave 1: Your AI Journey Begins
+            <h2 className="text-5xl font-bold mb-6">
+              🌊 Your AI Wave Score
             </h2>
 
-            <p className="text-lg text-cyan-200">
-              We are mapping your business current and future AI potential.
+            <p className="text-3xl text-cyan-300 mb-4">
+              {score} / 12
             </p>
+
+            <p className="text-lg text-cyan-100">
+              Your AI journey has been mapped. The next wave is waiting.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="text-cyan-300 mb-4">
+              Wave Check {questionIndex + 1} of {questions.length}
+            </p>
+
+            <h2 className="text-3xl font-bold mb-8">
+              {questions[questionIndex].question}
+            </h2>
+
+            <div className="grid gap-4">
+              {questions[questionIndex].answers.map((answer, index) => (
+                <button
+                  key={answer}
+                  onClick={() => chooseAnswer(index)}
+                  className="p-4 rounded-xl bg-white/10 hover:bg-cyan-400 hover:text-black transition text-lg"
+                >
+                  {answer}
+                </button>
+              ))}
+            </div>
           </>
         )}
       </motion.div>
