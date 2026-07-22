@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { supabase } from "../../lib/supabase";
 
 const questions = [
   {
@@ -36,7 +37,37 @@ export default function WaveCheck() {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+  const sendActionPlan = async () => {
+    const email = window.prompt(
+      "Where should we send your AI Action Plan?"
+    );
 
+    if (!email) return;
+
+    const aiLevel =
+      score <= 5
+        ? "Beginner Wave"
+        : score <= 9
+        ? "Rising AI Swell"
+        : "Tsunami AI Ready";
+
+    const { error } = await supabase.from("leads").insert([
+      {
+        email,
+        ai_score: score,
+        ai_level: aiLevel,
+        source: "WaveCheck",
+      },
+    ]);
+
+    if (error) {
+      console.error("Lead save error:", error);
+      alert("The wave got choppy. Please try again.");
+      return;
+    }
+
+    alert("🌊 Your AI Action Plan is on the way!");
+  };
   function chooseAnswer(index: number) {
     const newScore = score + index + 1;
     setScore(newScore);
@@ -120,11 +151,12 @@ export default function WaveCheck() {
               Your AI journey has been mapped. The next wave is waiting.
             </p>
 
-            <button
-              className="mt-8 px-8 py-4 rounded-full bg-cyan-400 text-black font-bold"
-            >
-              📩 Send My AI Action Plan
-            </button>
+      <button
+  onClick={sendActionPlan}
+  className="mt-8 px-8 py-4 rounded-full bg-cyan-400 text-black font-bold"
+>
+  📩 Send My AI Action Plan
+</button>
           </>
         )}
       </motion.div>
