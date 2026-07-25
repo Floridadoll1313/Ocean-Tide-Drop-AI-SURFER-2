@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+
 import WaveCheck from "./pages/wavecheck/WaveCheck";
 
 import NewLanding from "./pages/landing/NewLanding";
@@ -7,6 +8,10 @@ import Pricing from "./pages/pricing/Pricing";
 import Dashboard from "./pages/dashboard/Dashboard";
 
 import MembersLayout from "./components/members/MembersLayout";
+
+
+// Headquarters
+import Headquarters from "./pages/members/Headquarters";
 
 
 // Member tools
@@ -23,10 +28,12 @@ export default function App() {
   return (
 
     <Routes>
-<Route
-  path="/wave-check"
-  element={<WaveCheck />}
-/>
+
+      <Route
+        path="/wave-check"
+        element={<WaveCheck />}
+      />
+
 
       {/* Public Website */}
 
@@ -48,6 +55,7 @@ export default function App() {
       />
 
 
+
       {/* Members Area */}
 
       <Route
@@ -57,6 +65,12 @@ export default function App() {
         <Route
           path="/dashboard"
           element={<Dashboard />}
+        />
+
+
+        <Route
+          path="/headquarters"
+          element={<Headquarters />}
         />
 
 
@@ -95,7 +109,9 @@ export default function App() {
           element={<Scanner />}
         />
 
+
       </Route>
+
 
     </Routes>
 
