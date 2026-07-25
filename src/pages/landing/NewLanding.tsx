@@ -391,3 +391,214 @@ export default function NewLanding() {
 
 
       </section>
+      {/* MEMBERSHIP */}
+
+      <section
+        className="
+          relative
+          z-10
+          py-24
+          px-6
+          bg-gradient-to-b
+          from-slate-900
+          to-cyan-950
+        "
+      >
+
+        <div className="max-w-6xl mx-auto">
+
+
+          <h2
+            className="
+              text-center
+              text-4xl
+              font-bold
+              mb-14
+            "
+          >
+            Choose Your Wave
+          </h2>
+
+
+
+          <div
+            className="
+              grid
+              md:grid-cols-2
+              lg:grid-cols-4
+              gap-6
+            "
+          >
+
+            {waves.map((wave) => (
+
+              <motion.div
+                key={wave.name}
+
+                whileHover={{
+                  y: -10,
+                  scale: 1.03
+                }}
+
+                transition={{
+                  duration: .3
+                }}
+
+                className="
+                  group
+                  rounded-3xl
+                  bg-white/10
+                  backdrop-blur-xl
+                  p-7
+                  border
+                  border-cyan-300/20
+                  shadow-[0_0_35px_rgba(34,211,238,0.10)]
+                  transition-all
+                  duration-500
+                  hover:border-cyan-300/50
+                  hover:shadow-[0_0_60px_rgba(34,211,238,0.25)]
+                "
+              >
+
+                <h3
+                  className="
+                    text-2xl
+                    font-bold
+                    text-cyan-300
+                  "
+                >
+                  {wave.name}
+                </h3>
+
+
+                <p
+                  className="
+                    mt-4
+                    text-slate-200
+                  "
+                >
+                  {wave.text}
+                </p>
+
+
+                <div
+                  className="
+                    mt-6
+                    text-sm
+                    text-cyan-200
+                    opacity-0
+                    transition
+                    duration-500
+                    group-hover:opacity-100
+                  "
+                >
+                  Ride this wave →
+                </div>
+
+
+              </motion.div>
+
+            ))}
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+
+
+      {/* FINAL CTA */}
+
+      <section
+        id="wave-check"
+        className="
+          relative
+          z-10
+          py-24
+          px-6
+          text-center
+        "
+      >
+
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 30
+          }}
+
+          whileInView={{
+            opacity: 1,
+            y: 0
+          }}
+
+          transition={{
+            duration: .8
+          }}
+
+          viewport={{
+            once:true
+          }}
+        >
+
+
+          <h2
+            className="
+              text-5xl
+              font-bold
+            "
+          >
+            Ready To Ride The Next Wave?
+          </h2>
+
+
+          <p
+            className="
+              mt-6
+              text-xl
+              text-slate-300
+              max-w-2xl
+              mx-auto
+            "
+          >
+            Join Ocean Tide Drop AI SURFER and bring AI power to your business.
+          </p>
+
+
+
+          <a
+            href="/wave-check"
+
+            className="
+              inline-flex
+              mt-10
+              rounded-full
+              bg-cyan-400
+              px-10
+              py-5
+              text-slate-950
+              font-bold
+              hover:scale-105
+              transition
+              shadow-[0_0_35px_rgba(34,211,238,0.35)]
+            "
+          >
+
+            Launch My AI Journey
+
+          </a>
+
+
+        </motion.div>
+
+
+      </section>
+
+
+    </div>
+  );
+}
