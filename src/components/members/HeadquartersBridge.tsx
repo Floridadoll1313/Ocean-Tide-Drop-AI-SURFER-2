@@ -7,6 +7,9 @@ import {
   Waves
 } from "lucide-react";
 
+import GlassOceanFloor from "./GlassOceanFloor";
+
+
 const stations = [
   {
     icon: Bot,
@@ -30,8 +33,11 @@ const stations = [
   }
 ];
 
+
 export default function HeadquartersBridge() {
+
   return (
+
     <div
       className="
         min-h-screen
@@ -55,6 +61,7 @@ export default function HeadquartersBridge() {
           h-72
           bg-gradient-to-b
           from-cyan-400/20
+          via-blue-400/10
           to-transparent
           blur-3xl
         "
@@ -63,9 +70,15 @@ export default function HeadquartersBridge() {
         }}
         transition={{
           duration:8,
-          repeat:Infinity
+          repeat:Infinity,
+          ease:"easeInOut"
         }}
       />
+
+
+      {/* Underwater glass floor */}
+
+      <GlassOceanFloor />
 
 
       <div
@@ -91,7 +104,9 @@ export default function HeadquartersBridge() {
             className="text-cyan-300"
           />
 
+
           <div>
+
             <h1
               className="
                 text-4xl
@@ -101,9 +116,11 @@ export default function HeadquartersBridge() {
               Ocean Tide Headquarters
             </h1>
 
+
             <p className="text-slate-300">
               Your AI command bridge is online.
             </p>
+
           </div>
 
         </div>
@@ -126,15 +143,19 @@ export default function HeadquartersBridge() {
             return (
 
               <motion.div
-
                 key={station.title}
 
                 whileHover={{
                   y:-10,
-                  scale:1.03
+                  scale:1.04
+                }}
+
+                transition={{
+                  duration:0.35
                 }}
 
                 className="
+                  group
                   rounded-3xl
                   bg-white/10
                   backdrop-blur-xl
@@ -142,6 +163,10 @@ export default function HeadquartersBridge() {
                   border-cyan-300/20
                   p-6
                   shadow-[0_0_40px_rgba(34,211,238,.15)]
+                  hover:border-cyan-300/50
+                  hover:shadow-[0_0_60px_rgba(34,211,238,.30)]
+                  transition-all
+                  duration-500
                 "
               >
 
@@ -150,6 +175,9 @@ export default function HeadquartersBridge() {
                   className="
                     text-cyan-300
                     mb-5
+                    transition-transform
+                    duration-500
+                    group-hover:scale-110
                   "
                 />
 
@@ -170,6 +198,20 @@ export default function HeadquartersBridge() {
                 </p>
 
 
+                <div
+                  className="
+                    mt-6
+                    h-1
+                    w-0
+                    rounded-full
+                    bg-cyan-300
+                    transition-all
+                    duration-500
+                    group-hover:w-full
+                  "
+                />
+
+
               </motion.div>
 
             );
@@ -182,5 +224,6 @@ export default function HeadquartersBridge() {
       </div>
 
     </div>
+
   );
 }
