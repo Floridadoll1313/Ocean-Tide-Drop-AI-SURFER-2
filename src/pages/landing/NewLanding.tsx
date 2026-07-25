@@ -14,6 +14,8 @@ import cyberWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
 import OceanBackground from "../../components/landing/OceanBackground";
 import Navbar from "../../components/landing/Navbar";
 import SunriseGlow from "../../components/landing/SunriseGlow";
+import BioluminescentParticles from "../../components/landing/BioluminescentParticles";
+
 
 export default function NewLanding() {
 
@@ -40,6 +42,7 @@ export default function NewLanding() {
     }
   ];
 
+
   const waves = [
     {
       name: "Free Wave",
@@ -59,14 +62,25 @@ export default function NewLanding() {
     }
   ];
 
+
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-slate-950 text-white">
+
+    <div className="
+      relative
+      min-h-screen
+      overflow-x-hidden
+      bg-slate-950
+      text-white
+    ">
 
       <OceanBackground />
 
       <SunriseGlow />
 
+      <BioluminescentParticles />
+
       <Navbar />
+
 
       <section
         className="
@@ -88,6 +102,7 @@ export default function NewLanding() {
           backgroundPosition: "center"
         }}
       >
+
 
         <motion.div
           initial={{
@@ -111,11 +126,13 @@ export default function NewLanding() {
           "
         >
 
+
           <img
             src="/ocean_tide_logo.png"
             alt="Ocean Tide Drop AI SURFER"
             className="w-44 mb-8"
           />
+
 
           <h1
             className="
@@ -125,6 +142,7 @@ export default function NewLanding() {
               leading-tight
             "
           >
+
             Helping Businesses
 
             <span className="block text-cyan-300">
@@ -132,6 +150,7 @@ export default function NewLanding() {
             </span>
 
           </h1>
+
 
           <p
             className="
@@ -146,7 +165,9 @@ export default function NewLanding() {
             help businesses save time, capture leads, and grow.
           </p>
 
+
           <div className="mt-10 flex flex-wrap gap-5">
+
 
             <a
               href="/wave-check"
@@ -164,11 +185,13 @@ export default function NewLanding() {
                 transition
               "
             >
+
               Get My Free AI Wave Check™
 
-              <ArrowRight size={20} />
+              <ArrowRight size={20}/>
 
             </a>
+
 
             <a
               href="#solutions"
@@ -183,11 +206,14 @@ export default function NewLanding() {
                 transition
               "
             >
+
               Explore AI Solutions
 
             </a>
 
+
           </div>
+
 
         </motion.div>
 
@@ -195,13 +221,16 @@ export default function NewLanding() {
         <motion.img
           src={cyberWave}
           alt="AI ocean wave"
+
           animate={{
-            y: [0, -20, 0]
+            y:[0,-20,0]
           }}
+
           transition={{
-            duration: 6,
-            repeat: Infinity
+            duration:6,
+            repeat:Infinity
           }}
+
           className="
             absolute
             bottom-0
@@ -212,10 +241,5 @@ export default function NewLanding() {
           "
         />
 
+
       </section>
-
-      {/* KEEP YOUR AI CREW, MEMBERSHIP, AND CTA SECTIONS BELOW EXACTLY AS THEY ARE */}
-
-    </div>
-  );
-}
