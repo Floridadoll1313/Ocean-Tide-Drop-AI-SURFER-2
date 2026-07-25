@@ -243,3 +243,151 @@ export default function NewLanding() {
 
 
       </section>
+      {/* AI CREW */}
+
+      <section
+        id="solutions"
+        className="
+          relative
+          z-10
+          py-24
+          px-6
+          bg-slate-900/90
+        "
+      >
+
+        <div className="max-w-6xl mx-auto">
+
+
+          <div className="text-center mb-16">
+
+            <Waves
+              className="
+                mx-auto
+                mb-4
+                text-cyan-300
+              "
+              size={45}
+            />
+
+
+            <h2
+              className="
+                text-4xl
+                font-bold
+              "
+            >
+              Meet Your AI Surf Crew
+            </h2>
+
+
+            <p className="mt-4 text-slate-300">
+              Powerful AI systems designed to help your business move faster.
+            </p>
+
+          </div>
+
+
+
+          <div
+            className="
+              grid
+              md:grid-cols-2
+              lg:grid-cols-4
+              gap-6
+            "
+          >
+
+            {aiCrew.map((item)=>{
+
+              const Icon = item.icon;
+
+
+              return (
+
+                <motion.div
+
+                  key={item.title}
+
+                  whileHover={{
+                    y:-12,
+                    scale:1.03
+                  }}
+
+                  transition={{
+                    duration:.3
+                  }}
+
+                  className="
+                    group
+                    rounded-3xl
+                    bg-white/10
+                    backdrop-blur-xl
+                    p-6
+                    border
+                    border-cyan-300/20
+                    shadow-[0_0_40px_rgba(34,211,238,0.12)]
+                    transition-all
+                    duration-500
+                    hover:border-cyan-300/50
+                    hover:shadow-[0_0_60px_rgba(34,211,238,0.25)]
+                  "
+
+                >
+
+
+                  <Icon
+                    className="
+                      text-cyan-300
+                      mb-5
+                      transition-transform
+                      duration-500
+                      group-hover:scale-110
+                    "
+                    size={38}
+                  />
+
+
+                  <h3
+                    className="
+                      text-xl
+                      font-bold
+                      mb-3
+                    "
+                  >
+                    {item.title}
+                  </h3>
+
+
+                  <p className="text-slate-300">
+                    {item.text}
+                  </p>
+
+
+                  <div
+                    className="
+                      mt-6
+                      h-1
+                      w-0
+                      bg-cyan-300
+                      rounded-full
+                      transition-all
+                      duration-500
+                      group-hover:w-full
+                    "
+                  />
+
+
+                </motion.div>
+
+              );
+
+            })}
+
+          </div>
+
+
+        </div>
+
+
+      </section>
