@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 import GlassOceanFloor from "./GlassOceanFloor";
+import BioluminescentInterior from "./BioluminescentInterior";
 
 
 const stations = [
@@ -49,6 +50,11 @@ export default function HeadquartersBridge() {
         py-12
       "
     >
+
+      {/* Bioluminescent AI atmosphere */}
+
+      <BioluminescentInterior />
+
 
       {/* Living ocean ceiling glow */}
 
