@@ -1,144 +1,185 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+import "./Login.css";
 
-  const handleLogin = async () => {
-    if (!email) {
-      setError("Please enter your email address.");
+export default function Login() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [rememberMe, setRememberMe] = useState<boolean>(true);
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  async function checkSession() {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (session) {
+      navigate("/dashboard");
+    }
+  }
+
+  async function handleLogin(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+
+    setLoading(true);
+    setError("");
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
-    setError(null);
-
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: window.location.origin,
-        },
-      });
-
-      if (error) {
-        setError(error.message);
-        setLoading(false);
-        return;
-      }
-
-      setSent(true);
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
+    if (rememberMe) {
+      localStorage.setItem("rememberMe", "true");
     }
-  };
+
+    setLoading(false);
+
+    navigate("/dashboard");
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white p-6">
+    <main className="login-page">
 
-      <div className="w-full max-w-md bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-800">
+      <section className="login-card">
 
-        <div className="text-center mb-8">
+        <img
+          src="/images/ocean_tide_logo.png"
+          alt="Ocean Tide Drop AI SURFER"
+          className="login-logo"
+        />
 
-          <div className="text-5xl mb-4">
-            🌊
-          </div>
+        <h1>
+          Welcome Back, Surfer 🌊
+        </h1>
 
-          <h1 className="text-3xl font-bold">
-            Welcome Back
-          </h1>
-
-          <p className="text-slate-400 mt-3">
-            Enter your email and ride the AI Surfer wave.
-          </p>
-
-        </div>
+        <p className="login-subtitle">
+          Enter the Surfer's Deck and manage your AI tools.
+        </p>
 
 
-        {!sent ? (
-          <>
+        <form onSubmit={handleLogin}>
 
-            <label className="block text-sm text-slate-400 mb-2">
-              Email Address
-            </label>
+          <label>
+            Email Address
+          </label>
+
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(event) =>
+              setEmail(event.target.value)
+            }
+            required
+          />
+
+
+          <label>
+            Password
+          </label>
+
+          <div className="password-wrapper">
 
             <input
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="
-                w-full
-                p-3
-                rounded-lg
-                bg-slate-800
-                text-white
-                border
-                border-slate-700
-                focus:outline-none
-                focus:ring-2
-                focus:ring-cyan-500
-              "
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              value={password}
+              onChange={(event) =>
+                setPassword(event.target.value)
+              }
+              required
             />
 
-
             <button
-              onClick={handleLogin}
-              disabled={loading}
-              className="
-                w-full
-                mt-5
-                p-3
-                rounded-lg
-                bg-cyan-500
-                text-black
-                font-bold
-                hover:bg-cyan-400
-                transition
-                disabled:opacity-50
-              "
+              type="button"
+              onClick={() =>
+                setShowPassword(!showPassword)
+              }
+              className="password-toggle"
             >
-              {loading
-                ? "Sending wave..."
-                : "Send Magic Login Link"}
+              {showPassword ? "Hide" : "Show"}
             </button>
-
-
-            {error && (
-              <div className="mt-4 text-red-400 text-sm text-center">
-                ⚠️ {error}
-              </div>
-            )}
-
-          </>
-        ) : (
-
-          <div className="text-center">
-
-            <div className="text-6xl mb-4">
-              📬
-            </div>
-
-            <h2 className="text-xl font-semibold">
-              Check Your Email
-            </h2>
-
-            <p className="text-slate-400 mt-3">
-              We sent you a magic link. Click it to enter your AI Surfer dashboard.
-            </p>
 
           </div>
 
-        )}
 
-      </div>
+          <div className="login-options">
 
-    </div>
+            <label>
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={() =>
+                  setRememberMe(!rememberMe)
+                }
+              />
+
+              Remember Me
+            </label>
+
+
+            <Link to="/forgot-password">
+              Forgot Password?
+            </Link>
+
+          </div>
+
+
+          {error && (
+            <div className="login-error">
+              {error}
+            </div>
+          )}
+
+
+          <button
+            type="submit"
+            className="login-button"
+            disabled={loading}
+          >
+            {loading
+              ? "Catching Wave..."
+              : "Login"}
+          </button>
+
+
+        </form>
+
+
+        <p className="signup-link">
+
+          New to Ocean Tide Drop?
+
+          <Link to="/signup">
+            Create Account
+          </Link>
+
+        </p>
+
+
+      </section>
+
+    </main>
   );
 }
