@@ -57,7 +57,7 @@ export default function App() {
 
 
 
-      {/* Members Headquarters */}
+      {/* Members Area */}
 
       <Route
         element={<MembersLayout />}
@@ -74,7 +74,6 @@ export default function App() {
           path="/headquarters"
           element={<Headquarters />}
         />
-
 
 
         <Route
