@@ -29,17 +29,18 @@ export default function App() {
 
     <Routes>
 
-      <Route
-        path="/wave-check"
-        element={<WaveCheck />}
-      />
-
 
       {/* Public Website */}
 
       <Route
         path="/"
         element={<NewLanding />}
+      />
+
+
+      <Route
+        path="/wave-check"
+        element={<WaveCheck />}
       />
 
 
@@ -56,11 +57,12 @@ export default function App() {
 
 
 
-      {/* Members Area */}
+      {/* Members Headquarters */}
 
       <Route
         element={<MembersLayout />}
       >
+
 
         <Route
           path="/dashboard"
@@ -72,6 +74,7 @@ export default function App() {
           path="/headquarters"
           element={<Headquarters />}
         />
+
 
 
         <Route
