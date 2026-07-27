@@ -34,16 +34,18 @@ export default function MembersLayout() {
         relative
       "
       style={{
-        backgroundImage: "url('/OTD-AI-Surfer-Members.png')",
+        backgroundImage: "url('/OTD-AI-Surfer-Members-bg.png')",
       }}
     >
 
       {/* Ocean glass overlay */}
       <div className="absolute inset-0 bg-black/55 backdrop-blur-sm" />
 
+
       <div className="relative z-10 flex min-h-screen w-full">
 
-        {/* Desktop Sidebar */}
+
+        {/* Sidebar */}
         <aside
           className="
             w-72
@@ -59,6 +61,7 @@ export default function MembersLayout() {
         >
 
           <div className="flex items-center gap-3 mb-10">
+
             <Waves className="text-cyan-400 w-10 h-10" />
 
             <div>
@@ -70,10 +73,12 @@ export default function MembersLayout() {
                 Members Ocean
               </p>
             </div>
+
           </div>
 
 
           <nav className="space-y-3">
+
             {links.map((link) => {
 
               const Icon = link.icon;
@@ -106,6 +111,7 @@ export default function MembersLayout() {
               );
 
             })}
+
           </nav>
 
 
@@ -120,6 +126,7 @@ export default function MembersLayout() {
               backdrop-blur-md
             "
           >
+
             <p className="font-bold">
               🌊 Surf Tip
             </p>
@@ -134,13 +141,14 @@ export default function MembersLayout() {
         </aside>
 
 
-        {/* Page Content */}
+        {/* Main Content */}
         <section className="flex-1 overflow-auto">
           <Outlet />
         </section>
 
 
       </div>
+
 
     </div>
   );
