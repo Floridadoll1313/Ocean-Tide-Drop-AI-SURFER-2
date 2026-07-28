@@ -1,339 +1,280 @@
 import {
   Workflow,
-  Plus,
-  Zap,
+  Bot,
   Clock,
-  Plug,
+  ArrowRight,
   Activity,
-  Settings,
-  PlayCircle
+  CheckCircle2,
+  Database,
+  Sparkles,
 } from "lucide-react";
+
+import { useNavigate } from "react-router-dom";
 
 
 export default function Automation() {
 
+  const navigate = useNavigate();
 
-  const workflows = [
+
+  const automations = [
     {
-      name: "Lead Follow-Up Wave",
+      title: "AI Workflow Builder",
       description:
-        "Automatically follow up with new leads and organize conversations.",
+        "Design intelligent workflows that connect your AI crew with business operations.",
+      icon: Workflow,
       status: "Ready",
+      path: "/members/workspace",
     },
     {
-      name: "Customer Response AI",
+      title: "Lead Follow-Up Engine",
       description:
-        "AI assistant responds to customer questions instantly.",
-      status: "Building",
+        "Automatically organize prospects, score opportunities, and trigger smart follow-ups.",
+      icon: Bot,
+      status: "Waiting",
+      path: "/members/leads",
     },
     {
-      name: "Content Automation Current",
+      title: "Scheduled AI Tasks",
       description:
-        "Creates and schedules marketing content automatically.",
-      status: "Coming Soon",
-    }
+        "Let your AI systems handle repetitive tasks while your business keeps moving.",
+      icon: Clock,
+      status: "Online",
+      path: "/members/agents",
+    },
   ];
 
+
+  const systems = [
+    {
+      name: "AI Agents",
+      value: "Connected",
+      icon: Bot,
+    },
+    {
+      name: "Workflow Engine",
+      value: "Active",
+      icon: Workflow,
+    },
+    {
+      name: "Data Sync",
+      value: "Monitoring",
+      icon: Database,
+    },
+  ];
 
 
   return (
 
-    <div className="min-h-screen dashboard-bg p-6 md:p-10">
+    <div className="p-8 text-white">
+
+      <div className="mb-10">
+
+        <div className="flex items-center gap-3">
+
+          <Sparkles
+            className="text-cyan-300"
+            size={42}
+          />
+
+          <h1 className="text-4xl font-black">
+            🌊 Automation Harbor
+          </h1>
+
+        </div>
 
 
-      <div className="max-w-7xl mx-auto">
+        <p className="text-cyan-300 mt-3 font-bold">
+          AI Workflow Command Deck
+        </p>
+
+
+        <p className="text-white/70 mt-4 max-w-3xl">
+          Build automation currents that move your business forward.
+          Your AI crew handles workflows, follow-ups, and digital operations.
+        </p>
+
+      </div>
 
 
 
-        {/* Header */}
+      <div className="
+        grid
+        md:grid-cols-3
+        gap-5
+        mb-10
+      ">
 
-        <div className="flex flex-col md:flex-row justify-between gap-6 mb-10">
+        {systems.map((system)=>{
+
+          const Icon = system.icon;
+
+          return (
+
+            <div
+              key={system.name}
+              className="
+              rounded-3xl
+              bg-white/10
+              backdrop-blur-xl
+              border
+              border-white/20
+              p-5
+              "
+            >
+
+              <Icon
+                className="text-cyan-300 mb-4"
+                size={32}
+              />
 
 
-          <div>
+              <p className="text-white/60 text-sm">
+                {system.name}
+              </p>
 
-            <div className="flex items-center gap-3">
 
-              <Workflow className="w-12 h-12 text-cyan-400"/>
+              <p className="font-black text-xl mt-2">
+                {system.value}
+              </p>
 
-              <h1 className="text-4xl font-black">
-                Automation Hub
-              </h1>
 
             </div>
 
+          );
 
-            <p className="text-white/60 mt-3 max-w-xl">
+        })}
 
-              Connect your business systems and let AI handle repetitive tasks.
+      </div>
 
-            </p>
 
 
-          </div>
 
 
+      <div className="
+        grid
+        md:grid-cols-3
+        gap-6
+      ">
 
 
-          <button className="ai-button px-6 py-3 flex items-center gap-2">
+        {automations.map((item)=>{
 
-            <Plus className="w-5 h-5"/>
+          const Icon = item.icon;
 
-            Create Workflow
 
-          </button>
-
-
-
-        </div>
-
-
-
-
-
-
-        {/* Automation Stats */}
-
-
-        <div className="grid md:grid-cols-4 gap-6 mb-12">
-
-
-
-          <div className="ai-card rounded-2xl p-6">
-
-            <Zap className="text-cyan-400 mb-4"/>
-
-            <h2 className="text-3xl font-bold">
-              0
-            </h2>
-
-            <p className="text-white/50">
-              Active Automations
-            </p>
-
-          </div>
-
-
-
-
-
-          <div className="ai-card rounded-2xl p-6">
-
-            <Activity className="text-cyan-400 mb-4"/>
-
-            <h2 className="text-3xl font-bold">
-              0
-            </h2>
-
-            <p className="text-white/50">
-              Tasks Completed
-            </p>
-
-          </div>
-
-
-
-
-
-
-          <div className="ai-card rounded-2xl p-6">
-
-            <Clock className="text-cyan-400 mb-4"/>
-
-            <h2 className="text-3xl font-bold">
-              0h
-            </h2>
-
-            <p className="text-white/50">
-              Time Saved
-            </p>
-
-          </div>
-
-
-
-
-
-
-          <div className="ai-card rounded-2xl p-6">
-
-            <Plug className="text-cyan-400 mb-4"/>
-
-            <h2 className="text-3xl font-bold">
-              0
-            </h2>
-
-            <p className="text-white/50">
-              Integrations
-            </p>
-
-          </div>
-
-
-
-        </div>
-
-
-
-
-
-
-
-        {/* Workflow Fleet */}
-
-
-        <h2 className="text-3xl font-bold mb-6">
-
-          Your Automation Fleet
-
-        </h2>
-
-
-
-
-        <div className="grid md:grid-cols-3 gap-6">
-
-
-
-          {workflows.map((workflow)=>(
-
+          return (
 
             <div
-              key={workflow.name}
-              className="ai-card rounded-3xl p-7"
+              key={item.title}
+              onClick={() => navigate(item.path)}
+              className="
+              rounded-3xl
+              bg-white/10
+              backdrop-blur-xl
+              border
+              border-white/20
+              p-6
+              shadow-xl
+              hover:bg-white/20
+              transition
+              cursor-pointer
+              "
             >
 
+              <Icon
+                className="text-cyan-300 mb-5"
+                size={40}
+              />
 
 
-              <div className="flex justify-between items-start">
+              <h2 className="text-xl font-black">
+                {item.title}
+              </h2>
 
 
-                <div className="
-                  w-14
-                  h-14
-                  rounded-2xl
-                  bg-cyan-400/10
-                  flex
-                  items-center
-                  justify-center
-                ">
-
-                  <Workflow className="w-7 h-7 text-cyan-400"/>
-
-                </div>
+              <p className="text-white/70 mt-3">
+                {item.description}
+              </p>
 
 
+
+              <div className="
+                mt-6
+                flex
+                justify-between
+                items-center
+              ">
 
 
                 <span className="
+                  flex
+                  items-center
+                  gap-2
                   text-xs
-                  px-3
-                  py-1
-                  rounded-full
-                  bg-white/10
+                  uppercase
+                  tracking-widest
                   text-cyan-300
                 ">
 
-                  {workflow.status}
+                  <CheckCircle2 size={15}/>
+
+                  {item.status}
 
                 </span>
 
 
 
-              </div>
-
-
-
-
-
-
-              <h3 className="
-                text-xl
-                font-bold
-                mt-6
-              ">
-
-                {workflow.name}
-
-              </h3>
-
-
-
-
-
-              <p className="
-                text-white/60
-                mt-3
-              ">
-
-                {workflow.description}
-
-              </p>
-
-
-
-
-
-
-
-              <div className="flex gap-3 mt-6">
-
-
-                <button className="
-                  flex-1
-                  bg-white/5
-                  hover:bg-cyan-400
-                  hover:text-slate-950
-                  rounded-xl
-                  py-3
-                  font-bold
-                  transition
-                  flex
-                  items-center
-                  justify-center
-                  gap-2
-                ">
-
-
-                  <PlayCircle className="w-5 h-5"/>
-
-                  Run
-
-
-                </button>
-
-
-
-
-                <button className="
-                  px-4
-                  rounded-xl
-                  bg-white/5
-                  hover:bg-white/10
-                ">
-
-                  <Settings className="w-5 h-5"/>
-
-                </button>
-
+                <ArrowRight
+                  className="text-cyan-300"
+                />
 
 
               </div>
-
-
 
 
             </div>
 
+          );
 
-          ))}
+        })}
 
 
+      </div>
+
+
+
+
+
+      <div className="
+        mt-10
+        rounded-3xl
+        bg-cyan-900/30
+        border
+        border-cyan-300/20
+        p-8
+      ">
+
+        <div className="flex items-center gap-3">
+
+          <Activity
+            className="text-cyan-300"
+          />
+
+          <h2 className="text-2xl font-black">
+            Automation Engine Status
+          </h2>
 
         </div>
 
 
-
+        <p className="
+          text-white/70
+          mt-3
+        ">
+          Your automation systems are standing by.
+          Connect more tools and your AI crew will keep the tide moving.
+        </p>
 
 
       </div>
@@ -342,5 +283,4 @@ export default function Automation() {
     </div>
 
   );
-
 }

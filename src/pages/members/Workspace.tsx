@@ -1,356 +1,218 @@
 import {
   FolderKanban,
   Plus,
-  FileText,
+  Workflow,
+  Bot,
   Sparkles,
-  Users,
-  Search,
+  PlayCircle,
   Settings,
-  Clock
 } from "lucide-react";
 
 
 export default function Workspace() {
 
 
-  const projects = [
+  const workflows = [
     {
-      name: "AI Marketing Campaign",
+      title: "Customer Support AI",
       description:
-        "Create campaigns, content, and customer engagement strategies.",
+        "AI agent workflow for answering customer questions and routing requests.",
       status: "Active",
+      icon: Bot,
     },
     {
-      name: "Business AI Assistant",
+      title: "Lead Capture Flow",
       description:
-        "Train and organize your custom business AI helper.",
+        "Collect leads, organize contacts, and prepare follow-up actions.",
       status: "Building",
+      icon: Workflow,
     },
     {
-      name: "Automation Blueprint",
+      title: "Business Growth System",
       description:
-        "Map workflows and future AI systems.",
-      status: "Planning",
-    }
+        "Connect AI tools that help automate daily business operations.",
+      status: "Ready",
+      icon: Sparkles,
+    },
   ];
-
 
 
   return (
 
-    <div className="min-h-screen dashboard-bg p-6 md:p-10">
+    <div className="p-8 text-white">
 
 
-      <div className="max-w-7xl mx-auto">
+      <div className="mb-10">
 
+        <div className="flex items-center gap-3">
 
-
-        {/* Header */}
-
-        <div className="flex flex-col md:flex-row justify-between gap-6 mb-10">
-
-
-          <div>
-
-            <div className="flex items-center gap-3">
-
-              <FolderKanban className="w-12 h-12 text-cyan-400"/>
-
-              <h1 className="text-4xl font-black">
-                AI Workspace
-              </h1>
-
-            </div>
-
-
-            <p className="text-white/60 mt-3 max-w-xl">
-
-              Your digital command deck for building, organizing, and launching AI projects.
-
-            </p>
-
-
-          </div>
-
-
-
-
-          <button className="ai-button px-6 py-3 flex items-center gap-2">
-
-            <Plus className="w-5 h-5"/>
-
-            New Project
-
-          </button>
-
-
-
-        </div>
-
-
-
-
-
-
-        {/* Workspace Stats */}
-
-        <div className="grid md:grid-cols-4 gap-6 mb-12">
-
-
-
-          <div className="ai-card rounded-2xl p-6">
-
-            <FolderKanban className="text-cyan-400 mb-4"/>
-
-            <h2 className="text-3xl font-bold">
-              0
-            </h2>
-
-            <p className="text-white/50">
-              Projects
-            </p>
-
-          </div>
-
-
-
-
-
-          <div className="ai-card rounded-2xl p-6">
-
-            <FileText className="text-cyan-400 mb-4"/>
-
-            <h2 className="text-3xl font-bold">
-              0
-            </h2>
-
-            <p className="text-white/50">
-              Documents
-            </p>
-
-          </div>
-
-
-
-
-
-          <div className="ai-card rounded-2xl p-6">
-
-            <Sparkles className="text-cyan-400 mb-4"/>
-
-            <h2 className="text-3xl font-bold">
-              0
-            </h2>
-
-            <p className="text-white/50">
-              AI Creations
-            </p>
-
-          </div>
-
-
-
-
-
-
-          <div className="ai-card rounded-2xl p-6">
-
-            <Users className="text-cyan-400 mb-4"/>
-
-            <h2 className="text-3xl font-bold">
-              1
-            </h2>
-
-            <p className="text-white/50">
-              Workspace Members
-            </p>
-
-          </div>
-
-
-
-        </div>
-
-
-
-
-
-
-
-        {/* Search Bar */}
-
-
-        <div className="
-          glass-panel
-          rounded-2xl
-          p-4
-          mb-10
-          flex
-          items-center
-          gap-3
-        ">
-
-
-          <Search className="text-white/40"/>
-
-
-          <input
-            placeholder="Search projects, documents, and AI creations..."
-            className="
-              bg-transparent
-              outline-none
-              flex-1
-              text-white
-              placeholder-white/40
-            "
+          <FolderKanban
+            className="text-cyan-300"
+            size={42}
           />
 
+          <h1 className="text-4xl font-black">
+            🌊 Workspace Harbor
+          </h1>
 
         </div>
 
 
+        <p className="text-cyan-300 mt-3 font-bold">
+          AI Workflow Creation Deck
+        </p>
+
+
+        <p className="text-white/70 mt-4 max-w-3xl">
+          Build, organize, and launch your AI-powered business systems
+          from one command center.
+        </p>
+
+      </div>
 
 
 
 
 
+      <button
+        className="
+        flex
+        items-center
+        gap-3
+        rounded-2xl
+        bg-cyan-400/30
+        border
+        border-cyan-300/40
+        px-6
+        py-4
+        font-black
+        hover:bg-cyan-400/50
+        transition
+        "
+      >
 
-        {/* Projects */}
+        <Plus size={22}/>
 
+        Create New Workflow
 
-        <h2 className="text-3xl font-bold mb-6">
-
-          Your AI Projects
-
-        </h2>
+      </button>
 
 
 
 
 
-        <div className="grid md:grid-cols-3 gap-6">
+      <div className="
+        grid
+        md:grid-cols-3
+        gap-6
+        mt-10
+      ">
 
 
+        {workflows.map((workflow)=>{
 
-          {projects.map((project)=>(
+          const Icon = workflow.icon;
 
+
+          return (
 
             <div
-              key={project.name}
-              className="ai-card rounded-3xl p-7"
+              key={workflow.title}
+              className="
+              rounded-3xl
+              bg-white/10
+              backdrop-blur-xl
+              border
+              border-white/20
+              p-6
+              shadow-xl
+              "
             >
 
+              <Icon
+                className="text-cyan-300 mb-5"
+                size={38}
+              />
 
 
-              <div className="flex justify-between items-start">
+              <h2 className="text-xl font-black">
+                {workflow.title}
+              </h2>
 
 
-                <div className="
-                  w-14
-                  h-14
-                  rounded-2xl
-                  bg-cyan-400/10
-                  flex
-                  items-center
-                  justify-center
-                ">
-
-                  <FolderKanban className="w-7 h-7 text-cyan-400"/>
-
-                </div>
+              <p className="text-white/70 mt-3">
+                {workflow.description}
+              </p>
 
 
+              <div className="
+                mt-6
+                flex
+                justify-between
+                items-center
+              ">
 
 
                 <span className="
                   text-xs
-                  px-3
-                  py-1
-                  rounded-full
-                  bg-white/10
+                  uppercase
+                  tracking-widest
                   text-cyan-300
                 ">
-
-                  {project.status}
-
+                  {workflow.status}
                 </span>
 
 
-              </div>
+                <div className="flex gap-3">
 
+                  <PlayCircle
+                    className="text-cyan-300"
+                    size={22}
+                  />
 
-
-
-
-
-
-              <h3 className="
-                text-xl
-                font-bold
-                mt-6
-              ">
-
-                {project.name}
-
-              </h3>
-
-
-
-
-
-              <p className="
-                text-white/60
-                mt-3
-              ">
-
-                {project.description}
-
-              </p>
-
-
-
-
-
-
-
-              <div className="
-                flex
-                justify-between
-                items-center
-                mt-6
-                text-sm
-                text-white/50
-              ">
-
-
-                <div className="flex items-center gap-2">
-
-                  <Clock className="w-4 h-4"/>
-
-                  Recently Updated
+                  <Settings
+                    className="text-white/60"
+                    size={22}
+                  />
 
                 </div>
 
 
-
-                <Settings className="w-5 h-5 hover:text-cyan-400 cursor-pointer"/>
-
-
               </div>
-
 
 
             </div>
 
+          );
 
-          ))}
-
-
-
-        </div>
+        })}
 
 
+      </div>
 
+
+
+
+
+      <div className="
+        mt-10
+        rounded-3xl
+        bg-black/20
+        border
+        border-white/20
+        p-8
+      ">
+
+
+        <h2 className="text-2xl font-black">
+          AI Builder Console
+        </h2>
+
+
+        <p className="text-white/70 mt-3">
+          Your workflow studio is ready. Connect agents,
+          automate tasks, and launch your AI crew.
+        </p>
 
 
       </div>

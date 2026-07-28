@@ -1,235 +1,101 @@
-import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
   Bot,
-  BarChart3,
-  Zap,
+  Workflow,
+  FolderKanban,
   Users,
+  DollarSign,
+  ScanSearch,
   Waves
 } from "lucide-react";
 
-import GlassOceanFloor from "./GlassOceanFloor";
-import BioluminescentInterior from "./BioluminescentInterior";
-
-
-const stations = [
-  {
-    icon: Bot,
-    title: "AI Command Center",
-    text: "Launch your AI agents and manage your digital crew."
-  },
-  {
-    icon: Zap,
-    title: "Automation Engine",
-    text: "Build systems that work while you focus on growth."
-  },
-  {
-    icon: Users,
-    title: "Lead Navigator",
-    text: "Track customers, opportunities, and conversations."
-  },
-  {
-    icon: BarChart3,
-    title: "Growth Dashboard",
-    text: "View your business intelligence and progress."
-  }
-];
-
-
 export default function HeadquartersBridge() {
+  const tools = [
+    {
+      title: "AI Agents",
+      description: "Build and manage your AI Surfer agents.",
+      icon: Bot,
+      link: "/members/agents"
+    },
+    {
+      title: "Automation",
+      description: "Create workflows that run while you ride the wave.",
+      icon: Workflow,
+      link: "/members/automation"
+    },
+    {
+      title: "Workspace",
+      description: "Your AI command workspace.",
+      icon: FolderKanban,
+      link: "/members/workspace"
+    },
+    {
+      title: "Leads",
+      description: "Track and nurture business opportunities.",
+      icon: Users,
+      link: "/members/leads"
+    },
+    {
+      title: "Revenue",
+      description: "Monitor your business growth.",
+      icon: DollarSign,
+      link: "/members/revenue"
+    },
+    {
+      title: "Scanner",
+      description: "Analyze and optimize your business.",
+      icon: ScanSearch,
+      link: "/members/scanner"
+    }
+  ];
 
   return (
+    <div className="min-h-screen p-8 text-white">
+      <div className="max-w-6xl mx-auto">
 
-    <div
-      className="
-        min-h-screen
-        relative
-        overflow-hidden
-        bg-slate-950
-        text-white
-        px-6
-        py-12
-      "
-    >
-
-      {/* Bioluminescent AI atmosphere */}
-
-      <BioluminescentInterior />
-
-
-      {/* Living ocean ceiling glow */}
-
-      <motion.div
-        className="
-          absolute
-          top-0
-          left-0
-          right-0
-          h-72
-          bg-gradient-to-b
-          from-cyan-400/20
-          via-blue-400/10
-          to-transparent
-          blur-3xl
-        "
-        animate={{
-          opacity:[0.4,0.8,0.4]
-        }}
-        transition={{
-          duration:8,
-          repeat:Infinity,
-          ease:"easeInOut"
-        }}
-      />
-
-
-      {/* Underwater glass floor */}
-
-      <GlassOceanFloor />
-
-
-      <div
-        className="
-          relative
-          z-10
-          max-w-7xl
-          mx-auto
-        "
-      >
-
-        <div
-          className="
-            mb-12
-            flex
-            items-center
-            gap-4
-          "
-        >
-
-          <Waves
-            size={50}
-            className="text-cyan-300"
-          />
-
-
-          <div>
-
-            <h1
-              className="
-                text-4xl
-                font-black
-              "
-            >
-              Ocean Tide Headquarters
+        <div className="mb-10">
+          <div className="flex items-center gap-3">
+            <Waves size={40} />
+            <h1 className="text-4xl font-bold">
+              Ocean Tide Drop AI Headquarters
             </h1>
-
-
-            <p className="text-slate-300">
-              Your AI command bridge is online.
-            </p>
-
           </div>
 
+          <p className="mt-3 text-lg opacity-80">
+            Your AI Surfer command deck. Choose your tools and ride the next wave.
+          </p>
         </div>
 
 
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <div
-          className="
-            grid
-            md:grid-cols-2
-            lg:grid-cols-4
-            gap-6
-          "
-        >
-
-          {stations.map((station)=>{
-
-            const Icon = station.icon;
+          {tools.map((tool) => {
+            const Icon = tool.icon;
 
             return (
-
-              <motion.div
-                key={station.title}
-
-                whileHover={{
-                  y:-10,
-                  scale:1.04
-                }}
-
-                transition={{
-                  duration:0.35
-                }}
-
-                className="
-                  group
-                  rounded-3xl
-                  bg-white/10
-                  backdrop-blur-xl
-                  border
-                  border-cyan-300/20
-                  p-6
-                  shadow-[0_0_40px_rgba(34,211,238,.15)]
-                  hover:border-cyan-300/50
-                  hover:shadow-[0_0_60px_rgba(34,211,238,.30)]
-                  transition-all
-                  duration-500
-                "
+              <Link
+                key={tool.title}
+                to={tool.link}
+                className="rounded-2xl p-6 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition"
               >
 
-                <Icon
-                  size={40}
-                  className="
-                    text-cyan-300
-                    mb-5
-                    transition-transform
-                    duration-500
-                    group-hover:scale-110
-                  "
-                />
+                <Icon size={36} />
 
-
-                <h2
-                  className="
-                    text-xl
-                    font-bold
-                    mb-3
-                  "
-                >
-                  {station.title}
+                <h2 className="mt-4 text-2xl font-semibold">
+                  {tool.title}
                 </h2>
 
-
-                <p className="text-slate-300">
-                  {station.text}
+                <p className="mt-2 opacity-80">
+                  {tool.description}
                 </p>
 
-
-                <div
-                  className="
-                    mt-6
-                    h-1
-                    w-0
-                    rounded-full
-                    bg-cyan-300
-                    transition-all
-                    duration-500
-                    group-hover:w-full
-                  "
-                />
-
-
-              </motion.div>
-
+              </Link>
             );
-
           })}
 
         </div>
 
-
       </div>
-
     </div>
-
   );
 }

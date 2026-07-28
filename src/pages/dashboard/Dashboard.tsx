@@ -11,196 +11,317 @@ import {
   Sparkles,
 } from "lucide-react";
 
+
 export default function Dashboard() {
+
+  const stats = [
+    {
+      title: "Projects",
+      value: "0",
+      label: "Active Projects",
+      icon: FolderKanban,
+    },
+    {
+      title: "AI Agents",
+      value: "0",
+      label: "Your AI Crew",
+      icon: Bot,
+    },
+    {
+      title: "GitHub",
+      value: "Waiting Sync",
+      label: "Repository Connection",
+      icon: Github,
+    },
+    {
+      title: "Revenue",
+      value: "$0",
+      label: "Growth Tracking",
+      icon: TrendingUp,
+    },
+  ];
+
+
   return (
-    <div className="min-h-screen bg-slate-950 text-white relative overflow-hidden">
 
-      {/* Ocean Background Glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/40 via-slate-950 to-blue-950/50" />
+    <div className="
+      min-h-screen
+      text-white
+      bg-transparent
+      relative
+      overflow-hidden
+    ">
 
-      <div className="absolute top-20 left-20 w-72 h-72 bg-cyan-500/20 rounded-full blur-[120px]" />
-      <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/20 rounded-full blur-[140px]" />
+      <div className="
+        absolute
+        inset-0
+        bg-gradient-to-br
+        from-cyan-950/20
+        via-transparent
+        to-blue-950/20
+      " />
 
 
-      <div className="relative z-10 p-6 md:p-10 max-w-7xl mx-auto">
+      <div className="
+        relative
+        z-10
+        p-6
+        md:p-10
+      ">
 
 
-        {/* Header */}
         <div className="mb-10">
 
-          <div className="flex items-center gap-3 mb-4">
-            <Waves className="w-10 h-10 text-cyan-400" />
+          <div className="
+            flex
+            items-center
+            gap-4
+          ">
+
+            <Waves className="
+              w-12
+              h-12
+              text-cyan-300
+            "/>
+
 
             <div>
-              <h1 className="text-4xl md:text-5xl font-black">
+
+              <h1 className="
+                text-4xl
+                md:text-5xl
+                font-black
+              ">
                 AI Surfer Command Center
               </h1>
 
-              <p className="text-cyan-400 font-semibold tracking-widest text-sm">
-                MEMBER DASHBOARD
+
+              <p className="
+                text-cyan-300
+                font-bold
+              ">
+                Member Headquarters
               </p>
+
+
+              <p className="
+                text-white/70
+              ">
+                Your AI workspace is ready.
+              </p>
+
+
             </div>
+
           </div>
 
 
-          <p className="text-white/60 max-w-2xl">
-            Welcome aboard. Your AI crew, automation systems, projects, and
-            business growth tools are ready to ride the next wave.
+          <p className="
+            mt-5
+            text-lg
+            text-white/80
+            max-w-3xl
+          ">
+            Welcome back, Wave Rider. Your AI crew, automation systems,
+            projects, and business growth tools are ready for the next wave.
           </p>
 
+
         </div>
 
 
 
-        {/* Main Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          lg:grid-cols-4
+          gap-6
+          mb-10
+        ">
 
 
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6">
+          {stats.map((card)=>{
 
-            <FolderKanban className="text-cyan-400 w-8 h-8 mb-4" />
+            const Icon = card.icon;
 
-            <h2 className="text-xl font-bold">
-              Projects
-            </h2>
+            return (
 
-            <p className="text-3xl font-black mt-3">
-              0
-            </p>
+              <div
+                key={card.title}
+                className="
+                  rounded-3xl
+                  p-6
+                  bg-white/10
+                  backdrop-blur-xl
+                  border
+                  border-white/20
+                "
+              >
 
-            <p className="text-white/50 text-sm">
-              Active Projects
-            </p>
-
-          </div>
-
-
-
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6">
-
-            <Bot className="text-blue-400 w-8 h-8 mb-4" />
-
-            <h2 className="text-xl font-bold">
-              AI Agents
-            </h2>
-
-            <p className="text-3xl font-black mt-3">
-              0
-            </p>
-
-            <p className="text-white/50 text-sm">
-              Your AI Crew
-            </p>
-
-          </div>
+                <Icon className="
+                  w-8
+                  h-8
+                  text-cyan-300
+                  mb-4
+                "/>
 
 
+                <h2 className="
+                  text-xl
+                  font-bold
+                ">
+                  {card.title}
+                </h2>
 
 
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6">
-
-            <Github className="text-purple-400 w-8 h-8 mb-4" />
-
-            <h2 className="text-xl font-bold">
-              GitHub
-            </h2>
-
-            <p className="text-lg font-bold mt-4 text-yellow-300">
-              Waiting Sync
-            </p>
-
-            <p className="text-white/50 text-sm">
-              Repository Connection
-            </p>
-
-          </div>
+                <p className="
+                  text-3xl
+                  font-black
+                  mt-3
+                ">
+                  {card.value}
+                </p>
 
 
+                <p className="
+                  text-white/60
+                ">
+                  {card.label}
+                </p>
 
 
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6">
+              </div>
 
-            <TrendingUp className="text-green-400 w-8 h-8 mb-4" />
+            )
 
-            <h2 className="text-xl font-bold">
-              Revenue
-            </h2>
-
-            <p className="text-3xl font-black mt-3">
-              $0
-            </p>
-
-            <p className="text-white/50 text-sm">
-              Growth Tracking
-            </p>
-
-          </div>
+          })}
 
 
         </div>
 
 
 
+        <div className="
+          grid
+          lg:grid-cols-3
+          gap-6
+          mb-10
+        ">
 
 
-        {/* AI Tools Section */}
+          <div className="
+            lg:col-span-2
+            rounded-3xl
+            p-8
+            bg-white/10
+            backdrop-blur-xl
+            border
+            border-white/20
+          ">
 
-        <div className="grid lg:grid-cols-3 gap-6 mb-10">
+
+            <div className="
+              flex
+              gap-3
+              items-center
+              mb-6
+            ">
+
+              <Sparkles className="
+                text-cyan-300
+              "/>
 
 
-          <div className="lg:col-span-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
-
-
-            <div className="flex items-center gap-3 mb-6">
-
-              <Sparkles className="text-cyan-400 w-7 h-7"/>
-
-              <h2 className="text-2xl font-black">
+              <h2 className="
+                text-2xl
+                font-black
+              ">
                 Your AI Ocean Tools
               </h2>
 
+
             </div>
 
 
-            <div className="grid md:grid-cols-2 gap-5">
+            <div className="
+              grid
+              md:grid-cols-2
+              gap-5
+            ">
 
 
-              <button className="text-left bg-slate-900/70 hover:bg-cyan-500/10 border border-white/10 rounded-2xl p-5 transition">
+              <div className="
+                rounded-2xl
+                p-5
+                bg-black/20
+              ">
 
-                <Zap className="text-cyan-400 mb-3"/>
+                <Zap className="
+                  text-cyan-300
+                "/>
 
-                <h3 className="font-bold text-lg">
+
+                <h3 className="
+                  font-bold
+                  text-lg
+                ">
                   Automation Hub
                 </h3>
 
-                <p className="text-white/50 text-sm mt-2">
+
+                <p className="
+                  text-white/60
+                  text-sm
+                ">
                   Connect workflows and let AI handle repetitive tasks.
                 </p>
 
-                <ArrowRight className="mt-4 text-cyan-400"/>
 
-              </button>
+                <ArrowRight className="
+                  mt-3
+                  text-cyan-300
+                "/>
+
+              </div>
 
 
 
+              <div className="
+                rounded-2xl
+                p-5
+                bg-black/20
+              ">
 
 
-              <button className="text-left bg-slate-900/70 hover:bg-blue-500/10 border border-white/10 rounded-2xl p-5 transition">
+                <Users className="
+                  text-blue-300
+                "/>
 
-                <Users className="text-blue-400 mb-3"/>
 
-                <h3 className="font-bold text-lg">
+                <h3 className="
+                  font-bold
+                  text-lg
+                ">
                   Lead Navigator
                 </h3>
 
-                <p className="text-white/50 text-sm mt-2">
-                  Track prospects and grow your customer current.
+
+                <p className="
+                  text-white/60
+                  text-sm
+                ">
+                  Track prospects and grow your customer network.
                 </p>
 
-                <ArrowRight className="mt-4 text-blue-400"/>
 
-              </button>
+                <ArrowRight className="
+                  mt-3
+                  text-blue-300
+                "/>
 
+
+              </div>
 
 
             </div>
@@ -210,38 +331,61 @@ export default function Dashboard() {
 
 
 
+          <div className="
+            rounded-3xl
+            p-8
+            bg-cyan-900/30
+            border
+            border-cyan-300/20
+          ">
 
 
-          {/* Security Panel */}
+            <ShieldCheck className="
+              w-10
+              h-10
+              text-cyan-300
+            "/>
 
-          <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border border-cyan-400/20 rounded-3xl p-8">
 
-
-            <ShieldCheck className="w-10 h-10 text-cyan-300 mb-5"/>
-
-
-            <h2 className="text-2xl font-black mb-3">
+            <h2 className="
+              text-2xl
+              font-black
+              mt-5
+            ">
               Member Security
             </h2>
 
 
-            <p className="text-white/60 text-sm leading-relaxed">
-
-              Your AI workspace is protected. Authentication,
-              subscriptions, and member tools connect here.
-
+            <p className="
+              mt-3
+              text-white/70
+            ">
+              Authentication, subscriptions, and member tools connect here.
             </p>
 
 
-            <div className="mt-6 bg-black/20 rounded-xl p-4">
+            <div className="
+              mt-6
+              bg-black/20
+              rounded-xl
+              p-4
+            ">
 
-              <p className="text-xs uppercase tracking-widest text-cyan-300">
-                Account Status
+              <p className="
+                text-cyan-300
+                text-xs
+              ">
+                ACCOUNT STATUS
               </p>
 
-              <p className="font-bold mt-2">
-                Active Member
+
+              <p className="
+                font-bold
+                mt-2
+              ">
+                Active Member 🌊
               </p>
+
 
             </div>
 
@@ -249,24 +393,35 @@ export default function Dashboard() {
           </div>
 
 
-
         </div>
 
 
 
+        <div className="
+          rounded-3xl
+          p-8
+          bg-white/10
+          border
+          border-white/20
+        ">
 
-        {/* Bottom Banner */}
 
-        <div className="rounded-3xl border border-cyan-400/20 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 p-8">
-
-          <h2 className="text-3xl font-black mb-3">
+          <h2 className="
+            text-3xl
+            font-black
+          ">
             🌊 Ready to Ride the AI Wave?
           </h2>
 
-          <p className="text-white/60 max-w-2xl">
+
+          <p className="
+            text-white/70
+            mt-3
+          ">
             Your command center is the launch point for AI assistants,
             automations, revenue tools, and your digital growth journey.
           </p>
+
 
         </div>
 
@@ -274,5 +429,6 @@ export default function Dashboard() {
       </div>
 
     </div>
+
   );
 }
