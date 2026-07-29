@@ -23,6 +23,7 @@ type TideMode = "auto" | "dawn" | "high" | "moon";
 
 
 function getAutoTide() {
+
   const hour = new Date().getHours();
 
   if (hour >= 6 && hour < 12) {
@@ -34,27 +35,36 @@ function getAutoTide() {
   }
 
   return "moon";
+
 }
+
 
 
 function getTideInfo(mode: TideMode) {
 
-  const activeMode = mode === "auto" ? getAutoTide() : mode;
+  const activeMode =
+    mode === "auto"
+      ? getAutoTide()
+      : mode;
 
 
   if (activeMode === "dawn") {
+
     return {
       title: "Dawn Patrol",
       overlay: "bg-orange-300/10",
     };
+
   }
 
 
   if (activeMode === "high") {
+
     return {
       title: "High Tide",
       overlay: "bg-cyan-400/10",
     };
+
   }
 
 
@@ -62,26 +72,70 @@ function getTideInfo(mode: TideMode) {
     title: "Moonlit Deck",
     overlay: "bg-indigo-900/25",
   };
+
 }
+
 
 
 
 export default function MembersLayout() {
 
-  const [tideMode, setTideMode] = useState<TideMode>("auto");
 
-  const tide = getTideInfo(tideMode);
+  const [tideMode,setTideMode] =
+    useState<TideMode>("auto");
+
+
+  const tide =
+    getTideInfo(tideMode);
+
 
 
   const links = [
-    { name: "Command Center", path: "/dashboard", icon: LayoutDashboard },
-    { name: "AI Agents", path: "/members/agents", icon: Bot },
-    { name: "Automation", path: "/members/automation", icon: Workflow },
-    { name: "Workspace", path: "/members/workspace", icon: FolderKanban },
-    { name: "Leads", path: "/members/leads", icon: Users },
-    { name: "Revenue", path: "/members/revenue", icon: DollarSign },
-    { name: "Scanner", path: "/members/scanner", icon: ScanSearch },
+
+    {
+      name:"Command Center",
+      path:"/members/dashboard",
+      icon:LayoutDashboard
+    },
+
+    {
+      name:"AI Agents",
+      path:"/members/agents",
+      icon:Bot
+    },
+
+    {
+      name:"Automation",
+      path:"/members/automation",
+      icon:Workflow
+    },
+
+    {
+      name:"Workspace",
+      path:"/members/workspace",
+      icon:FolderKanban
+    },
+
+    {
+      name:"Leads",
+      path:"/members/leads",
+      icon:Users
+    },
+
+    {
+      name:"Revenue",
+      path:"/members/revenue",
+      icon:DollarSign
+    },
+
+    {
+      name:"Scanner",
+      path:"/members/scanner",
+      icon:ScanSearch
+    },
+
   ];
+
 
 
   return (
@@ -95,10 +149,13 @@ export default function MembersLayout() {
         bg-no-repeat
         text-white
       "
+
       style={{
-        backgroundImage: 'url("/surfers-deck-bg.png")',
+        backgroundImage:'url("/surfers-deck-bg.png")'
       }}
+
     >
+
 
       <div
         className={`
@@ -108,7 +165,9 @@ export default function MembersLayout() {
         `}
       >
 
+
         <div className="flex gap-6">
+
 
 
           <aside
@@ -129,9 +188,13 @@ export default function MembersLayout() {
           >
 
 
+
             <div className="flex items-center gap-3 mb-6">
 
-              <Waves className="w-12 h-12 text-cyan-300" />
+              <Waves
+                className="w-12 h-12 text-cyan-300"
+              />
+
 
               <div>
 
@@ -149,6 +212,7 @@ export default function MembersLayout() {
 
 
 
+
             <div
               className="
                 rounded-2xl
@@ -158,23 +222,27 @@ export default function MembersLayout() {
               "
             >
 
-              <Sparkles className="text-yellow-300 mb-2" />
+              <Sparkles className="text-yellow-300 mb-2"/>
+
 
               <h3 className="font-black text-lg">
                 AI Wave Rider
               </h3>
 
+
               <p className="text-sm text-white/70">
                 Member Headquarters
               </p>
+
 
             </div>
 
 
 
-            {/* AI CREW STATUS */}
 
             <AICrewStatus />
+
+
 
 
 
@@ -206,7 +274,7 @@ export default function MembersLayout() {
 
 
                 <button
-                  onClick={() => setTideMode("auto")}
+                  onClick={()=>setTideMode("auto")}
                   className="rounded-xl p-2 bg-white/10 hover:bg-white/20 text-sm flex items-center justify-center gap-2"
                 >
                   <RotateCcw size={15}/>
@@ -214,8 +282,9 @@ export default function MembersLayout() {
                 </button>
 
 
+
                 <button
-                  onClick={() => setTideMode("dawn")}
+                  onClick={()=>setTideMode("dawn")}
                   className="rounded-xl p-2 bg-white/10 hover:bg-white/20 text-sm flex items-center justify-center gap-2"
                 >
                   <Sunrise size={15}/>
@@ -223,8 +292,9 @@ export default function MembersLayout() {
                 </button>
 
 
+
                 <button
-                  onClick={() => setTideMode("high")}
+                  onClick={()=>setTideMode("high")}
                   className="rounded-xl p-2 bg-white/10 hover:bg-white/20 text-sm flex items-center justify-center gap-2"
                 >
                   <Sun size={15}/>
@@ -232,8 +302,9 @@ export default function MembersLayout() {
                 </button>
 
 
+
                 <button
-                  onClick={() => setTideMode("moon")}
+                  onClick={()=>setTideMode("moon")}
                   className="rounded-xl p-2 bg-white/10 hover:bg-white/20 text-sm flex items-center justify-center gap-2"
                 >
                   <Moon size={15}/>
@@ -243,12 +314,15 @@ export default function MembersLayout() {
 
               </div>
 
+
             </div>
 
 
 
 
+
             <nav className="space-y-3">
+
 
               {links.map((link)=>{
 
@@ -260,8 +334,8 @@ export default function MembersLayout() {
                   <NavLink
                     key={link.path}
                     to={link.path}
-                    className={({isActive}) =>
-                      `
+
+                    className={({isActive})=>`
                       flex
                       items-center
                       gap-3
@@ -274,8 +348,7 @@ export default function MembersLayout() {
                         ? "bg-cyan-400/30 border border-cyan-300/40"
                         : "hover:bg-white/10"
                       }
-                      `
-                    }
+                    `}
                   >
 
                     <Icon size={22}/>
@@ -284,16 +357,20 @@ export default function MembersLayout() {
                       {link.name}
                     </span>
 
+
                   </NavLink>
 
                 );
 
               })}
 
+
             </nav>
 
 
+
           </aside>
+
 
 
 
@@ -305,11 +382,15 @@ export default function MembersLayout() {
           </main>
 
 
+
         </div>
 
+
       </div>
+
 
     </div>
 
   );
+
 }
