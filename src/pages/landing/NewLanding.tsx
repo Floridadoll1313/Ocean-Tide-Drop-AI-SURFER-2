@@ -320,3 +320,408 @@ export default function NewLanding() {
 
 
       </section>
+      {/* AI CREW */}
+
+      <section
+        id="solutions"
+        className="
+          relative
+          z-10
+          py-24
+          px-6
+          bg-slate-900/90
+        "
+      >
+
+        <div className="max-w-6xl mx-auto">
+
+
+          <div className="text-center mb-16">
+
+
+            <Waves
+              className="
+                mx-auto
+                mb-4
+                text-cyan-300
+              "
+              size={45}
+            />
+
+
+            <h2
+              className="
+                text-4xl
+                font-bold
+              "
+            >
+
+              Meet Your AI Surf Crew
+
+            </h2>
+
+
+            <p className="mt-4 text-slate-300">
+
+              Powerful AI systems designed to help your business move faster.
+
+            </p>
+
+
+          </div>
+
+
+
+
+          <div
+            className="
+              grid
+              md:grid-cols-2
+              lg:grid-cols-4
+              gap-6
+            "
+          >
+
+            {aiCrew.map((item)=>{
+
+              const Icon = item.icon;
+
+
+              return (
+
+                <motion.div
+
+                  key={item.title}
+
+                  whileHover={{
+                    y:-12,
+                    scale:1.03
+                  }}
+
+                  transition={{
+                    duration:.3
+                  }}
+
+                  className="
+                    group
+                    rounded-3xl
+                    bg-white/10
+                    backdrop-blur-xl
+                    p-6
+                    border
+                    border-cyan-300/20
+                    transition-all
+                    duration-500
+                    hover:border-cyan-300/50
+                  "
+
+                >
+
+
+                  <Icon
+                    className="
+                      text-cyan-300
+                      mb-5
+                    "
+                    size={38}
+                  />
+
+
+
+                  <h3
+                    className="
+                      text-xl
+                      font-bold
+                      mb-3
+                    "
+                  >
+
+                    {item.title}
+
+                  </h3>
+
+
+
+                  <p className="text-slate-300">
+
+                    {item.text}
+
+                  </p>
+
+
+
+                </motion.div>
+
+              );
+
+            })}
+
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+
+
+
+
+      {/* MEMBERSHIP */}
+
+      <section
+        className="
+          relative
+          z-10
+          py-24
+          px-6
+          bg-gradient-to-b
+          from-slate-900
+          to-cyan-950
+        "
+      >
+
+
+        <div className="max-w-6xl mx-auto">
+
+
+          <h2
+            className="
+              text-center
+              text-4xl
+              font-bold
+              mb-14
+            "
+          >
+
+            Choose Your Wave
+
+          </h2>
+
+
+
+
+          <div
+            className="
+              grid
+              md:grid-cols-2
+              lg:grid-cols-4
+              gap-6
+            "
+          >
+
+
+            {waves.map((wave)=>(
+
+
+              <motion.div
+
+                key={wave.name}
+
+
+                whileHover={{
+                  y:-10,
+                  scale:1.03
+                }}
+
+
+                transition={{
+                  duration:.3
+                }}
+
+
+                className="
+                  rounded-3xl
+                  bg-white/10
+                  backdrop-blur-xl
+                  p-7
+                  border
+                  border-cyan-300/20
+                  hover:border-cyan-300/50
+                  transition
+                "
+
+              >
+
+
+                <h3
+                  className="
+                    text-2xl
+                    font-bold
+                    text-cyan-300
+                  "
+                >
+
+                  {wave.name}
+
+                </h3>
+
+
+
+
+                <p
+                  className="
+                    mt-4
+                    text-slate-200
+                  "
+                >
+
+                  {wave.text}
+
+                </p>
+
+
+
+
+                <Link
+                  to="/members"
+                  className="
+                    inline-block
+                    mt-6
+                    text-cyan-200
+                    font-bold
+                    hover:text-cyan-300
+                  "
+                >
+
+                  Ride this wave →
+
+                </Link>
+
+
+
+              </motion.div>
+
+
+            ))}
+
+
+
+          </div>
+
+
+
+        </div>
+
+
+
+      </section>
+
+
+
+
+
+
+
+
+      {/* FINAL CTA */}
+
+
+      <section
+        className="
+          relative
+          z-10
+          py-24
+          px-6
+          text-center
+        "
+      >
+
+
+
+        <motion.div
+
+          initial={{
+            opacity:0,
+            y:30
+          }}
+
+          whileInView={{
+            opacity:1,
+            y:0
+          }}
+
+          transition={{
+            duration:.8
+          }}
+
+          viewport={{
+            once:true
+          }}
+
+        >
+
+
+
+          <h2
+            className="
+              text-5xl
+              font-bold
+            "
+          >
+
+            Ready To Ride The Next Wave?
+
+          </h2>
+
+
+
+
+          <p
+            className="
+              mt-6
+              text-xl
+              text-slate-300
+              max-w-2xl
+              mx-auto
+            "
+          >
+
+            Join Ocean Tide Drop AI SURFER and bring AI power to your business.
+
+          </p>
+
+
+
+
+          <Link
+
+            to="/members"
+
+            className="
+              inline-flex
+              mt-10
+              rounded-full
+              bg-cyan-400
+              px-10
+              py-5
+              text-slate-950
+              font-bold
+              hover:scale-105
+              transition
+            "
+
+          >
+
+            Enter Members Area 🌊
+
+          </Link>
+
+
+
+        </motion.div>
+
+
+
+      </section>
+
+
+
+    </div>
+
+  );
+
+}
