@@ -1,20 +1,16 @@
 import { Routes, Route } from "react-router-dom";
 
-import WaveCheck from "./pages/wavecheck/WaveCheck";
-
 import NewLanding from "./pages/landing/NewLanding";
+import WaveCheck from "./pages/wavecheck/WaveCheck";
 import Login from "./pages/login/Login";
 import Pricing from "./pages/pricing/Pricing";
-import Dashboard from "./pages/dashboard/Dashboard";
 
 import MembersLayout from "./components/members/MembersLayout";
 
-
-// Headquarters
 import HeadquartersBridge from "./components/members/HeadquartersBridge";
 
+import Dashboard from "./pages/dashboard/Dashboard";
 
-// Member tools
 import Agents from "./pages/members/Agents";
 import Automation from "./pages/members/Automation";
 import Workspace from "./pages/members/Workspace";
@@ -29,7 +25,8 @@ export default function App() {
 
     <Routes>
 
-      {/* Public Website */}
+
+      {/* PUBLIC SITE */}
 
       <Route
         path="/"
@@ -56,58 +53,60 @@ export default function App() {
 
 
 
-      {/* Members Area */}
+      {/* MEMBERS AREA */}
 
       <Route
+        path="/members"
         element={<MembersLayout />}
       >
 
         <Route
-          path="/dashboard"
-          element={<Dashboard />}
-        />
-
-
-        <Route
-          path="/headquarters"
+          index
           element={<HeadquartersBridge />}
         />
 
 
         <Route
-          path="/members/agents"
+          path="dashboard"
+          element={<Dashboard />}
+        />
+
+
+        <Route
+          path="agents"
           element={<Agents />}
         />
 
 
         <Route
-          path="/members/automation"
+          path="automation"
           element={<Automation />}
         />
 
 
         <Route
-          path="/members/workspace"
+          path="workspace"
           element={<Workspace />}
         />
 
 
         <Route
-          path="/members/revenue"
+          path="revenue"
           element={<Revenue />}
         />
 
 
         <Route
-          path="/members/leads"
+          path="leads"
           element={<Leads />}
         />
 
 
         <Route
-          path="/members/scanner"
+          path="scanner"
           element={<Scanner />}
         />
+
 
       </Route>
 
