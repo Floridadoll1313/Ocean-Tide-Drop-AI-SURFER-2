@@ -315,3 +315,493 @@ export default function Agents() {
 
 
   };
+    return (
+
+    <div
+      className="
+        min-h-screen
+        dashboard-bg
+        text-white
+        p-6
+        md:p-10
+      "
+    >
+
+
+      <div className="max-w-7xl mx-auto">
+
+
+
+        <div className="flex items-center gap-4 mb-8">
+
+
+          <div
+            className="
+              p-4
+              rounded-2xl
+              bg-cyan-400/10
+              border
+              border-cyan-300/20
+            "
+          >
+
+            <Waves
+              className="
+                w-10
+                h-10
+                text-cyan-300
+              "
+            />
+
+          </div>
+
+
+
+          <div>
+
+
+            <h1
+              className="
+                text-4xl
+                font-black
+                text-white
+              "
+            >
+              AI Agent Harbor
+            </h1>
+
+
+            <p
+              className="
+                text-slate-200
+                mt-2
+              "
+            >
+              Build your digital AI crew and deploy automation workers.
+            </p>
+
+
+          </div>
+
+
+        </div>
+
+
+
+
+
+
+        <div
+          className="
+            rounded-3xl
+            p-8
+            mb-10
+            bg-slate-900/70
+            backdrop-blur-xl
+            border
+            border-cyan-300/20
+          "
+        >
+
+
+          <div
+            className="
+              flex
+              items-center
+              gap-3
+              mb-6
+            "
+          >
+
+            <Plus className="text-cyan-300"/>
+
+
+            <h2
+              className="
+                text-2xl
+                font-bold
+              "
+            >
+              Create New AI Agent
+            </h2>
+
+
+          </div>
+
+
+
+
+
+          <div
+            className="
+              grid
+              md:grid-cols-2
+              gap-5
+            "
+          >
+
+
+            <input
+
+              className="
+                p-4
+                rounded-xl
+                bg-slate-800/80
+                border
+                border-cyan-300/20
+                text-white
+                placeholder:text-slate-300
+                outline-none
+              "
+
+              placeholder="Agent name"
+
+              value={name}
+
+              onChange={(e)=>
+                setName(e.target.value)
+              }
+
+            />
+
+
+
+            <input
+
+              className="
+                p-4
+                rounded-xl
+                bg-slate-800/80
+                border
+                border-cyan-300/20
+                text-white
+                placeholder:text-slate-300
+                outline-none
+              "
+
+              placeholder="Business type"
+
+              value={businessType}
+
+              onChange={(e)=>
+                setBusinessType(e.target.value)
+              }
+
+            />
+
+
+          </div>
+
+
+
+
+
+          <textarea
+
+            className="
+              w-full
+              mt-5
+              p-4
+              rounded-xl
+              bg-slate-800/80
+              border
+              border-cyan-300/20
+              text-white
+              placeholder:text-slate-300
+              min-h-32
+              outline-none
+            "
+
+            placeholder="What should this AI agent do?"
+
+            value={purpose}
+
+            onChange={(e)=>
+              setPurpose(e.target.value)
+            }
+
+          />
+
+
+
+
+
+
+          <button
+
+            onClick={createAgent}
+
+            disabled={loading}
+
+            className="
+              mt-6
+              px-8
+              py-4
+              rounded-xl
+              bg-cyan-400
+              text-slate-950
+              font-black
+              hover:scale-105
+              transition
+            "
+
+          >
+
+            {
+              loading
+              ? "Launching..."
+              : "Launch AI Agent 🚀"
+            }
+
+
+          </button>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div
+          className="
+            mb-6
+            flex
+            items-center
+            gap-3
+          "
+        >
+
+          <Sparkles className="text-cyan-300"/>
+
+
+          <h2
+            className="
+              text-3xl
+              font-bold
+            "
+          >
+            Your AI Fleet
+          </h2>
+
+
+        </div>
+
+
+
+
+
+
+
+        {
+          agents.length === 0 ? (
+
+
+            <div
+              className="
+                rounded-3xl
+                p-10
+                text-center
+                bg-slate-900/70
+                border
+                border-cyan-300/20
+              "
+            >
+
+              <Bot
+                className="
+                  mx-auto
+                  w-14
+                  h-14
+                  text-cyan-300
+                  mb-4
+                "
+              />
+
+
+              <p
+                className="
+                  text-slate-200
+                "
+              >
+                No AI agents launched yet.
+                Create your first digital crew member.
+              </p>
+
+
+            </div>
+
+
+          ) : (
+
+
+            <div
+              className="
+                grid
+                md:grid-cols-3
+                gap-6
+              "
+            >
+
+
+              {
+                agents.map((agent)=>(
+
+
+                  <div
+
+                    key={agent.id}
+
+                    className="
+                      rounded-3xl
+                      p-6
+                      bg-slate-900/70
+                      backdrop-blur-xl
+                      border
+                      border-cyan-300/20
+                    "
+
+                  >
+
+
+                    <div
+                      className="
+                        flex
+                        justify-between
+                      "
+                    >
+
+                      <Bot
+                        className="
+                          text-cyan-300
+                          w-8
+                          h-8
+                        "
+                      />
+
+
+
+                      <button
+
+                        onClick={()=>
+                          deleteAgent(agent.id)
+                        }
+
+                        className="
+                          text-red-400
+                          hover:text-red-300
+                        "
+
+                      >
+
+                        <Trash2 size={18}/>
+
+                      </button>
+
+
+                    </div>
+
+
+
+
+
+
+                    <h3
+                      className="
+                        text-xl
+                        font-bold
+                        mt-5
+                      "
+                    >
+
+                      {agent.name}
+
+                    </h3>
+
+
+
+
+
+                    <p
+                      className="
+                        text-cyan-300
+                        mt-2
+                        font-semibold
+                      "
+                    >
+
+                      {agent.business_type}
+
+                    </p>
+
+
+
+
+
+                    <p
+                      className="
+                        text-slate-200
+                        mt-4
+                      "
+                    >
+
+                      {agent.purpose}
+
+                    </p>
+
+
+
+
+
+                    <span
+                      className="
+                        inline-block
+                        mt-5
+                        px-3
+                        py-1
+                        rounded-full
+                        bg-cyan-300/20
+                        border
+                        border-cyan-300/30
+                        text-cyan-100
+                        text-xs
+                        font-bold
+                      "
+                    >
+
+                      {agent.status}
+
+                    </span>
+
+
+
+
+                  </div>
+
+
+                ))
+
+              }
+
+
+            </div>
+
+
+          )
+
+        }
+
+
+
+      </div>
+
+
+    </div>
+
+
+  );
+
+                  }
