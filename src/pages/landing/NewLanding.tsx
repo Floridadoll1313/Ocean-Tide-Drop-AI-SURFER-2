@@ -8,6 +8,8 @@ import {
   Waves
 } from "lucide-react";
 
+import { Link } from "react-router-dom";
+
 import homepageConcept from "../../assets/images/ocean_ai_yacht.png";
 import cyberWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
 
@@ -19,26 +21,31 @@ import BioluminescentParticles from "../../components/landing/BioluminescentPart
 
 export default function NewLanding() {
 
+
   const aiCrew = [
     {
       icon: Bot,
       title: "AI Agent Crew",
-      text: "Smart assistants that help your business answer customers, organize work, and automate daily tasks."
+      text:
+        "Smart assistants that help your business answer customers, organize work, and automate daily tasks."
     },
     {
       icon: Zap,
       title: "Automation Waves",
-      text: "Connect your systems and remove repetitive work with intelligent automation."
+      text:
+        "Connect your systems and remove repetitive work with intelligent automation."
     },
     {
       icon: Users,
       title: "Lead Catcher",
-      text: "Capture opportunities, follow up faster, and keep customers moving forward."
+      text:
+        "Capture opportunities, follow up faster, and keep customers moving forward."
     },
     {
       icon: BarChart3,
       title: "Growth Navigator",
-      text: "Turn your business information into smarter decisions."
+      text:
+        "Turn your business information into smarter decisions."
     }
   ];
 
@@ -58,20 +65,25 @@ export default function NewLanding() {
     },
     {
       name: "Tsunami Takeover",
-      text: "Complete AI transformation for serious growth."
+      text:
+        "Complete AI transformation for serious growth."
     }
   ];
 
 
+
   return (
 
-    <div className="
-      relative
-      min-h-screen
-      overflow-x-hidden
-      bg-slate-950
-      text-white
-    ">
+    <div
+      className="
+        relative
+        min-h-screen
+        overflow-x-hidden
+        bg-slate-950
+        text-white
+      "
+    >
+
 
       <OceanBackground />
 
@@ -79,8 +91,12 @@ export default function NewLanding() {
 
       <BioluminescentParticles />
 
+
       <Navbar />
 
+
+
+      {/* HERO */}
 
       <section
         className="
@@ -90,6 +106,7 @@ export default function NewLanding() {
           items-center
           overflow-hidden
         "
+
         style={{
           backgroundImage: `
             linear-gradient(
@@ -105,17 +122,21 @@ export default function NewLanding() {
 
 
         <motion.div
+
           initial={{
-            opacity: 0,
-            y: 40
+            opacity:0,
+            y:40
           }}
+
           animate={{
-            opacity: 1,
-            y: 0
+            opacity:1,
+            y:0
           }}
+
           transition={{
-            duration: 1
+            duration:1
           }}
+
           className="
             relative
             z-10
@@ -132,6 +153,7 @@ export default function NewLanding() {
             alt="Ocean Tide Drop AI SURFER"
             className="w-44 mb-8"
           />
+
 
 
           <h1
@@ -152,6 +174,7 @@ export default function NewLanding() {
           </h1>
 
 
+
           <p
             className="
               mt-8
@@ -160,13 +183,25 @@ export default function NewLanding() {
               text-slate-200
             "
           >
+
             Ocean Tide Drop AI SURFER builds AI agents,
             automation systems, and intelligent tools that
-            help businesses save time, capture leads, and grow.
+            help businesses save time, capture leads,
+            and grow.
+
           </p>
 
 
-          <div className="mt-10 flex flex-wrap gap-5">
+
+
+          <div
+            className="
+              mt-10
+              flex
+              flex-wrap
+              gap-5
+            "
+          >
 
 
             <a
@@ -193,6 +228,37 @@ export default function NewLanding() {
             </a>
 
 
+
+
+            <Link
+              to="/members"
+              className="
+                rounded-full
+                bg-white/10
+                border
+                border-cyan-300/40
+                px-8
+                py-4
+                text-cyan-200
+                font-bold
+                flex
+                items-center
+                gap-2
+                hover:bg-cyan-300/20
+                hover:scale-105
+                transition
+              "
+            >
+
+              🌊 Members Area
+
+              <ArrowRight size={20}/>
+
+            </Link>
+
+
+
+
             <a
               href="#solutions"
               className="
@@ -215,21 +281,30 @@ export default function NewLanding() {
           </div>
 
 
+
         </motion.div>
 
 
+
+
+
         <motion.img
+
           src={cyberWave}
+
           alt="AI ocean wave"
+
 
           animate={{
             y:[0,-20,0]
           }}
 
+
           transition={{
             duration:6,
             repeat:Infinity
           }}
+
 
           className="
             absolute
@@ -239,366 +314,9 @@ export default function NewLanding() {
             opacity-40
             pointer-events-none
           "
+
         />
 
 
-      </section>
-      {/* AI CREW */}
-
-      <section
-        id="solutions"
-        className="
-          relative
-          z-10
-          py-24
-          px-6
-          bg-slate-900/90
-        "
-      >
-
-        <div className="max-w-6xl mx-auto">
-
-
-          <div className="text-center mb-16">
-
-            <Waves
-              className="
-                mx-auto
-                mb-4
-                text-cyan-300
-              "
-              size={45}
-            />
-
-
-            <h2
-              className="
-                text-4xl
-                font-bold
-              "
-            >
-              Meet Your AI Surf Crew
-            </h2>
-
-
-            <p className="mt-4 text-slate-300">
-              Powerful AI systems designed to help your business move faster.
-            </p>
-
-          </div>
-
-
-
-          <div
-            className="
-              grid
-              md:grid-cols-2
-              lg:grid-cols-4
-              gap-6
-            "
-          >
-
-            {aiCrew.map((item)=>{
-
-              const Icon = item.icon;
-
-
-              return (
-
-                <motion.div
-
-                  key={item.title}
-
-                  whileHover={{
-                    y:-12,
-                    scale:1.03
-                  }}
-
-                  transition={{
-                    duration:.3
-                  }}
-
-                  className="
-                    group
-                    rounded-3xl
-                    bg-white/10
-                    backdrop-blur-xl
-                    p-6
-                    border
-                    border-cyan-300/20
-                    shadow-[0_0_40px_rgba(34,211,238,0.12)]
-                    transition-all
-                    duration-500
-                    hover:border-cyan-300/50
-                    hover:shadow-[0_0_60px_rgba(34,211,238,0.25)]
-                  "
-
-                >
-
-
-                  <Icon
-                    className="
-                      text-cyan-300
-                      mb-5
-                      transition-transform
-                      duration-500
-                      group-hover:scale-110
-                    "
-                    size={38}
-                  />
-
-
-                  <h3
-                    className="
-                      text-xl
-                      font-bold
-                      mb-3
-                    "
-                  >
-                    {item.title}
-                  </h3>
-
-
-                  <p className="text-slate-300">
-                    {item.text}
-                  </p>
-
-
-                  <div
-                    className="
-                      mt-6
-                      h-1
-                      w-0
-                      bg-cyan-300
-                      rounded-full
-                      transition-all
-                      duration-500
-                      group-hover:w-full
-                    "
-                  />
-
-
-                </motion.div>
-
-              );
-
-            })}
-
-          </div>
-
-
-        </div>
-
 
       </section>
-      {/* MEMBERSHIP */}
-
-      <section
-        className="
-          relative
-          z-10
-          py-24
-          px-6
-          bg-gradient-to-b
-          from-slate-900
-          to-cyan-950
-        "
-      >
-
-        <div className="max-w-6xl mx-auto">
-
-
-          <h2
-            className="
-              text-center
-              text-4xl
-              font-bold
-              mb-14
-            "
-          >
-            Choose Your Wave
-          </h2>
-
-
-
-          <div
-            className="
-              grid
-              md:grid-cols-2
-              lg:grid-cols-4
-              gap-6
-            "
-          >
-
-            {waves.map((wave) => (
-
-              <motion.div
-                key={wave.name}
-
-                whileHover={{
-                  y: -10,
-                  scale: 1.03
-                }}
-
-                transition={{
-                  duration: .3
-                }}
-
-                className="
-                  group
-                  rounded-3xl
-                  bg-white/10
-                  backdrop-blur-xl
-                  p-7
-                  border
-                  border-cyan-300/20
-                  shadow-[0_0_35px_rgba(34,211,238,0.10)]
-                  transition-all
-                  duration-500
-                  hover:border-cyan-300/50
-                  hover:shadow-[0_0_60px_rgba(34,211,238,0.25)]
-                "
-              >
-
-                <h3
-                  className="
-                    text-2xl
-                    font-bold
-                    text-cyan-300
-                  "
-                >
-                  {wave.name}
-                </h3>
-
-
-                <p
-                  className="
-                    mt-4
-                    text-slate-200
-                  "
-                >
-                  {wave.text}
-                </p>
-
-
-                <div
-                  className="
-                    mt-6
-                    text-sm
-                    text-cyan-200
-                    opacity-0
-                    transition
-                    duration-500
-                    group-hover:opacity-100
-                  "
-                >
-                  Ride this wave →
-                </div>
-
-
-              </motion.div>
-
-            ))}
-
-          </div>
-
-
-        </div>
-
-
-      </section>
-
-
-
-
-      {/* FINAL CTA */}
-
-      <section
-        id="wave-check"
-        className="
-          relative
-          z-10
-          py-24
-          px-6
-          text-center
-        "
-      >
-
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 30
-          }}
-
-          whileInView={{
-            opacity: 1,
-            y: 0
-          }}
-
-          transition={{
-            duration: .8
-          }}
-
-          viewport={{
-            once:true
-          }}
-        >
-
-
-          <h2
-            className="
-              text-5xl
-              font-bold
-            "
-          >
-            Ready To Ride The Next Wave?
-          </h2>
-
-
-          <p
-            className="
-              mt-6
-              text-xl
-              text-slate-300
-              max-w-2xl
-              mx-auto
-            "
-          >
-            Join Ocean Tide Drop AI SURFER and bring AI power to your business.
-          </p>
-
-
-
-          <a
-            href="/wave-check"
-
-            className="
-              inline-flex
-              mt-10
-              rounded-full
-              bg-cyan-400
-              px-10
-              py-5
-              text-slate-950
-              font-bold
-              hover:scale-105
-              transition
-              shadow-[0_0_35px_rgba(34,211,238,0.35)]
-            "
-          >
-
-            Launch My AI Journey
-
-          </a>
-
-
-        </motion.div>
-
-
-      </section>
-
-
-    </div>
-  );
-}
