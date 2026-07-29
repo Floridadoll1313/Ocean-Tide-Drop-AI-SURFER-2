@@ -1,14 +1,63 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 
+type Workflow = {
+  id: string;
+  name: string;
+  status: "running" | "paused";
+  created_at: string;
+  // user_id is enforced by RLS; no need to expose here unless you want it
+};
+
 export default function Workspace() {
-  const [workflows, setWorkflows] = useState([]);
+  const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [newName, setNewName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Fetch workflows on mount
+  // Fetch on mount
   useEffect(() => {
     fetchWorkflows();
+  }, []);
+
+  // Realtime subscription
+  useEffect(() => {
+    const channel = supabase
+      .channel("workflows-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "workflows",
+        },
+        (payload) => {
+          setWorkflows((prev) => {
+            switch (payload.eventType) {
+              case "INSERT": {
+                const inserted = payload.new as Workflow;
+                // Avoid duplicates
+                if (prev.find((w) => w.id === inserted.id)) return prev;
+                return [inserted, ...prev];
+              }
+              case "UPDATE": {
+                const updated = payload.new as Workflow;
+                return prev.map((w) => (w.id === updated.id ? updated : w));
+              }
+              case "DELETE": {
+                const removed = payload.old as Workflow;
+                return prev.filter((w) => w.id !== removed.id);
+              }
+              default:
+                return prev;
+            }
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   async function fetchWorkflows() {
@@ -18,89 +67,99 @@ export default function Workspace() {
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (error) console.error("Fetch error:", error);
-    else setWorkflows(data || []);
-
+    if (error) {
+      console.error("Fetch workflows error:", error);
+    } else {
+      setWorkflows((data || []) as Workflow[]);
+    }
     setLoading(false);
   }
 
   async function createWorkflow() {
     if (!newName.trim()) return;
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("workflows")
-      .insert([{ name: newName, status: "paused" }])
-      .select();
+      .insert([{ name: newName.trim(), status: "paused" }]);
 
     if (error) {
-      console.error("Create error:", error);
+      console.error("Create workflow error:", error);
       return;
     }
 
     setNewName("");
-    setWorkflows((prev) => [...data, ...prev]);
+    // No manual state update needed; realtime will pick up INSERT
   }
 
-  async function toggleWorkflowStatus(id, currentStatus) {
+  async function toggleWorkflowStatus(id: string, currentStatus: Workflow["status"]) {
     const newStatus = currentStatus === "running" ? "paused" : "running";
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("workflows")
       .update({ status: newStatus })
-      .eq("id", id)
-      .select();
+      .eq("id", id);
 
     if (error) {
-      console.error("Toggle error:", error);
-      return;
+      console.error("Toggle workflow status error:", error);
     }
-
-    setWorkflows((prev) =>
-      prev.map((w) => (w.id === id ? data[0] : w))
-    );
+    // Realtime will handle UPDATE
   }
 
-  async function deleteWorkflow(id) {
+  async function deleteWorkflow(id: string) {
     const { error } = await supabase.from("workflows").delete().eq("id", id);
-    if (error) {
-      console.error("Delete error:", error);
-      return;
-    }
 
-    setWorkflows((prev) => prev.filter((w) => w.id !== id));
+    if (error) {
+      console.error("Delete workflow error:", error);
+    }
+    // Realtime will handle DELETE
   }
 
   return (
     <div className="workspace-container">
-      <h2 className="workspace-title">Workspace</h2>
+      <header className="workspace-header">
+        <h2 className="workspace-title">Workspace</h2>
+        <p className="workspace-subtitle">
+          Design, run, and control your AI workflows in real time.
+        </p>
+      </header>
 
       {/* Create Workflow */}
-      <div className="workspace-create">
+      <section className="workspace-create">
         <input
           type="text"
-          placeholder="New workflow name..."
+          placeholder="Name your new workflow..."
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           className="workspace-input"
         />
-        <button onClick={createWorkflow} className="workspace-btn">
-          Create
+        <button onClick={createWorkflow} className="workspace-btn primary">
+          Create Workflow
         </button>
-      </div>
+      </section>
 
       {/* Workflow List */}
-      <div className="workspace-list">
-        {loading && <p>Loading workflows...</p>}
+      <section className="workspace-list">
+        {loading && <p className="workspace-status">Loading workflows...</p>}
 
         {!loading && workflows.length === 0 && (
-          <p>No workflows yet — create one!</p>
+          <p className="workspace-status">
+            No workflows yet. Create one to start your automation ocean.
+          </p>
         )}
 
         {workflows.map((workflow) => (
           <div key={workflow.id} className="workspace-item">
             <div className="workspace-info">
-              <h3>{workflow.name}</h3>
-              <p>Status: {workflow.status}</p>
+              <h3 className="workspace-name">{workflow.name}</h3>
+              <span
+                className={
+                  workflow.status === "running"
+                    ? "workspace-badge running"
+                    : "workspace-badge paused"
+                }
+              >
+                {workflow.status === "running" ? "Running" : "Paused"}
+              </span>
             </div>
 
             <div className="workspace-actions">
@@ -108,21 +167,25 @@ export default function Workspace() {
                 onClick={() =>
                   toggleWorkflowStatus(workflow.id, workflow.status)
                 }
-                className="workspace-btn"
+                className={
+                  workflow.status === "running"
+                    ? "workspace-btn secondary"
+                    : "workspace-btn primary"
+                }
               >
                 {workflow.status === "running" ? "Pause" : "Play"}
               </button>
 
               <button
                 onClick={() => deleteWorkflow(workflow.id)}
-                className="workspace-btn delete"
+                className="workspace-btn danger"
               >
                 Delete
               </button>
             </div>
           </div>
         ))}
-      </div>
+      </section>
     </div>
   );
-}
+            }
