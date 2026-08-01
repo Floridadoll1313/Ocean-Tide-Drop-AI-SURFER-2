@@ -204,8 +204,8 @@ export default function NewLanding() {
           >
 
 
-            <a
-              href="/wave-check"
+            <Link
+              to="/wave-check"
               className="
                 rounded-full
                 bg-cyan-400
@@ -225,7 +225,7 @@ export default function NewLanding() {
 
               <ArrowRight size={20}/>
 
-            </a>
+            </Link>
 
 
 
@@ -274,7 +274,7 @@ export default function NewLanding() {
             >
 
               Explore AI Solutions
-
+n
             </a>
 
 
@@ -609,8 +609,6 @@ export default function NewLanding() {
 
 
       </section>
-
-
 
 
 
