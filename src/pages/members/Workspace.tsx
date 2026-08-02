@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../../lib/supabase";
 
 type Workflow = {
   id: string;
@@ -56,7 +56,11 @@ export default function Workspace() {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {
+        // ignore
+      }
     };
   }, []);
 
@@ -118,9 +122,7 @@ export default function Workspace() {
     <div className="workspace-container">
       <header className="workspace-header">
         <h2 className="workspace-title">Workspace</h2>
-        <p className="workspace-subtitle">
-          Design, run, and control your AI workflows in real time.
-        </p>
+        <p className="workspace-subtitle">Design, run, and control your AI workflows in real time.</p>
       </header>
 
       {/* Create Workflow */}
@@ -142,44 +144,27 @@ export default function Workspace() {
         {loading && <p className="workspace-status">Loading workflows...</p>}
 
         {!loading && workflows.length === 0 && (
-          <p className="workspace-status">
-            No workflows yet. Create one to start your automation ocean.
-          </p>
+          <p className="workspace-status">No workflows yet. Create one to start your automation ocean.</p>
         )}
 
         {workflows.map((workflow) => (
           <div key={workflow.id} className="workspace-item">
             <div className="workspace-info">
               <h3 className="workspace-name">{workflow.name}</h3>
-              <span
-                className={
-                  workflow.status === "running"
-                    ? "workspace-badge running"
-                    : "workspace-badge paused"
-                }
-              >
+              <span className={workflow.status === "running" ? "workspace-badge running" : "workspace-badge paused"}>
                 {workflow.status === "running" ? "Running" : "Paused"}
               </span>
             </div>
 
             <div className="workspace-actions">
               <button
-                onClick={() =>
-                  toggleWorkflowStatus(workflow.id, workflow.status)
-                }
-                className={
-                  workflow.status === "running"
-                    ? "workspace-btn secondary"
-                    : "workspace-btn primary"
-                }
+                onClick={() => toggleWorkflowStatus(workflow.id, workflow.status)}
+                className={workflow.status === "running" ? "workspace-btn secondary" : "workspace-btn primary"}
               >
                 {workflow.status === "running" ? "Pause" : "Play"}
               </button>
 
-              <button
-                onClick={() => deleteWorkflow(workflow.id)}
-                className="workspace-btn danger"
-              >
+              <button onClick={() => deleteWorkflow(workflow.id)} className="workspace-btn danger">
                 Delete
               </button>
             </div>
@@ -188,4 +173,4 @@ export default function Workspace() {
       </section>
     </div>
   );
-            }
+}
