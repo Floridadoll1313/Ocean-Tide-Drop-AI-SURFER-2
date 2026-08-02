@@ -32,9 +32,9 @@ googleProvider.addScope('https://www.googleapis.com/auth/forms.body');
 googleProvider.addScope('https://www.googleapis.com/auth/forms.responses.readonly');
 googleProvider.addScope('https://www.googleapis.com/auth/forms');
 
-// Initialize messaging only if supported
+// Initialize messaging only in the browser and when serviceWorker is available
 let messaging: any = null;
-if ('serviceWorker' in navigator) {
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
   try {
     messaging = getMessaging(app);
   } catch (e) {
