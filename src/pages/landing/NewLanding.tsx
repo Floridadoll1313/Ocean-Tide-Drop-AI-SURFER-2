@@ -76,6 +76,12 @@ export default function NewLanding() {
         bg-slate-950
         text-white
       "
+      style={{
+        backgroundImage: 'linear-gradient(rgba(2,12,30,0.9), rgba(2,12,30,0.95)), url("/images/Members-bg.png")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
     >
       <OceanBackground />
       <SunriseGlow />
