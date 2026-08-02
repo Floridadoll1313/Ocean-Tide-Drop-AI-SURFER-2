@@ -38,7 +38,7 @@ export default function Navbar() {
           </Link>
 
           {user && (
-            <Link className="text-white/80 hover:text-cyan-300" to="/dashboard">
+            <Link className="text-white/80 hover:text-cyan-300" to="/members/dashboard">
               Dashboard
             </Link>
           )}
@@ -50,11 +50,11 @@ export default function Navbar() {
                 Members
               </Link>
 
-              <Link className="text-white/80 hover:text-cyan-300" to="/tools">
+              <Link className="text-white/80 hover:text-cyan-300" to="/members/agents">
                 AI Tools
               </Link>
 
-              <Link className="text-white/80 hover:text-cyan-300" to="/command-center">
+              <Link className="text-white/80 hover:text-cyan-300" to="/members/dashboard">
                 Command Center
               </Link>
             </>

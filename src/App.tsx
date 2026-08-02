@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 
 // Public Pages
@@ -33,7 +33,6 @@ export default function App() {
     <Routes>
 
 
-
       {/* PUBLIC WEBSITE */}
 
 
@@ -61,7 +60,11 @@ export default function App() {
       />
 
 
-
+      {/* Legacy / shortcut redirects to members */}
+      <Route path="/dashboard" element={<Navigate to="/members/dashboard" replace />} />
+      <Route path="/tools" element={<Navigate to="/members/agents" replace />} />
+      <Route path="/command-center" element={<Navigate to="/members/dashboard" replace />} />
+      <Route path="/billing" element={<Navigate to="/members/revenue" replace />} />
 
 
       {/* MEMBERS AREA */}
@@ -81,14 +84,12 @@ export default function App() {
         />
 
 
-
         {/* Command Center */}
 
         <Route
           path="dashboard"
           element={<Dashboard />}
         />
-
 
 
         {/* AI Tools */}
@@ -105,12 +106,10 @@ export default function App() {
         />
 
 
-
         <Route
           path="workspace"
           element={<Workspace />}
         />
-
 
 
         <Route
@@ -119,12 +118,10 @@ export default function App() {
         />
 
 
-
         <Route
           path="revenue"
           element={<Revenue />}
         />
-
 
 
         <Route
@@ -134,7 +131,6 @@ export default function App() {
 
 
       </Route>
-
 
 
     </Routes>

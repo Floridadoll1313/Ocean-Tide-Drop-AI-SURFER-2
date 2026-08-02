@@ -13,6 +13,22 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
+// Debug: log runtime firebase config in the browser (temporary)
+if (typeof window !== 'undefined') {
+  try {
+    // Avoid printing full API key in logs for security; only log prefix
+    const key = String(firebaseConfig.apiKey || '');
+    console.log('Firebase config used:', {
+      apiKeyPrefix: key ? key.slice(0, 8) + '...' : null,
+      authDomain: firebaseConfig.authDomain,
+      projectId: firebaseConfig.projectId,
+      appId: firebaseConfig.appId,
+    });
+  } catch (e) {
+    console.warn('Could not log firebase config', e);
+  }
+}
+
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
@@ -32,9 +48,9 @@ googleProvider.addScope('https://www.googleapis.com/auth/forms.body');
 googleProvider.addScope('https://www.googleapis.com/auth/forms.responses.readonly');
 googleProvider.addScope('https://www.googleapis.com/auth/forms');
 
-// Initialize messaging only if supported
+// Initialize messaging only in the browser and when serviceWorker is available
 let messaging: any = null;
-if ('serviceWorker' in navigator) {
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
   try {
     messaging = getMessaging(app);
   } catch (e) {

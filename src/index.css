@@ -1,16 +1,52 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-html,
-body,
-#root {
-  min-height: 100%;
-  width: 100%;
-  margin: 0;
+/** Lighting & Landing polish **/
+.landing-light-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.landing-light-overlay::before {
+  content: "";
+  position: absolute;
+  width: 650px;
+  height: 650px;
+  right: -120px;
+  bottom: -120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(0,238,255,0.14), transparent 30%);
+  filter: blur(80px);
+  animation: pulseLight 6s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+.landing-light-overlay::after {
+  content: "";
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  left: -80px;
+  top: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 70% 30%, rgba(255,70,200,0.06), transparent 40%);
+  filter: blur(40px);
+  animation: drift 12s linear infinite;
+  mix-blend-mode: screen;
 }
 
-body {
-  background: #020617;
-  color: white;
+@keyframes pulseLight {
+  0%,100% { transform: scale(1); opacity: .9; }
+  50% { transform: scale(1.08); opacity: .6; }
+}
+@keyframes drift {
+  0% { transform: translateY(0) translateX(0) rotate(0deg); }
+  50% { transform: translateY(-18px) translateX(8px) rotate(6deg); }
+  100% { transform: translateY(0) translateX(0) rotate(0deg); }
+}
+
+/* reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .landing-light-overlay::before,
+  .landing-light-overlay::after {
+    animation: none;
+    filter: blur(24px);
+  }
 }

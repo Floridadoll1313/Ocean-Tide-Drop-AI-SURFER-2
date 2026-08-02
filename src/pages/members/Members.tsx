@@ -14,11 +14,12 @@ import {
   Compass,
 } from "lucide-react";
 
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Members() {
 
   const location = useLocation();
-
+  const { logout } = useAuth();
 
   const menuItems = [
 
@@ -73,7 +74,6 @@ export default function Members() {
   ];
 
 
-
   return (
 
     <div className="min-h-screen bg-slate-950 text-white flex">
@@ -88,7 +88,6 @@ export default function Members() {
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/20 blur-[140px] rounded-full" />
 
       </div>
-
 
 
 
@@ -209,7 +208,10 @@ export default function Members() {
 
 
 
-          <button className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-white/10 hover:bg-white/5 transition">
+          <button
+            onClick={() => { if (window.confirm("Are you sure you want to sign out?")) logout(); }}
+            className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-white/10 hover:bg-white/5 transition"
+          >
 
             <LogOut className="w-4 h-4" />
 
@@ -286,6 +288,7 @@ export default function Members() {
 
 
 
+
         {/* Pages Render Here */}
 
         <div className="p-6 md:p-10">
@@ -299,6 +302,7 @@ export default function Members() {
 
 
       </main>
+
 
 
 
