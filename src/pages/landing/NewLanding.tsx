@@ -18,10 +18,6 @@ import {
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
-
-import homepageConcept from "../../assets/images/ocean_ai_yacht.png";
-
-
 import OceanBackground from "../../components/landing/OceanBackground";
 import Navbar from "../../components/landing/Navbar";
 import SunriseGlow from "../../components/landing/SunriseGlow";
