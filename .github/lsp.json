@@ -10,3 +10,11 @@
     }
   }
 }
+{
+  "wordpress-studio": {
+    "command": "studio",
+    "args": [
+      "mcp"
+    ]
+  }
+}
