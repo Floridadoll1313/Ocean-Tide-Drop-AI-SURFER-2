@@ -4,14 +4,24 @@ on:
   push:
     branches:
       - main
+
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   sonarcloud:
     name: SonarCloud Analysis
+
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: read
 
     steps:
       - name: Checkout repository
@@ -26,7 +36,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build app
         run: npm run build
@@ -34,4 +44,5 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v3
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
