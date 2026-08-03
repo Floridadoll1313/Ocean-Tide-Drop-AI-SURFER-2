@@ -174,17 +174,16 @@ export default function NewLanding() {
           overflow-hidden
         "
         style={{
-          backgroundImage: `
-            linear-gradient(
-              rgba(2,12,30,.55),
-              rgba(2,12,30,.90)
-            ),
-            url(${homepageConcept})
-          `,
-          backgroundSize: "cover",
-          backgroundPosition: "center"
-        }}
-      >
+  backgroundImage: `
+    linear-gradient(
+      rgba(2,12,30,.35),
+      rgba(2,12,30,.85)
+    )
+  `,
+  backgroundSize: "cover",
+  backgroundPosition: "center"
+}
+      
         <motion.div
           initial={{
             opacity:0,
