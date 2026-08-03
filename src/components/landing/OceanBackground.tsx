@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import WaveCheck from "./pages/wavecheck/WaveCheck";
 
 export default function OceanBackground() {
   return (

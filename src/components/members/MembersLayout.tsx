@@ -151,7 +151,7 @@ export default function MembersLayout() {
       "
 
       style={{
-        backgroundImage:'url("/surfers-deck-bg.png")'
+        backgroundImage:'url("/images/Members-bg.png")'
       }}
 
     >

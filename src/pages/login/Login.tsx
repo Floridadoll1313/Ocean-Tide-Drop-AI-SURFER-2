@@ -26,7 +26,7 @@ export default function Login() {
     } = await supabase.auth.getSession();
 
     if (session) {
-      navigate("/dashboard");
+      navigate("/members");
     }
   }
 
@@ -55,7 +55,7 @@ export default function Login() {
 
     setLoading(false);
 
-    navigate("/dashboard");
+    navigate("/members");
   }
 
   return (
