@@ -20,7 +20,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
 
 import homepageConcept from "../../assets/images/ocean_ai_yacht.png";
-import cyberWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
+
 
 import OceanBackground from "../../components/landing/OceanBackground";
 import Navbar from "../../components/landing/Navbar";
