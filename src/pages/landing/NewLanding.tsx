@@ -310,26 +310,6 @@ export default function NewLanding() {
           </div>
 
         </motion.div>
-
-        <motion.img
-          src={cyberWave}
-          alt="AI ocean wave"
-          animate={{
-            y:[0,-20,0]
-          }}
-          transition={{
-            duration:6,
-            repeat:Infinity
-          }}
-          className="
-            absolute
-            bottom-0
-            right-0
-            w-[500px]
-            opacity-40
-            pointer-events-none
-          "
-        />
       </section>
 
       {/* AI CREW */}
