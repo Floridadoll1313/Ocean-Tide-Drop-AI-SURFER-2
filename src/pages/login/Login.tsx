@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../lib/supabase";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../lib/firebase"; // adjust path to your firebase lib
 
 import "./Login.css";
 
@@ -17,169 +18,106 @@ export default function Login() {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    checkSession();
-  }, []);
+    // Check Firebase auth session
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate("/members");
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
 
-  async function checkSession() {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (session) {
-      navigate("/members");
-    }
-  }
-
-  async function handleLogin(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
+  async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setLoading(true);
     setError("");
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      if (rememberMe) {
+        localStorage.setItem("rememberMe", "true");
+      }
       setLoading(false);
-      return;
+      navigate("/members");
+    } catch (err: any) {
+      setError(err.message || "Failed to log in.");
+      setLoading(false);
     }
-
-    if (rememberMe) {
-      localStorage.setItem("rememberMe", "true");
-    }
-
-    setLoading(false);
-
-    navigate("/members");
   }
 
   return (
     <main className="login-page">
-
       <section className="login-card">
-
         <img
           src="/images/ocean_tide_logo.png"
           alt="Ocean Tide Drop AI SURFER"
           className="login-logo"
         />
 
-        <h1>
-          Welcome Back, Surfer 🌊
-        </h1>
+        <h1>Welcome Back, Surfer 🌊</h1>
 
         <p className="login-subtitle">
           Enter the Surfer's Deck and manage your AI tools.
         </p>
 
-
         <form onSubmit={handleLogin}>
-
-          <label>
-            Email Address
-          </label>
-
+          <label>Email Address</label>
           <input
             type="email"
             placeholder="Enter your email"
             value={email}
-            onChange={(event) =>
-              setEmail(event.target.value)
-            }
+            onChange={(event) => setEmail(event.target.value)}
             required
           />
 
-
-          <label>
-            Password
-          </label>
-
+          <label>Password</label>
           <div className="password-wrapper">
-
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               value={password}
-              onChange={(event) =>
-                setPassword(event.target.value)
-              }
+              onChange={(event) => setPassword(event.target.value)}
               required
             />
 
             <button
               type="button"
-              onClick={() =>
-                setShowPassword(!showPassword)
-              }
+              onClick={() => setShowPassword(!showPassword)}
               className="password-toggle"
             >
               {showPassword ? "Hide" : "Show"}
             </button>
-
           </div>
 
-
           <div className="login-options">
-
             <label>
               <input
                 type="checkbox"
                 checked={rememberMe}
-                onChange={() =>
-                  setRememberMe(!rememberMe)
-                }
+                onChange={() => setRememberMe(!rememberMe)}
               />
-
               Remember Me
             </label>
 
-
-            <Link to="/forgot-password">
-              Forgot Password?
-            </Link>
-
+            <Link to="/forgot-password">Forgot Password?</Link>
           </div>
 
-
-          {error && (
-            <div className="login-error">
-              {error}
-            </div>
-          )}
-
+          {error && <div className="login-error">{error}</div>}
 
           <button
             type="submit"
             className="login-button"
             disabled={loading}
           >
-            {loading
-              ? "Catching Wave..."
-              : "Login"}
+            {loading ? "Catching Wave..." : "Login"}
           </button>
-
-
         </form>
 
-
         <p className="signup-link">
-
-          New to Ocean Tide Drop?
-
-          <Link to="/signup">
-            Create Account
-          </Link>
-
+          New to Ocean Tide Drop? <Link to="/signup">Create Account</Link>
         </p>
-
-
       </section>
-
     </main>
   );
 }

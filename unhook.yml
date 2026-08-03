@@ -1,0 +1,8 @@
+webhookUrl: https://unhook.sh/your-org/your-webhook-name
+destination:
+  - name: local
+    url: http://localhost:3000/api/webhooks
+    ping: true
+delivery:
+  - source: "*"
+    destination: local
