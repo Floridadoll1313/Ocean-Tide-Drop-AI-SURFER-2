@@ -1,14 +1,23 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
   Bot,
   Zap,
   Users,
   BarChart3,
-  Waves
+  Waves,
+  Star,
+  Lock,
+  Rocket,
+  BadgeCheck,
+  Mail,
+  CheckCircle2,
+  Loader2,
 } from "lucide-react";
 
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from "../../lib/supabase";
 
 import homepageConcept from "../../assets/images/ocean_ai_yacht.png";
 import cyberWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
@@ -19,7 +28,48 @@ import SunriseGlow from "../../components/landing/SunriseGlow";
 import BioluminescentParticles from "../../components/landing/BioluminescentParticles";
 import ChatAgent from "../../components/ChatAgent";
 
+// ── Launch target: Aug 3 2026 midnight EDT ──────────────────────────────────
+const LAUNCH_DATE = new Date("2026-08-03T00:00:00-04:00");
+
+function useCountdown() {
+  const calc = () => {
+    const diff = LAUNCH_DATE.getTime() - Date.now();
+    if (diff <= 0) return { h: 0, m: 0, s: 0, done: true };
+    const h = Math.floor(diff / 3_600_000);
+    const m = Math.floor((diff % 3_600_000) / 60_000);
+    const s = Math.floor((diff % 60_000) / 1_000);
+    return { h, m, s, done: false };
+  };
+  const [time, setTime] = useState(calc);
+  useEffect(() => {
+    const id = setInterval(() => setTime(calc()), 1_000);
+    return () => clearInterval(id);
+  }, []);
+  return time;
+}
+
+function pad(n: number) {
+  return String(n).padStart(2, "0");
+}
+
 export default function NewLanding() {
+  const countdown = useCountdown();
+
+  // ── Founding member email form ─────────────────────────────────────────────
+  const [fmName,  setFmName]   = useState("");
+  const [fmEmail, setFmEmail]  = useState("");
+  const [fmState, setFmState]  = useState<"idle"|"loading"|"done"|"error">("idle");
+
+  const handleFoundingSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!fmEmail.trim() || !fmName.trim()) return;
+    setFmState("loading");
+    const { error } = await supabase
+      .from("founding_members")
+      .insert({ name: fmName.trim(), email: fmEmail.trim().toLowerCase() });
+    setFmState(error ? "error" : "done");
+  };
+
   const aiCrew = [
     {
       icon: Bot,
@@ -87,6 +137,38 @@ export default function NewLanding() {
       <SunriseGlow />
       <BioluminescentParticles />
       <Navbar />
+
+      {/* ── LAUNCH DAY COUNTDOWN BANNER ─────────────────────────────── */}
+      <motion.div
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="relative z-50 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-400 text-slate-950"
+      >
+        <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div className="flex items-center gap-2 font-black text-sm uppercase tracking-widest">
+            <Rocket size={16} className="animate-bounce" />
+            {countdown.done
+              ? "🎉 We Are LIVE — Welcome to Ocean Tide Drop AI SURFER!"
+              : "🚀 WE LAUNCH TONIGHT — Founding Member spots are limited!"}
+          </div>
+          {!countdown.done && (
+            <div className="flex items-center gap-1 font-black text-lg tabular-nums">
+              <span className="bg-slate-950/20 rounded-lg px-2 py-0.5">{pad(countdown.h)}h</span>
+              <span className="opacity-60">:</span>
+              <span className="bg-slate-950/20 rounded-lg px-2 py-0.5">{pad(countdown.m)}m</span>
+              <span className="opacity-60">:</span>
+              <span className="bg-slate-950/20 rounded-lg px-2 py-0.5">{pad(countdown.s)}s</span>
+            </div>
+          )}
+          <a
+            href="#founding-member"
+            className="text-xs font-black uppercase tracking-widest underline hover:no-underline whitespace-nowrap"
+          >
+            Claim Your Spot →
+          </a>
+        </div>
+      </motion.div>
 
       {/* HERO */}
       <section
