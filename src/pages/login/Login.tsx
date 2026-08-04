@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../lib/firebase"; // adjust path to your firebase lib
+import { supabase } from "../../lib/supabase";
 
 import "./Login.css";
 
@@ -17,29 +16,31 @@ export default function Login() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  useEffect(() => {
-    // Check Firebase auth session
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navigate("/members");
-      }
-    });
-    return () => unsubscribe();
-  }, [navigate]);
-
-  async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
+  async function handleLogin(event: React.FormEvent) {
     event.preventDefault();
 
     setLoading(true);
     setError("");
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
+      } else {
+        localStorage.removeItem("rememberMe");
       }
+
       setLoading(false);
       navigate("/members");
+
     } catch (err: any) {
       setError(err.message || "Failed to log in.");
       setLoading(false);
@@ -49,6 +50,7 @@ export default function Login() {
   return (
     <main className="login-page">
       <section className="login-card">
+
         <img
           src="/images/ocean_tide_logo.png"
           alt="Ocean Tide Drop AI SURFER"
@@ -62,7 +64,9 @@ export default function Login() {
         </p>
 
         <form onSubmit={handleLogin}>
+
           <label>Email Address</label>
+
           <input
             type="email"
             placeholder="Enter your email"
@@ -72,7 +76,9 @@ export default function Login() {
           />
 
           <label>Password</label>
+
           <div className="password-wrapper">
+
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
@@ -88,9 +94,11 @@ export default function Login() {
             >
               {showPassword ? "Hide" : "Show"}
             </button>
+
           </div>
 
           <div className="login-options">
+
             <label>
               <input
                 type="checkbox"
@@ -100,10 +108,17 @@ export default function Login() {
               Remember Me
             </label>
 
-            <Link to="/forgot-password">Forgot Password?</Link>
+            <Link to="/forgot-password">
+              Forgot Password?
+            </Link>
+
           </div>
 
-          {error && <div className="login-error">{error}</div>}
+          {error && (
+            <div className="login-error">
+              {error}
+            </div>
+          )}
 
           <button
             type="submit"
@@ -112,11 +127,16 @@ export default function Login() {
           >
             {loading ? "Catching Wave..." : "Login"}
           </button>
+
         </form>
 
         <p className="signup-link">
-          New to Ocean Tide Drop? <Link to="/signup">Create Account</Link>
+          New to Ocean Tide Drop?{" "}
+          <Link to="/signup">
+            Create Account
+          </Link>
         </p>
+
       </section>
     </main>
   );

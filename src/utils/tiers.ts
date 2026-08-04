@@ -1,14 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-} from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-
-import { auth } from "../firebase";
-import { db } from "../lib/firebase";
+import { supabase } from "../lib/supabase";
 
 const AuthContext = createContext();
 
@@ -21,50 +12,92 @@ export function AuthProvider({ children }) {
    * 🌊 LOAD USER + PROFILE (TIER SYSTEM)
    */
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
+    let mounted = true;
 
-      if (!firebaseUser) {
+    const loadUser = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const currentUser = session?.user ?? null;
+
+      if (!mounted) return;
+
+      setUser(currentUser);
+
+      if (!currentUser) {
         setUserData(null);
         setLoading(false);
         return;
       }
 
-      const userRef = doc(db, "users", firebaseUser.uid);
-      const snap = await getDoc(userRef);
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", currentUser.id)
+        .single();
 
-      if (!snap.exists()) {
-        // create default profile on first login
+      if (!error && data) {
+        setUserData(data);
+      } else {
         const newUser = {
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
+          uid: currentUser.id,
+          email: currentUser.email,
           tier: "free",
           subscription_status: "inactive",
           created_at: new Date().toISOString(),
         };
 
-        await setDoc(userRef, newUser);
+        await supabase.from("users").insert(newUser);
+
         setUserData(newUser);
-      } else {
-        setUserData(snap.data());
       }
 
       setLoading(false);
+    };
+
+    loadUser();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const currentUser = session?.user ?? null;
+
+      setUser(currentUser);
+
+      if (!currentUser) {
+        setUserData(null);
+      }
     });
 
-    return () => unsub();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   /**
    * 🔑 AUTH
    */
-  const login = (email, password) =>
-    signInWithEmailAndPassword(auth, email, password);
+  const login = async (email, password) => {
+    return supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+  };
 
-  const signup = (email, password) =>
-    createUserWithEmailAndPassword(auth, email, password);
+  const signup = async (email, password) => {
+    return supabase.auth.signUp({
+      email,
+      password,
+    });
+  };
 
-  const logout = () => signOut(auth);
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setUserData(null);
+  };
 
   return (
     <AuthContext.Provider
