@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 
@@ -41,8 +41,6 @@ export default function Login() {
       subscription.unsubscribe();
     };
   }, [navigate]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -51,8 +49,6 @@ export default function Login() {
     setError("");
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
@@ -73,9 +69,6 @@ export default function Login() {
       }
 
       navigate("/members");
-    } catch (err: any) {
-      setError(err.message || "Failed to log in.");
-
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -120,7 +113,6 @@ export default function Login() {
             required
           />
 
-          <label>Password</label>
           <label htmlFor="password">
             Password
           </label>
@@ -189,4 +181,4 @@ export default function Login() {
       </section>
     </main>
   );
-}
+          }
