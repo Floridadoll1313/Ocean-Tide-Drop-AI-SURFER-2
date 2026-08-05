@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 
@@ -7,11 +7,11 @@ import "./Login.css";
 export default function Login() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [rememberMe, setRememberMe] = useState<boolean>(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -41,6 +41,8 @@ export default function Login() {
       subscription.unsubscribe();
     };
   }, [navigate]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -51,11 +53,17 @@ export default function Login() {
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
         password,
       });
 
       if (error) {
         throw error;
+      }
+
+      if (!data.user) {
+        throw new Error("Login failed. No user returned.");
       }
 
       if (rememberMe) {
@@ -67,6 +75,13 @@ export default function Login() {
       navigate("/members");
     } catch (err: any) {
       setError(err.message || "Failed to log in.");
+
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to log in.");
+      }
     } finally {
       setLoading(false);
     }
@@ -75,21 +90,29 @@ export default function Login() {
   return (
     <main className="login-page">
       <section className="login-card">
+
         <img
           src="/images/ocean_tide_logo.png"
           alt="Ocean Tide Drop AI SURFER"
           className="login-logo"
         />
 
-        <h1>Welcome Back, Surfer 🌊</h1>
+        <h1>
+          Welcome Back, Surfer 🌊
+        </h1>
 
         <p className="login-subtitle">
           Enter the Surfer's Deck and manage your AI tools.
         </p>
 
         <form onSubmit={handleLogin}>
-          <label>Email Address</label>
+
+          <label htmlFor="email">
+            Email Address
+          </label>
+
           <input
+            id="email"
             type="email"
             placeholder="Enter your email"
             value={email}
@@ -98,9 +121,14 @@ export default function Login() {
           />
 
           <label>Password</label>
+          <label htmlFor="password">
+            Password
+          </label>
 
           <div className="password-wrapper">
+
             <input
+              id="password"
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               value={password}
@@ -110,19 +138,21 @@ export default function Login() {
 
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
               className="password-toggle"
+              onClick={() => setShowPassword((value) => !value)}
             >
               {showPassword ? "Hide" : "Show"}
             </button>
+
           </div>
 
           <div className="login-options">
+
             <label>
               <input
                 type="checkbox"
                 checked={rememberMe}
-                onChange={() => setRememberMe(!rememberMe)}
+                onChange={() => setRememberMe((value) => !value)}
               />
               Remember Me
             </label>
@@ -130,9 +160,14 @@ export default function Login() {
             <Link to="/forgot-password">
               Forgot Password?
             </Link>
+
           </div>
 
-          {error && <div className="login-error">{error}</div>}
+          {error && (
+            <div className="login-error">
+              {error}
+            </div>
+          )}
 
           <button
             type="submit"
@@ -141,6 +176,7 @@ export default function Login() {
           >
             {loading ? "Catching Wave..." : "Login"}
           </button>
+
         </form>
 
         <p className="signup-link">
@@ -149,6 +185,7 @@ export default function Login() {
             Create Account
           </Link>
         </p>
+
       </section>
     </main>
   );

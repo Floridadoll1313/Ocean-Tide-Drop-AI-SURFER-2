@@ -1,16 +1,10 @@
 import { useEffect, useState } from "react";
-import {
-  onAuthStateChanged,
-  signInWithPopup,
-  signOut,
-  User,
-} from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-
-import { auth, db, googleProvider } from "../lib/firebase";
+import { User } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase";
 
 type UserData = {
-  uid: string;
+  id?: string;
+  uid?: string;
   email: string;
   displayName?: string;
   photoURL?: string;
@@ -24,29 +18,44 @@ export function useAuth() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 👤 AUTH LISTENER
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
+    let mounted = true;
 
-      if (firebaseUser) {
-        const ref = doc(db, "users", firebaseUser.uid);
-        const snap = await getDoc(ref);
+    const loadUser = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-        if (snap.exists()) {
-          setUserData(snap.data() as UserData);
+      const currentUser = session?.user ?? null;
+
+      if (!mounted) return;
+
+      setUser(currentUser);
+
+      if (currentUser) {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", currentUser.id)
+          .single();
+
+        if (!error && data) {
+          setUserData(data);
         } else {
           const newUser: UserData = {
-            uid: firebaseUser.uid,
-            email: firebaseUser.email || "",
-            displayName: firebaseUser.displayName || "",
-            photoURL: firebaseUser.photoURL || "",
+            uid: currentUser.id,
+            email: currentUser.email || "",
+            displayName:
+              currentUser.user_metadata?.full_name || "",
+            photoURL:
+              currentUser.user_metadata?.avatar_url || "",
             role: "user",
             subscriptionStatus: "free",
             tier: "basic",
           };
 
-          await setDoc(ref, newUser);
+          await supabase.from("users").insert(newUser);
+
           setUserData(newUser);
         }
       } else {
@@ -54,25 +63,47 @@ export function useAuth() {
       }
 
       setLoading(false);
+    };
+
+    loadUser();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) return;
+
+      const currentUser = session?.user ?? null;
+
+      setUser(currentUser);
+
+      if (!currentUser) {
+        setUserData(null);
+      }
+
+      setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  // 🔑 LOGIN
   const loginWithGoogle = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      return result.user;
-    } catch (err) {
-      console.error("Google login error:", err);
-      throw err;
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+
+    if (error) {
+      console.error("Google login error:", error);
+      throw error;
     }
+
+    return data;
   };
 
-  // 🚪 LOGOUT
   const logout = async () => {
-    await signOut(auth);
+    await supabase.auth.signOut();
     setUser(null);
     setUserData(null);
   };
