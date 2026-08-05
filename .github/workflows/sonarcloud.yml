@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
   pull_request:
     types:
       - opened
@@ -16,14 +15,14 @@ permissions:
   pull-requests: read
 
 jobs:
-  sonarcloud:
+  sonarqube:
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
 
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -44,6 +43,6 @@ jobs:
 
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v6
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
