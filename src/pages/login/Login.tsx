@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../lib/firebase"; // adjust path to your firebase lib
+import { supabase } from "../../lib/supabase";
 
 import "./Login.css";
 
@@ -18,13 +17,29 @@ export default function Login() {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    // Check Firebase auth session
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+    async function checkSession() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session) {
+        navigate("/members");
+      }
+    }
+
+    checkSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
         navigate("/members");
       }
     });
-    return () => unsubscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
@@ -34,14 +49,25 @@ export default function Login() {
     setError("");
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
+      } else {
+        localStorage.removeItem("rememberMe");
       }
-      setLoading(false);
+
       navigate("/members");
     } catch (err: any) {
       setError(err.message || "Failed to log in.");
+    } finally {
       setLoading(false);
     }
   }
@@ -72,6 +98,7 @@ export default function Login() {
           />
 
           <label>Password</label>
+
           <div className="password-wrapper">
             <input
               type={showPassword ? "text" : "password"}
@@ -100,7 +127,9 @@ export default function Login() {
               Remember Me
             </label>
 
-            <Link to="/forgot-password">Forgot Password?</Link>
+            <Link to="/forgot-password">
+              Forgot Password?
+            </Link>
           </div>
 
           {error && <div className="login-error">{error}</div>}
@@ -115,7 +144,10 @@ export default function Login() {
         </form>
 
         <p className="signup-link">
-          New to Ocean Tide Drop? <Link to="/signup">Create Account</Link>
+          New to Ocean Tide Drop?{" "}
+          <Link to="/signup">
+            Create Account
+          </Link>
         </p>
       </section>
     </main>
