@@ -35,6 +35,7 @@ export default function App() {
   const [promoCode, setPromoCode] = useState('');
   const [discountRate, setDiscountRate] = useState(0);
   const [promoStatus, setPromoStatus] = useState<{ msg: string; success: boolean } | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleOpenCheckout = (tier: Tier) => {
     setSelectedTier(tier);
@@ -57,12 +58,40 @@ export default function App() {
     }
   };
 
-  const handleCheckoutSubmit = (e: React.FormEvent) => {
+  const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTier) return;
-    const finalPrice = (selectedTier.basePrice * (1 - discountRate)).toFixed(2);
-    alert(`Success! Account created for ${email} under ${selectedTier.name} ($${finalPrice}/mo).\nRedirecting to dashboard...`);
-    setSelectedTier(null);
+
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          tierName: selectedTier.name,
+          basePrice: selectedTier.basePrice,
+          promoCode,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        // Redirect user straight to Stripe Checkout Page
+        window.location.href = data.url;
+      } else {
+        alert(`Checkout Error: ${data.error || 'Failed to initiate Stripe session.'}`);
+      }
+    } catch (err) {
+      console.error('Stripe Redirect Failed:', err);
+      alert('Network error connecting to payment gateway.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -197,8 +226,13 @@ export default function App() {
                 </div>
               </div>
 
-              <button type="submit" className="cta-btn" style={{ ...styles.cardBtn, marginTop: '20px' }}>
-                Complete Registration 🚀
+              <button
+                type="submit"
+                className="cta-btn"
+                disabled={loading}
+                style={{ ...styles.cardBtn, marginTop: '20px', opacity: loading ? 0.7 : 1 }}
+              >
+                {loading ? 'Connecting to Stripe...' : 'Complete Registration 🚀'}
               </button>
             </form>
           </div>
@@ -235,7 +269,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   navHeader: {
     display: 'flex',
-    justifySpaceBetween: 'space-between',
+    justifyContent: 'space-between',
     alignItems: 'center',
     padding: '30px 0 10px',
   },
@@ -355,91 +389,3 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: 'block',
   },
   featuresList: {
-    listStyle: 'none',
-    margin: '20px 0 25px',
-    color: '#cbd5e1',
-    textAlign: 'left',
-    fontSize: '0.95rem',
-  },
-  featureItem: {
-    marginBottom: '10px',
-  },
-  cardBtn: {
-    width: '100%',
-    background: 'linear-gradient(90deg, #00f2fe 0%, #4facfe 100%)',
-    color: '#000',
-    fontWeight: 700,
-    padding: '12px',
-    border: 'none',
-    borderRadius: '25px',
-    fontSize: '0.95rem',
-    cursor: 'pointer',
-  },
-  modalOverlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    background: 'rgba(0, 0, 0, 0.85)',
-    backdropFilter: 'blur(8px)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  modalContent: {
-    background: '#060c18',
-    border: '1px solid #00F2FE',
-    borderRadius: '20px',
-    padding: '35px',
-    width: '90%',
-    maxWidth: '480px',
-    position: 'relative',
-  },
-  modalClose: {
-    position: 'absolute',
-    top: '15px',
-    right: '20px',
-    background: 'none',
-    border: 'none',
-    color: '#fff',
-    fontSize: '1.5rem',
-    cursor: 'pointer',
-  },
-  formGroup: {
-    marginTop: '15px',
-    textAlign: 'left',
-  },
-  formLabel: {
-    display: 'block',
-    fontSize: '0.85rem',
-    color: '#cbd5e1',
-    marginBottom: '5px',
-  },
-  formInput: {
-    width: '100%',
-    padding: '12px',
-    borderRadius: '8px',
-    border: '1px solid rgba(0, 242, 254, 0.4)',
-    background: 'rgba(255, 255, 255, 0.05)',
-    color: '#fff',
-    fontSize: '1rem',
-    boxSizing: 'border-box',
-  },
-  promoBtn: {
-    background: '#00F2FE',
-    border: 'none',
-    padding: '0 15px',
-    borderRadius: '8px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-  },
-  totalBox: {
-    marginTop: '20px',
-    textAlign: 'left',
-    background: 'rgba(255, 255, 255, 0.05)',
-    padding: '12px',
-    borderRadius: '8px',
-  }
-};
