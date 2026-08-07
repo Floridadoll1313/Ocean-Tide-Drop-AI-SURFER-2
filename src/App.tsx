@@ -81,7 +81,6 @@ export default function App() {
       const data = await response.json();
 
       if (data.url) {
-        // Redirect user straight to Stripe Checkout Page
         window.location.href = data.url;
       } else {
         alert(`Checkout Error: ${data.error || 'Failed to initiate Stripe session.'}`);
@@ -226,6 +225,7 @@ export default function App() {
                 </div>
               </div>
 
+              {/* Submit button with loading feedback */}
               <button
                 type="submit"
                 className="cta-btn"
@@ -389,3 +389,91 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: 'block',
   },
   featuresList: {
+    listStyle: 'none',
+    margin: '20px 0 25px',
+    color: '#cbd5e1',
+    textAlign: 'left',
+    fontSize: '0.95rem',
+  },
+  featureItem: {
+    marginBottom: '10px',
+  },
+  cardBtn: {
+    width: '100%',
+    background: 'linear-gradient(90deg, #00f2fe 0%, #4facfe 100%)',
+    color: '#000',
+    fontWeight: 700,
+    padding: '12px',
+    border: 'none',
+    borderRadius: '25px',
+    fontSize: '0.95rem',
+    cursor: 'pointer',
+  },
+  modalOverlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'rgba(0, 0, 0, 0.85)',
+    backdropFilter: 'blur(8px)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  modalContent: {
+    background: '#060c18',
+    border: '1px solid #00F2FE',
+    borderRadius: '20px',
+    padding: '35px',
+    width: '90%',
+    maxWidth: '480px',
+    position: 'relative',
+  },
+  modalClose: {
+    position: 'absolute',
+    top: '15px',
+    right: '20px',
+    background: 'none',
+    border: 'none',
+    color: '#fff',
+    fontSize: '1.5rem',
+    cursor: 'pointer',
+  },
+  formGroup: {
+    marginTop: '15px',
+    textAlign: 'left',
+  },
+  formLabel: {
+    display: 'block',
+    fontSize: '0.85rem',
+    color: '#cbd5e1',
+    marginBottom: '5px',
+  },
+  formInput: {
+    width: '100%',
+    padding: '12px',
+    borderRadius: '8px',
+    border: '1px solid rgba(0, 242, 254, 0.4)',
+    background: 'rgba(255, 255, 255, 0.05)',
+    color: '#fff',
+    fontSize: '1rem',
+    boxSizing: 'border-box',
+  },
+  promoBtn: {
+    background: '#00F2FE',
+    border: 'none',
+    padding: '0 15px',
+    borderRadius: '8px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+  },
+  totalBox: {
+    marginTop: '20px',
+    textAlign: 'left',
+    background: 'rgba(255, 255, 255, 0.05)',
+    padding: '12px',
+    borderRadius: '8px',
+  }
+};
