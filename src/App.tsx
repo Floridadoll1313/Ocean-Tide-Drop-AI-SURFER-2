@@ -48,13 +48,13 @@ export default function App() {
     const cleanCode = promoCode.trim().toUpperCase();
     if (cleanCode === 'OCEANTIDE20') {
       setDiscountRate(0.20);
-      setPromoStatus({ msg: '✓ 20% Launch discount applied!', success: true });
+      setPromoStatus({ msg: 'ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ 20% Launch discount applied!', success: true });
     } else if (cleanCode === '') {
       setDiscountRate(0);
       setPromoStatus(null);
     } else {
       setDiscountRate(0);
-      setPromoStatus({ msg: '✕ Invalid promo code.', success: false });
+      setPromoStatus({ msg: 'ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¢ Invalid promo code.', success: false });
     }
   };
 
@@ -114,41 +114,41 @@ export default function App() {
 
       {/* Top Banner */}
       <div style={styles.announcementBar}>
-        🌀 LAUNCH WEEK SPECIAL: Get 20% OFF with code <strong>OCEANTIDE20</strong> at checkout! ⛵️
+        ÃƒÂ°Ã…Â¸Ã…â€™Ã¢â€šÂ¬ LAUNCH WEEK SPECIAL: Get 20% OFF with code <strong>OCEANTIDE20</strong> at checkout! ÃƒÂ¢Ã¢â‚¬ÂºÃ‚ÂµÃƒÂ¯Ã‚Â¸Ã‚Â
       </div>
 
       <div style={styles.container}>
         {/* Navigation */}
         <nav style={styles.navHeader}>
-          <div style={styles.brandLogo}>🌀⛵️ Ocean Tide Drop AI 🌸 🏄‍♀️ 💦</div>
-          <a href="#pricing" style={styles.navBtn}>Member Dashboard</a>
+          <div style={styles.brandLogo}>ÃƒÂ°Ã…Â¸Ã…â€™Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂºÃ‚ÂµÃƒÂ¯Ã‚Â¸Ã‚Â Ocean Tide Drop AI ÃƒÂ°Ã…Â¸Ã…â€™Ã‚Â¸ ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€žÂ¢Ã¢â€šÂ¬ÃƒÂ¯Ã‚Â¸Ã‚Â ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¦</div>
+          <a href=/members style={styles.navBtn}>Member Dashboard</a>
         </nav>
 
         {/* Hero Section */}
         <header style={styles.hero}>
-          <h1 style={styles.heroTitle}>🌀⛵️ Ocean Tide Drop AI 🌸 🏄‍♀️ 💦</h1>
+          <h1 style={styles.heroTitle}>ÃƒÂ°Ã…Â¸Ã…â€™Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂºÃ‚ÂµÃƒÂ¯Ã‚Â¸Ã‚Â Ocean Tide Drop AI ÃƒÂ°Ã…Â¸Ã…â€™Ã‚Â¸ ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€žÂ¢Ã¢â€šÂ¬ÃƒÂ¯Ã‚Â¸Ã‚Â ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¦</h1>
           <p style={styles.heroText}>
             High-powered digital tools, custom automation, and specialized software consoles built to ride the next wave. Claim your launch discount today!
           </p>
-          <a href="#pricing" className="cta-btn" style={styles.mainCta}>Get Started & Save 20%</a>
+          <a href=/members className="cta-btn" style={styles.mainCta}>Get Started & Save 20%</a>
         </header>
 
         {/* Callout Section */}
         <section style={styles.offerSection}>
           <div style={styles.glassPanel}>
-            <h2 style={{ color: '#00F2FE', fontSize: '2rem', marginBottom: '15px' }}>Exclusive Launch Discount 🌸</h2>
+            <h2 style={{ color: '#00F2FE', fontSize: '2rem', marginBottom: '15px' }}>Exclusive Launch Discount ÃƒÂ°Ã…Â¸Ã…â€™Ã‚Â¸</h2>
             <p>To celebrate our official launch, new customers get <strong>20% off</strong> recurring app access and major software console plans. Enter code <code style={styles.codeBlock}>OCEANTIDE20</code> at checkout to lock in your rate.</p>
             <ul style={styles.offerHighlights}>
-              <li style={styles.offerLi}>💦 <strong>Instant Setup:</strong> Immediate access to your dashboard and specialized consoles.</li>
-              <li style={styles.offerLi}>🏄‍♀️ <strong>Locked-In Rate:</strong> Keep your launch discount active as long as your subscription is live.</li>
-              <li style={styles.offerLi}>🌀 <strong>Full Support:</strong> Smooth onboarding and custom automation builds included.</li>
+              <li style={styles.offerLi}>ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¦ <strong>Instant Setup:</strong> Immediate access to your dashboard and specialized consoles.</li>
+              <li style={styles.offerLi}>ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€žÂ¢Ã¢â€šÂ¬ÃƒÂ¯Ã‚Â¸Ã‚Â <strong>Locked-In Rate:</strong> Keep your launch discount active as long as your subscription is live.</li>
+              <li style={styles.offerLi}>ÃƒÂ°Ã…Â¸Ã…â€™Ã¢â€šÂ¬ <strong>Full Support:</strong> Smooth onboarding and custom automation builds included.</li>
             </ul>
           </div>
         </section>
 
         {/* Pricing Tiers Section */}
         <section style={styles.pricingSection} id="pricing">
-          <h2 style={styles.pricingHeader}>Select Your Tier ⛵️</h2>
+          <h2 style={styles.pricingHeader}>Select Your Tier ÃƒÂ¢Ã¢â‚¬ÂºÃ‚ÂµÃƒÂ¯Ã‚Â¸Ã‚Â</h2>
           <div style={styles.pricingGrid}>
             {tiers.map((tier) => {
               const discountedPrice = (tier.basePrice * 0.8).toFixed(2);
@@ -162,7 +162,7 @@ export default function App() {
                     </div>
                     <ul style={styles.featuresList}>
                       {tier.features.map((feat, idx) => (
-                        <li key={idx} style={styles.featureItem}>✓ {feat}</li>
+                        <li key={idx} style={styles.featureItem}>ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ {feat}</li>
                       ))}
                     </ul>
                   </div>
@@ -232,7 +232,7 @@ export default function App() {
                 disabled={loading}
                 style={{ ...styles.cardBtn, marginTop: '20px', opacity: loading ? 0.7 : 1 }}
               >
-                {loading ? 'Connecting to Stripe...' : 'Complete Registration 🚀'}
+                {loading ? 'Connecting to Stripe...' : 'Complete Registration ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬'}
               </button>
             </form>
           </div>
