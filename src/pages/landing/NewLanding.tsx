@@ -1,5 +1,24 @@
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { ArrowRight, Bot, Zap, Users, BarChart3, Waves, Rocket, BadgeCheck, Mail, Terminal, CircleDollarSign, Download, X, Play, CheckCircle, Sparkles } from "lucide-react";
-import { ArrowRight, Bot, Zap, Users, BarChart3, Waves, Rocket, BadgeCheck, Mail, Terminal, CircleDollarSign, Download, X, Play, CheckCircle, Sparkles } from "lucide-react";
+import { supabase } from "../../lib/supabase";
+import homepageConcept from "../../assets/images/ocean_ai_yacht.png";
+import cyberWave from "../../assets/images/cyber_surfer_wave_1779220118634.png";
+import OceanBackground from "../../components/landing/OceanBackground";
+import SunriseGlow from "../../components/landing/SunriseGlow";
+import BioluminescentParticles from "../../components/landing/BioluminescentParticles";
+import Navbar from "../../components/landing/Navbar";
+import ChatAgent from "../../components/ChatAgent";
+
+function useCountdown() {
+  const calc = () => {
+    const target = new Date("2026-08-10T20:00:00-04:00").getTime();
+    const diff = Math.max(0, target - Date.now());
+    const h = Math.floor(diff / 3_600_000);
+    const m = Math.floor((diff % 3_600_000) / 60_000);
+    const s = Math.floor((diff % 60_000) / 1_000);
+    if (diff <= 0) return { h: 0, m: 0, s: 0, done: true };
     return { h, m, s, done: false };
   };
   const [time, setTime] = useState(calc);
