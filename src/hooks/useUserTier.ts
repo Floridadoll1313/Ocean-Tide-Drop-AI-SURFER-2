@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../utils/supabase";
+import { supabase } from '../lib/supabase';
 
 export function useUserTier(userEmail?: string) {
   const [tier, setTier] = useState("free");
@@ -20,7 +20,7 @@ export function useUserTier(userEmail?: string) {
 
     load();
 
-    // real-time updates ⚡
+    // real-time updates Ã¢Å¡Â¡
     const channel = supabase
       .channel("tier-live")
       .on(

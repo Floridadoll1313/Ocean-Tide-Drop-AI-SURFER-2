@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../utils/supabase";
+import { supabase } from '../../lib/supabase';
 
 export default function RevenuePanel() {
   const [users, setUsers] = useState<any[]>([]);
@@ -33,7 +33,7 @@ export default function RevenuePanel() {
 
   return (
     <div className="glass">
-      <h2 className="text-xl font-bold">💰 Revenue Pulse</h2>
+      <h2 className="text-xl font-bold">ðŸ’° Revenue Pulse</h2>
 
       {loading ? (
         <p className="text-slate-400 mt-2">Reading tides...</p>
