@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { saveWaveAuditLead } from "./leadCapture";
 
-const insert = vi.fn();
+const { insert } = vi.hoisted(() => ({ insert: vi.fn() }));
 
 vi.mock("../../lib/supabase", () => ({
   supabase: {
