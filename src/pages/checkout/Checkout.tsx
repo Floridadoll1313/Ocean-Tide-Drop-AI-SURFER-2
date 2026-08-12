@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { FormEvent } from "react";
 
 interface Tier {
   name: string;
@@ -35,7 +36,7 @@ export default function Checkout() {
     }
   };
 
-  const submitCheckout = async (event: React.FormEvent<HTMLFormElement>) => {
+  const submitCheckout = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!selectedTier) return;
     setLoading(true);
@@ -43,12 +44,7 @@ export default function Checkout() {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          tierName: selectedTier.name,
-          basePrice: selectedTier.basePrice,
-          promoCode,
-        }),
+        body: JSON.stringify({ email, tierName: selectedTier.name, basePrice: selectedTier.basePrice, promoCode }),
       });
       const data = await response.json();
       if (data.url) window.location.href = data.url;
@@ -76,9 +72,7 @@ export default function Checkout() {
                 <h2 className="text-xl font-bold">{tier.name}</h2>
                 <div className="mt-4 text-4xl font-black text-cyan-300">${(tier.basePrice * 0.8).toFixed(0)}<span className="text-sm font-semibold text-slate-400">/mo with launch code</span></div>
                 <p className="mt-2 text-xs text-slate-500 line-through">${tier.basePrice.toFixed(0)}/mo</p>
-                <ul className="mt-6 space-y-3 text-sm text-slate-300">
-                  {tier.features.map((feature) => <li key={feature}>✓ {feature}</li>)}
-                </ul>
+                <ul className="mt-6 space-y-3 text-sm text-slate-300">{tier.features.map((feature) => <li key={feature}>✓ {feature}</li>)}</ul>
               </div>
               <button type="button" onClick={() => { setSelectedTier(tier); setPromoCode(""); setDiscountRate(0); setPromoStatus(null); }} className="mt-7 rounded-full bg-gradient-to-r from-cyan-300 to-teal-300 px-5 py-3 font-black text-slate-950">Choose this wave</button>
             </article>
@@ -90,10 +84,7 @@ export default function Checkout() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/85 p-5 backdrop-blur-md">
           <div className="w-full max-w-md rounded-3xl border border-cyan-300/25 bg-slate-900 p-7 shadow-2xl">
             <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-cyan-300">Checkout</p>
-                <h2 className="mt-1 text-2xl font-black">{selectedTier.name}</h2>
-              </div>
+              <div><p className="text-xs font-bold uppercase tracking-wider text-cyan-300">Checkout</p><h2 className="mt-1 text-2xl font-black">{selectedTier.name}</h2></div>
               <button type="button" onClick={() => setSelectedTier(null)} className="text-slate-400 hover:text-white" aria-label="Close">✕</button>
             </div>
 
