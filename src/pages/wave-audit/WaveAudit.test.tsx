@@ -1,10 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { renderToString } from "react-dom/server";
+import { MemoryRouter } from "react-router-dom";
 import WaveAudit from "./WaveAudit";
 
 describe("WaveAudit", () => {
   it("starts with the first business question and hides email capture", () => {
-    const html = renderToString(<WaveAudit />);
+    const html = renderToString(
+      <MemoryRouter>
+        <WaveAudit />
+      </MemoryRouter>,
+    );
 
     expect(html).toContain("What type of business do you run?");
     expect(html).toContain("Question 1 of 5");
