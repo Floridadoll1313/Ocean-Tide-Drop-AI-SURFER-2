@@ -1,57 +1,87 @@
-import Stripe from 'stripe';
-
 interface Env {
   STRIPE_SECRET_KEY: string;
 }
 
-export const onRequestPost: PagesFunction<Env> = async (context) => {
-  const stripe = new Stripe(context.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2023-10-16',
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json" },
   });
+}
+
+function addParam(params: URLSearchParams, key: string, value: string | number) {
+  params.append(key, String(value));
+}
+
+export const onRequestPost: PagesFunction<Env> = async (context) => {
+  const secretKey = context.env.STRIPE_SECRET_KEY?.trim();
+
+  if (!secretKey) {
+    return json({ error: "Stripe checkout is not configured yet." }, 503);
+  }
 
   try {
-    const { email, tierName, basePrice, promoCode } = await context.request.json() as {
-      email: string;
-      tierName: string;
-      basePrice: number;
-      promoCode: string;
+    const body = await context.request.json() as {
+      email?: string;
+      tierName?: string;
+      basePrice?: number;
+      promoCode?: string;
     };
 
-    // Calculate dynamic amount in cents
-    const isDiscounted = promoCode?.trim().toUpperCase() === 'OCEANTIDE20';
-    const finalAmount = isDiscounted ? Math.round(basePrice * 0.80 * 100) : Math.round(basePrice * 100);
+    const email = body.email?.trim().toLowerCase();
+    const tierName = body.tierName?.trim();
+    const basePrice = Number(body.basePrice);
+    const promoCode = body.promoCode?.trim().toUpperCase() ?? "";
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      customer_email: email,
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `Ocean Tide Drop AI - ${tierName}`,
-              description: `Recurring access to ${tierName} services`,
-            },
-            unit_amount: finalAmount,
-            recurring: {
-              interval: 'month',
-            },
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'subscription',
-      success_url: `${new URL(context.request.url).origin}/?session_id={CHECKOUT_SESSION_ID}&status=success`,
-      cancel_url: `${new URL(context.request.url).origin}/?status=cancelled`,
+    if (!email || !email.includes("@")) {
+      return json({ error: "A valid email address is required." }, 400);
+    }
+
+    if (!tierName) {
+      return json({ error: "A valid tier is required." }, 400);
+    }
+
+    if (!Number.isFinite(basePrice) || basePrice <= 0) {
+      return json({ error: "A valid subscription price is required." }, 400);
+    }
+
+    const discounted = promoCode === "OCEANTIDE20";
+    const finalAmount = discounted
+      ? Math.round(basePrice * 0.8 * 100)
+      : Math.round(basePrice * 100);
+
+    const params = new URLSearchParams();
+    addParam(params, "mode", "subscription");
+    addParam(params, "customer_email", email);
+    addParam(params, "line_items[0][quantity]", 1);
+    addParam(params, "line_items[0][price_data][currency]", "usd");
+    addParam(params, "line_items[0][price_data][unit_amount]", finalAmount);
+    addParam(params, "line_items[0][price_data][product_data][name]", `Ocean Tide Drop AI - ${tierName}`);
+    addParam(params, "line_items[0][price_data][product_data][description]", `Recurring access to ${tierName} services`);
+    addParam(params, "line_items[0][price_data][recurring][interval]", "month");
+
+    const origin = new URL(context.request.url).origin;
+    addParam(params, "success_url", `${origin}/?session_id={CHECKOUT_SESSION_ID}&status=success`);
+    addParam(params, "cancel_url", `${origin}/?status=cancelled`);
+
+    const response = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${secretKey}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: params.toString(),
     });
 
-    return new Response(JSON.stringify({ url: session.url }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
-  } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const stripeBody = await response.json() as { url?: string; error?: { message?: string } };
+
+    if (!response.ok || !stripeBody.url) {
+      return json({ error: stripeBody.error?.message ?? "Unable to create Stripe checkout session." }, 400);
+    }
+
+    return json({ url: stripeBody.url });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unable to start checkout.";
+    return json({ error: message }, 400);
   }
 };
