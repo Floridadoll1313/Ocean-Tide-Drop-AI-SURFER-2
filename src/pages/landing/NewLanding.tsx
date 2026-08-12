@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Bot, ChartNoAxesCombined, Headphones, Sparkles, Workflow } from "lucide-react";
+import { ArrowRight, BarChart3, Bot, Headphones, Sparkles, Workflow } from "lucide-react";
 import { Link } from "react-router-dom";
 import homepageConcept from "../../assets/images/ocean_ai_yacht.png";
 import OceanBackground from "../../components/landing/OceanBackground";
@@ -8,7 +8,7 @@ import BioluminescentParticles from "../../components/landing/BioluminescentPart
 import Navbar from "../../components/landing/Navbar";
 
 const opportunities = [
-  { icon: ChartNoAxesCombined, title: "More leads", text: "Find missed opportunities and move prospects forward faster." },
+  { icon: BarChart3, title: "More leads", text: "Find missed opportunities and move prospects forward faster." },
   { icon: Bot, title: "Smarter sales", text: "Automate follow-up so good leads do not disappear into the undertow." },
   { icon: Workflow, title: "Less busywork", text: "Turn repetitive steps into clean AI-powered workflows." },
   { icon: Headphones, title: "Better customer care", text: "Handle routine questions with faster, more consistent answers." },
