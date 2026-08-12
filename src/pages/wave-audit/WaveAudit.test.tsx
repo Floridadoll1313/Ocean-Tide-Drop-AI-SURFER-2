@@ -12,7 +12,7 @@ describe("WaveAudit", () => {
     );
 
     expect(html).toContain("What type of business do you run?");
-    expect(html).toContain("Question 1 of 5");
+    expect(html).toMatch(/Question\s*<!-- -->1<!-- -->\s*of\s*<!-- -->5/);
     expect(html).not.toContain("Unlock My Full AI Wave Report");
   });
 });
