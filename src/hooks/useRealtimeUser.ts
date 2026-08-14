@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../utils/supabase";
+import { supabase } from '../lib/supabase';
 
 export function useRealtimeUsers(email: string | null) {
   const [tier, setTier] = useState("free");
