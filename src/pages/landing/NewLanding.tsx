@@ -945,6 +945,7 @@ export default function NewLanding() {
           <p className="mt-6 text-xl text-slate-300 max-w-2xl mx-auto font-light">
             Join Ocean Tide Drop AI SURFER and bring AI power to your business.
           </p>
+          
           <Link
             to="/members"
             className="inline-flex mt-10 rounded-full bg-teal-400 text-slate-950 font-bold px-10 py-5 hover:bg-teal-300 hover:shadow-[0_0_25px_rgba(45,212,191,0.5)] hover:scale-105 transition duration-300"
