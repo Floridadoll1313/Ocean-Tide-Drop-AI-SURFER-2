@@ -305,6 +305,21 @@ export default function NewLanding() {
   ];
 
   return (
+    <div
+      className="
+        relative
+        min-h-screen
+        overflow-x-hidden
+        bg-slate-950
+        text-white
+      "
+      style={{
+        backgroundImage: 'linear-gradient(rgba(2,12,30,0.9), rgba(2,12,30,0.95)), url("/images/Members-bg.png")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
     <div className="relative min-h-screen overflow-x-hidden bg-slate-950 text-white font-sans selection:bg-teal-400 selection:text-slate-950">
       <OceanBackground />
       <SunriseGlow />
@@ -930,6 +945,7 @@ export default function NewLanding() {
           <p className="mt-6 text-xl text-slate-300 max-w-2xl mx-auto font-light">
             Join Ocean Tide Drop AI SURFER and bring AI power to your business.
           </p>
+          
           <Link
             to="/members"
             className="inline-flex mt-10 rounded-full bg-teal-400 text-slate-950 font-bold px-10 py-5 hover:bg-teal-300 hover:shadow-[0_0_25px_rgba(45,212,191,0.5)] hover:scale-105 transition duration-300"
