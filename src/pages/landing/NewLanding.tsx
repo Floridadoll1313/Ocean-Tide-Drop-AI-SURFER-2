@@ -11,6 +11,7 @@ import BioluminescentParticles from "../../components/landing/BioluminescentPart
 import Navbar from "../../components/landing/Navbar";
 import ChatAgent from "../../components/ChatAgent";
 
+
 function useCountdown() {
   const calc = () => {
     const target = new Date("2026-08-10T20:00:00-04:00").getTime();
