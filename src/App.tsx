@@ -161,3 +161,4 @@ const styles: { [key: string]: React.CSSProperties } = {
   promoBtn: { background: '#00F2FE', border: 'none', padding: '0 15px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' },
   totalBox: { marginTop: '20px', textAlign: 'left', background: 'rgba(255,255,255,.05)', padding: '12px', borderRadius: '8px' }
 };
+
