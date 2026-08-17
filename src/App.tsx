@@ -69,7 +69,7 @@ export default function App() {
       <div style={styles.announcementBar}>🌊 LAUNCH WEEK SPECIAL: Get 20% OFF with code <strong>OCEANTIDE20</strong> at checkout! 🏄‍♀️</div>
       <div style={styles.container}>
         <nav style={styles.navHeader}>
-          <div style={styles.brandLogo}><img src="./ocean_tide_logo.png" alt="Ocean Tide Drop AI Surfer" style={styles.logoImage} /><span>Ocean Tide Drop AI</span></div>
+          <div style={styles.brandLogo}><img src="/ocean_tide_logo.png" alt="Ocean Tide Drop AI Surfer" style={styles.logoImage} /><span>Ocean Tide Drop AI</span></div>
           <a href="/members" style={styles.navBtn}>Member Dashboard</a>
         </nav>
         <header style={styles.hero}>
