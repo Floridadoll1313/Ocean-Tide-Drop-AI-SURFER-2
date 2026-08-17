@@ -47,7 +47,7 @@ export default function App() {
     if (!selectedTier) return;
     setLoading(true);
     try {
-      const response = await fetch('/api/checkout', {
+      const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, tierName: selectedTier.name, basePrice: selectedTier.basePrice, promoCode })
@@ -69,7 +69,7 @@ export default function App() {
       <div style={styles.announcementBar}>🌊 LAUNCH WEEK SPECIAL: Get 20% OFF with code <strong>OCEANTIDE20</strong> at checkout! 🏄‍♀️</div>
       <div style={styles.container}>
         <nav style={styles.navHeader}>
-          <div style={styles.brandLogo}>🌊🏄‍♀️ Ocean Tide Drop AI 🌺 🐟</div>
+          <div style={styles.brandLogo}><img src="./ocean_tide_logo.png" alt="Ocean Tide Drop AI Surfer" style={styles.logoImage} /><span>Ocean Tide Drop AI</span></div>
           <a href="/members" style={styles.navBtn}>Member Dashboard</a>
         </nav>
         <header style={styles.hero}>
@@ -131,7 +131,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   announcementBar: { background: 'linear-gradient(90deg, #00f2fe 0%, #4facfe 100%)', color: '#000', textAlign: 'center', padding: '12px 15px', fontWeight: '700', fontSize: '0.95rem', position: 'sticky', top: 0, zIndex: 100 },
   container: { maxWidth: '1200px', margin: '0 auto', padding: '0 20px' },
   navHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '30px 0 10px' },
-  brandLogo: { fontSize: '1.25rem', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', textShadow: '0 0 12px rgba(0, 242, 254, 0.6)' },
+  brandLogo: { display: 'flex', alignItems: 'center', gap: '12px', fontSize: '1.25rem', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', textShadow: '0 0 12px rgba(0, 242, 254, 0.6)' },
+  logoImage: { width: '48px', height: '48px', objectFit: 'contain', borderRadius: '12px' },
   navBtn: { background: 'linear-gradient(90deg, #00f2fe 0%, #4facfe 100%)', color: '#000', fontWeight: 700, padding: '10px 22px', borderRadius: '30px', textDecoration: 'none', fontSize: '0.9rem' },
   hero: { textAlign: 'center', padding: '80px 20px 100px' },
   heroTitle: { fontSize: '3rem', fontWeight: 900, marginBottom: '18px', textShadow: '0 0 20px rgba(0,0,0,.8), 0 0 10px rgba(0,242,254,.5)' },
@@ -161,4 +162,3 @@ const styles: { [key: string]: React.CSSProperties } = {
   promoBtn: { background: '#00F2FE', border: 'none', padding: '0 15px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' },
   totalBox: { marginTop: '20px', textAlign: 'left', background: 'rgba(255,255,255,.05)', padding: '12px', borderRadius: '8px' }
 };
-
