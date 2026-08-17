@@ -6,28 +6,40 @@ export default function MemberGate({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [status, setStatus] = useState<"checking" | "allowed" | "denied">("checking");
-  const [email, setEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     let active = true;
     const check = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        if (active) setStatus("denied");
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session) {
+        if (active) {
+          setStatus("denied");
+          setErrorMessage(sessionError?.message || "Please sign in to continue.");
+        }
         navigate("/login", { replace: true, state: { from: location.pathname } });
         return;
       }
-      if (active) setEmail(session.user.email ?? "");
-      const { data, error } = await supabase.functions.invoke("member-access", {
-        body: { user_id: session.user.id }
+
+      const { data, error } = await supabase.functions.invoke("member-access-v2", {
+        body: { user_id: session.user.id },
       });
+
       if (!active) return;
-      if (error || !data?.allowed) {
+      if (error) {
+        console.error("Member access check failed:", error);
         setStatus("denied");
+        setErrorMessage(error.message || "We couldn't verify your membership. Please try again.");
+        return;
+      }
+      if (!data?.allowed) {
+        setStatus("denied");
+        setErrorMessage("Your account does not currently have paid member access.");
         return;
       }
       setStatus("allowed");
     };
+
     check();
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) navigate("/login", { replace: true, state: { from: location.pathname } });
@@ -41,9 +53,9 @@ export default function MemberGate({ children }: { children: ReactNode }) {
       <div style={styles.card}>
         <div style={{ fontSize: 46 }}>🔐</div>
         <h1>Members only</h1>
-        <p>Your account is not currently entitled to the Members Dashboard.</p>
+        <p>{errorMessage}</p>
         <button onClick={() => navigate("/pricing")} style={styles.button}>View Plans 💳</button>
-        <button onClick={() => supabase.auth.signOut()} style={styles.link}>Sign out {email && `(${email})`}</button>
+        <button onClick={() => navigate("/login")} style={styles.link}>Sign in</button>
       </div>
     </div>
   );
