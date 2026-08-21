@@ -1,7 +1,29 @@
+import { PRICING as DISPLAY_PRICING } from "../data/pricing";
+
 export const PRICING = {
-  free: { accessLevel: 0, label: "Free" },
-  bronze: { accessLevel: 1, label: "Bronze" },
-  wave: { accessLevel: 2, label: "Wave" },
-  tsunami: { accessLevel: 3, label: "Tsunami" },
-  enterprise: { accessLevel: 4, label: "Enterprise" },
+  free: {
+    accessLevel: DISPLAY_PRICING.free.accessLevel,
+    label: DISPLAY_PRICING.free.label,
+    stripePriceId: DISPLAY_PRICING.free.stripePriceId,
+  },
+  bronze: {
+    accessLevel: DISPLAY_PRICING.bronze.accessLevel,
+    label: DISPLAY_PRICING.bronze.label,
+    stripePriceId: DISPLAY_PRICING.bronze.stripePriceId,
+  },
+  wave: {
+    accessLevel: DISPLAY_PRICING.wave.accessLevel,
+    label: DISPLAY_PRICING.wave.label,
+    stripePriceId: DISPLAY_PRICING.wave.stripePriceId,
+  },
+  tsunami: {
+    accessLevel: DISPLAY_PRICING.tsunami.accessLevel,
+    label: DISPLAY_PRICING.tsunami.label,
+    stripePriceId: DISPLAY_PRICING.tsunami.stripePriceId,
+  },
+  enterprise: {
+    accessLevel: DISPLAY_PRICING.enterprise.accessLevel,
+    label: DISPLAY_PRICING.enterprise.label,
+    stripePriceId: DISPLAY_PRICING.enterprise.stripePriceId,
+  },
 };
