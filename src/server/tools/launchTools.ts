@@ -1,11 +1,8 @@
 import { tool } from "@openai/agents";
 import { z } from "zod";
-import type { LaunchBrief, LaunchTask, Readiness } from "../agent/types";
+import type { LaunchTask, Readiness } from "../agent/types";
 
-const taskInput = z.object({
-  productBrief: z.string(),
-  constraints: z.string(),
-});
+const taskInput = z.object({ productBrief: z.string(), constraints: z.string() });
 
 export function extractLaunchTasks(input: z.infer<typeof taskInput>): LaunchTask[] {
   const text = `${input.productBrief} ${input.constraints}`.toLowerCase();
@@ -21,20 +18,9 @@ export function extractLaunchTasks(input: z.infer<typeof taskInput>): LaunchTask
   return tasks;
 }
 
-export const extractLaunchTasksTool = tool({
-  name: "extract_launch_tasks",
-  description: "Extract a prioritized, dependency-aware task list from a launch brief.",
-  parameters: taskInput,
-  execute: async (input) => extractLaunchTasks(input),
-});
+export const extractLaunchTasksTool = tool({ name: "extract_launch_tasks", description: "Extract a prioritized, dependency-aware task list from a launch brief.", parameters: taskInput, execute: async (input) => extractLaunchTasks(input) });
 
-const readinessInput = z.object({
-  launchDate: z.string(),
-  productBrief: z.string(),
-  constraints: z.string(),
-  assets: z.string(),
-  tasks: z.array(z.object({ title: z.string(), priority: z.string(), dependency: z.string(), ownerRole: z.string(), rationale: z.string() })),
-});
+const readinessInput = z.object({ launchDate: z.string(), productBrief: z.string(), constraints: z.string(), assets: z.string(), tasks: z.array(z.object({ title: z.string(), priority: z.string(), dependency: z.string(), ownerRole: z.string(), rationale: z.string() })) });
 
 export function checkLaunchReadiness(input: z.infer<typeof readinessInput>): Readiness {
   const categories = [
@@ -50,19 +36,18 @@ export function checkLaunchReadiness(input: z.infer<typeof readinessInput>): Rea
   return { score, status: score >= 80 ? "ready" : score >= 65 ? "at-risk" : "blocked", categories, blockers };
 }
 
-export const checkLaunchReadinessTool = tool({
-  name: "check_launch_readiness",
-  description: "Score launch readiness across product, engineering, operations, communications, measurement, and stakeholders.",
-  parameters: readinessInput,
-  execute: async (input) => checkLaunchReadiness(input),
-});
+export const checkLaunchReadinessTool = tool({ name: "check_launch_readiness", description: "Score launch readiness across product, engineering, operations, communications, measurement, and stakeholders.", parameters: readinessInput, execute: async (input) => checkLaunchReadiness(input) });
 
 const ownerInput = z.object({ launchDate: z.string(), tasks: z.array(z.object({ title: z.string(), priority: z.string(), dependency: z.string(), ownerRole: z.string(), rationale: z.string() })) });
 export const generateOwnerChecklistTool = tool({
   name: "generate_owner_checklist",
   description: "Generate owner-role checklists from launch tasks and target date.",
   parameters: ownerInput,
-  execute: async ({ tasks, launchDate }) => ({ launchDate, checklist: Object.entries(Object.groupBy(tasks, (task) => task.ownerRole)).map(([owner, ownerTasks]) => ({ owner, actions: (ownerTasks ?? []).map((task) => ({ task: task.title, priority: task.priority, timing: task.priority === "P0" ? "Before final go/no-go" : "Before launch day" })) })) }),
+  execute: async ({ tasks, launchDate }) => {
+    const groups = new Map<string, typeof tasks>();
+    for (const task of tasks) groups.set(task.ownerRole, [...(groups.get(task.ownerRole) ?? []), task]);
+    return { launchDate, checklist: [...groups.entries()].map(([owner, ownerTasks]) => ({ owner, actions: ownerTasks.map((task) => ({ task: task.title, priority: task.priority, timing: task.priority === "P0" ? "Before final go/no-go" : "Before launch day" })) })) };
+  },
 });
 
 const copyInput = z.object({ productBrief: z.string(), audience: z.string(), channels: z.array(z.string()), assets: z.string() });
