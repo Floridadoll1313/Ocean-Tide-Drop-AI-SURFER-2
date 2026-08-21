@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CalendarDays, CheckCircle2, CircleAlert, Copy, Gauge, Rocket, Send, Sparkles, Users } from "lucide-react";
+import { CalendarDays, CheckCircle2, AlertTriangle, Copy, Gauge, Rocket, Send, Sparkles, Users } from "lucide-react";
 import "./launch-desk.css";
 
 type Activity = { label: string; status: "running" | "done" };
@@ -62,7 +62,7 @@ export default function LaunchDesk() {
         <label>AVAILABLE ASSETS<textarea className="compact" value={brief.assets} onChange={(e) => update("assets", e.target.value)} placeholder="Docs, screenshots, demos, testimonials, videos…"/></label>
         <div className="channel-field"><span>LAUNCH CHANNELS</span><div className="channel-pills">{channels.map((channel) => <button key={channel} className={brief.channels.includes(channel) ? "selected" : ""} onClick={() => toggleChannel(channel)}>{brief.channels.includes(channel) && <CheckCircle2 size={13}/>} {channel}</button>)}</div></div>
         <button className="build-btn" disabled={busy || brief.channels.length === 0} onClick={buildPlan}>{busy ? <><span className="spinner"/> Building launch plan…</> : <><Send size={17}/> Build launch plan</>}</button>
-        {error && <div className="error-box"><CircleAlert size={16}/> {error}</div>}
+        {error && <div className="error-box"><AlertTriangle size={16}/> {error}</div>}
       </section>
 
       <section className="result-panel panel"><div className="panel-title"><div><span className="step">02</span><div><h2>Launch intelligence</h2><p>Watch the agent work, then take the plan with you.</p></div></div><button className="copy-btn" disabled={!output} onClick={() => navigator.clipboard.writeText(output)}><Copy size={14}/> Copy</button></div>
