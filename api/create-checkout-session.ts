@@ -11,6 +11,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
 });
 
+const STRIPE_PRICE_ENV: Record<string, string | undefined> = {
+  bronze: process.env.STRIPE_PRICE_BRONZE,
+  wave: process.env.STRIPE_PRICE_WAVE,
+  tsunami: process.env.STRIPE_PRICE_TSUNAMI,
+  enterprise: process.env.STRIPE_PRICE_ENTERPRISE,
+};
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -18,21 +25,26 @@ export default async function handler(req, res) {
 
   try {
     const { tierId, email, userId } = req.body;
-
     const tier = PRICING[tierId];
+    const stripePriceId = STRIPE_PRICE_ENV[tierId];
 
-    if (!tier?.stripePriceId) {
-      return res.status(400).json({ error: "Invalid tier" });
+    if (!tier || tierId === "free") {
+      return res.status(400).json({ error: "Invalid paid tier" });
+    }
+
+    if (!stripePriceId) {
+      console.error(`Missing Stripe Price ID for tier: ${tierId}`);
+      return res.status(503).json({
+        error: "This plan is not configured for checkout yet.",
+      });
     }
 
     if (!email || !userId) {
       return res.status(400).json({ error: "Missing email or userId" });
     }
 
-    // 🧠 Idempotency key (prevents duplicate checkout sessions)
     const idempotencyKey = `checkout:${userId}:${tierId}`;
 
-    // 🔎 Get latest Stripe customer (if exists)
     const { data: existingSub } = await supabase
       .from("stripe_subscriptions")
       .select("stripe_customer_id")
@@ -43,7 +55,6 @@ export default async function handler(req, res) {
 
     let customerId = existingSub?.stripe_customer_id ?? null;
 
-    // 👤 Create Stripe customer if missing
     if (!customerId) {
       const customer = await stripe.customers.create(
         {
@@ -61,28 +72,22 @@ export default async function handler(req, res) {
       customerId = customer.id;
     }
 
-    // 💳 Create Checkout Session
     const session = await stripe.checkout.sessions.create(
       {
         mode: "subscription",
-
         customer: customerId,
-
         line_items: [
           {
-            price: tier.stripePriceId,
+            price: stripePriceId,
             quantity: 1,
           },
         ],
-
-        // 🌊 Core identity binding for webhook
         metadata: {
           tier: tierId,
           userId,
           userEmail: email,
           source: "ocean-tide-drop",
         },
-
         subscription_data: {
           metadata: {
             tier: tierId,
@@ -90,10 +95,8 @@ export default async function handler(req, res) {
             userEmail: email,
           },
         },
-
         success_url: `${process.env.NEXT_PUBLIC_URL}/dashboard?success=1`,
         cancel_url: `${process.env.NEXT_PUBLIC_URL}/pricing?canceled=1`,
-
         client_reference_id: userId,
       },
       {
