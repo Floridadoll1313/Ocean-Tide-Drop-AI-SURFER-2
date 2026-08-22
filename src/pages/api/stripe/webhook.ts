@@ -15,16 +15,24 @@ export const config = {
   api: { bodyParser: false },
 };
 
-/**
- * 🌊 STRIPE WEBHOOK → REALTIME UPGRADE ENGINE
- */
+const TIER_RANK: Record<string, number> = {
+  free: 0,
+  bronze: 1,
+  wave: 2,
+  tsunami: 3,
+  enterprise: 4,
+};
+
 export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   const sig = req.headers["stripe-signature"];
   const buf = await buffer(req);
 
   let event: Stripe.Event;
 
-  // 🔐 VERIFY STRIPE SIGNATURE
   try {
     event = stripe.webhooks.constructEvent(
       buf,
@@ -38,91 +46,92 @@ export default async function handler(req, res) {
 
   console.log("🌊 Stripe event:", event.type);
 
-  /**
-   * 💳 SUCCESSFUL CHECKOUT
-   */
   if (event.type === "checkout.session.completed") {
-    const session: any = event.data.object;
-
-    const email = session.customer_email;
+    const session = event.data.object as Stripe.Checkout.Session;
+    const userId = session.metadata?.userId;
     const tier = session.metadata?.tier;
 
-    if (!email || !tier) {
-      console.warn("⚠️ Missing email or tier in session");
+    if (!userId || !tier || TIER_RANK[tier] === undefined) {
+      console.warn("⚠️ Missing or invalid checkout identity/tier");
       return res.json({ ok: true });
     }
 
-    console.log("💰 PAYMENT CONFIRMED");
-    console.log("📧 Email:", email);
-    console.log("🌊 Tier:", tier);
+    const customerId =
+      typeof session.customer === "string"
+        ? session.customer
+        : session.customer?.id;
 
-    /**
-     * 🔒 OPTIONAL: prevent downgrade overwrite
-     */
-    const { data: existingUser } = await supabase
+    const email =
+      session.customer_details?.email ??
+      session.customer_email ??
+      session.metadata?.userEmail ??
+      undefined;
+
+    const { data: existingUser, error: lookupError } = await supabase
       .from("users")
       .select("tier")
-      .eq("email", email)
-      .single();
+      .eq("id", userId)
+      .maybeSingle();
 
-    const TIER_RANK: Record<string, number> = {
-      free: 0,
-      bronze: 1,
-      wave: 2,
-      tsunami: 3,
-      enterprise: 4,
-    };
-
-    const currentRank = TIER_RANK[existingUser?.tier ?? "free"] ?? 0;
-    const newRank = TIER_RANK[tier] ?? 0;
-
-    // 🚫 prevent accidental downgrade
-    if (newRank < currentRank) {
-      console.log("⚠️ Ignoring downgrade attempt");
-      return res.json({ ok: true });
+    if (lookupError) {
+      console.error("❌ Supabase user lookup failed:", lookupError);
+      return res.status(500).json({ error: lookupError.message });
     }
 
-    /**
-     * 🔥 UPSERT USER TIER
-     */
+    const currentRank = TIER_RANK[existingUser?.tier ?? "free"] ?? 0;
+    const newRank = TIER_RANK[tier];
+
+    if (newRank < currentRank) {
+      console.log("⚠️ Ignoring downgrade attempt");
+      return res.json({ received: true });
+    }
+
+    const update: Record<string, unknown> = {
+      tier,
+      subscription_status: "active",
+      updated_at: new Date().toISOString(),
+    };
+
+    if (email) update.stripe_customer_email = email;
+    if (customerId) update.stripe_customer_id = customerId;
+
     const { error } = await supabase
       .from("users")
-      .update({
-        tier,
-        subscription_status: "active",
-        stripe_customer_email: email,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("email", email);
+      .update(update)
+      .eq("id", userId);
 
     if (error) {
       console.error("❌ Supabase update failed:", error);
       return res.status(500).json({ error: error.message });
     }
 
-    console.log("✅ USER UPGRADED SUCCESSFULLY:", email);
+    console.log("✅ USER UPGRADED SUCCESSFULLY:", userId, tier);
   }
 
-  /**
-   * 💔 OPTIONAL: HANDLE CANCELLATIONS (FUTURE SAFE)
-   */
   if (event.type === "customer.subscription.deleted") {
-    const session: any = event.data.object;
+    const subscription = event.data.object as Stripe.Subscription;
+    const customerId =
+      typeof subscription.customer === "string"
+        ? subscription.customer
+        : subscription.customer?.id;
 
-    const email = session.customer_email;
+    if (!customerId) return res.json({ received: true });
 
-    if (email) {
-      await supabase
-        .from("users")
-        .update({
-          tier: "free",
-          subscription_status: "canceled",
-          updated_at: new Date().toISOString(),
-        })
-        .eq("email", email);
+    const { error } = await supabase
+      .from("users")
+      .update({
+        tier: "free",
+        subscription_status: "canceled",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("stripe_customer_id", customerId);
 
-      console.log("💔 USER DOWNGRADED TO FREE:", email);
+    if (error) {
+      console.error("❌ Supabase cancellation update failed:", error);
+      return res.status(500).json({ error: error.message });
     }
+
+    console.log("💔 USER DOWNGRADED TO FREE:", customerId);
   }
 
   return res.json({ received: true });
