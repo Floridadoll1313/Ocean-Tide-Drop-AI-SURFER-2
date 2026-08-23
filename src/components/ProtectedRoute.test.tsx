@@ -16,8 +16,18 @@ vi.mock("react-router-dom", async (importOriginal) => {
 
   return {
     ...actual,
-    Navigate: ({ state }: { state?: { from?: string } }) => (
-      <div data-testid="redirect">{state?.from ?? "missing"}</div>
+    Navigate: ({
+      replace,
+      state,
+      to,
+    }: {
+      replace?: boolean;
+      state?: { from?: string };
+      to: string;
+    }) => (
+      <div data-testid="redirect" data-replace={String(replace)} data-to={to}>
+        {state?.from ?? "missing"}
+      </div>
     ),
   };
 });
@@ -54,7 +64,10 @@ describe("ProtectedRoute", () => {
     );
 
     expect(container.innerHTML, "rendered html").toContain('data-testid="redirect"');
-    expect(container.querySelector('[data-testid="redirect"]')?.textContent).toBe(
+    const redirect = container.querySelector('[data-testid="redirect"]');
+    expect(redirect?.getAttribute("data-to")).toBe("/login");
+    expect(redirect?.getAttribute("data-replace")).toBe("true");
+    expect(redirect?.textContent).toBe(
       "/members/products/wave-scout?tab=setup#questions",
     );
 

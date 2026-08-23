@@ -3,13 +3,28 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 
 const AUTH_RETURN_PATH_KEY = "ai-surfer:auth-return-path";
+const DEFAULT_AUTH_DESTINATION = "/members";
 
 function safeReturnPath(value: unknown) {
-  if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//")) {
-    return "/members";
+  if (typeof value !== "string" || value.includes("\\")) {
+    return DEFAULT_AUTH_DESTINATION;
   }
 
-  return value;
+  try {
+    const candidate = new URL(value, window.location.origin);
+    const isProtectedPath =
+      candidate.pathname === "/members" ||
+      candidate.pathname.startsWith("/members/") ||
+      candidate.pathname === "/launch-desk";
+
+    if (candidate.origin !== window.location.origin || !isProtectedPath) {
+      return DEFAULT_AUTH_DESTINATION;
+    }
+
+    return `${candidate.pathname}${candidate.search}${candidate.hash}`;
+  } catch {
+    return DEFAULT_AUTH_DESTINATION;
+  }
 }
 
 export default function Login() {
