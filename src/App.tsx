@@ -92,8 +92,18 @@ export default function App() {
         <header style={styles.hero}>
           <h1>🌊🏄‍♀️ Ocean Tide Drop AI 🌺 🐟</h1>
           <p>High-powered digital tools, custom automation, and specialized software consoles built to ride the next wave.</p>
-          <Link to="/members" style={styles.cta}>Get Started &amp; Save 20%</Link>
+          <div style={styles.heroActions}>
+            <Link to="/wave-check" style={styles.cta}>Get My Free AI Wave Check™</Link>
+            <Link to="/members" style={styles.secondaryCta}>Explore Membership</Link>
+          </div>
         </header>
+
+        <section style={styles.waveCheck} aria-labelledby="free-wave-check-title">
+          <p style={styles.eyebrow}>FREE AI VISIBILITY CHECK</p>
+          <h2 id="free-wave-check-title">Can AI find and recommend your business?</h2>
+          <p>Discover the visibility gaps that may keep AI systems from understanding, trusting, citing, and recommending your business.</p>
+          <Link to="/wave-check" style={styles.cta}>Start My Free Wave Check →</Link>
+        </section>
 
         <ProductCatalog />
 
@@ -164,7 +174,11 @@ const styles: Record<string, React.CSSProperties> = {
   logo: { width: 48, height: 48, objectFit: 'contain', borderRadius: 12 },
   navBtn: { background: 'linear-gradient(90deg,#00f2fe,#4facfe)', color: '#000', fontWeight: 800, padding: '10px 22px', borderRadius: 30, textDecoration: 'none' },
   hero: { textAlign: 'center', padding: '80px 20px' },
+  heroActions: { display: 'flex', justifyContent: 'center', gap: 14, flexWrap: 'wrap', marginTop: 28 },
   cta: { display: 'inline-block', background: 'linear-gradient(90deg,#00f2fe,#4facfe)', color: '#000', fontWeight: 800, padding: '14px 28px', borderRadius: 30, border: 0, cursor: 'pointer', textDecoration: 'none' },
+  secondaryCta: { display: 'inline-block', color: '#a5f3fc', fontWeight: 800, padding: '13px 27px', borderRadius: 30, border: '1px solid rgba(103,232,249,.5)', textDecoration: 'none' },
+  waveCheck: { maxWidth: 860, margin: '0 auto 30px', padding: '44px 28px', borderRadius: 28, border: '1px solid rgba(103,232,249,.34)', background: 'linear-gradient(145deg,rgba(13,36,64,.98),rgba(6,15,28,.98))', textAlign: 'center', boxShadow: '0 22px 70px rgba(0,0,0,.24)' },
+  eyebrow: { margin: '0 0 12px', color: '#67e8f9', fontSize: '.78rem', fontWeight: 900, letterSpacing: '.16em' },
   offer: { textAlign: 'center', padding: 40 },
   pricing: { textAlign: 'center', padding: '20px 20px 100px' },
   grid: { display: 'flex', gap: 25, justifyContent: 'center', flexWrap: 'wrap' },
