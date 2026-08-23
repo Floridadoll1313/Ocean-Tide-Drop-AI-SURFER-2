@@ -5,7 +5,7 @@ describe("Supabase production configuration", () => {
   it("uses the connected AI Surfer project when deployment variables are absent", () => {
     const source = readFileSync("src/lib/supabase.ts", "utf8");
 
-    expect(source).toContain("https://dbpoyuwgmfmrefxwzfnh.supabase.co");
-    expect(source).toContain("sb_publishable_QEzJowvtsB5eRypf9FYUOA_csiTgKyU");
+    expect(source).toContain("https://mkgnyarwiscttobnytin.supabase.co");
+    expect(source).toContain("sb_publishable_Jp0Laxs-KoieNMD5hqLA0w_jCnrxATm");
   });
 });
