@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import App from "./App";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/auth/Login";
 import MemberGate from "./pages/members/MemberGate";
 import MembersDashboard from "./pages/members/MembersDashboard";
@@ -14,10 +15,37 @@ export default function RouterApp() {
       <Route path="/pricing" element={<App />} />
       <Route path="/wave-audit" element={<WaveAudit />} />
       <Route path="/wave-check" element={<WaveAudit />} />
-      <Route path="/launch-desk" element={<LaunchDesk />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/members" element={<MemberGate><MembersDashboard /></MemberGate>} />
-      <Route path="/members/products/:slug" element={<MemberGate><MemberProduct /></MemberGate>} />
+
+      <Route
+        path="/launch-desk"
+        element={
+          <ProtectedRoute>
+            <LaunchDesk />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/members"
+        element={
+          <ProtectedRoute>
+            <MemberGate>
+              <MembersDashboard />
+            </MemberGate>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/members/products/:slug"
+        element={
+          <ProtectedRoute>
+            <MemberGate>
+              <MemberProduct />
+            </MemberGate>
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="/dashboard" element={<Navigate to="/members" replace />} />
       <Route path="/ai-dashboard" element={<Navigate to="/members" replace />} />
       <Route path="*" element={<App />} />
