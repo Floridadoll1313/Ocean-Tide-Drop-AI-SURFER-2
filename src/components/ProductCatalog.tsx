@@ -8,6 +8,7 @@ interface Product {
   cta: string;
   href: string;
   image: string;
+  badge: string;
   featured?: boolean;
 }
 
@@ -20,6 +21,7 @@ const products: Product[] = [
     cta: 'Run the Wave Audit',
     href: '/wave-audit',
     image: '/packages/aeo-wave-audit.jpg',
+    badge: '/product-icons/aeo-wave-audit.png',
     featured: true,
   },
   {
@@ -30,6 +32,7 @@ const products: Product[] = [
     cta: 'Explore Opportunities',
     href: '/members/products/ai-opportunity-report',
     image: '/packages/ai-opportunity-report.jpg',
+    badge: '/product-icons/ai-opportunity-report.png',
   },
   {
     stage: 'PLAN',
@@ -39,6 +42,7 @@ const products: Product[] = [
     cta: 'Build the Blueprint',
     href: '/members/products/aeo-blueprint',
     image: '/packages/aeo-blueprint.jpg',
+    badge: '/product-icons/aeo-blueprint.png',
   },
   {
     stage: 'PLAN',
@@ -48,6 +52,7 @@ const products: Product[] = [
     cta: 'Map Your Workflows',
     href: '/members/products/automation-blueprint',
     image: '/packages/automation-blueprint.jpg',
+    badge: '/product-icons/automation-blueprint.png',
   },
   {
     stage: 'IMPLEMENT',
@@ -57,6 +62,7 @@ const products: Product[] = [
     cta: 'Ride with Wave Scout',
     href: '/members/products/wave-scout',
     image: '/packages/wave-scout.jpg',
+    badge: '/product-icons/wave-scout.png',
   },
   {
     stage: 'IMPLEMENT',
@@ -66,6 +72,7 @@ const products: Product[] = [
     cta: 'Meet Sales Rider',
     href: '/members/products/sales-rider',
     image: '/packages/sales-rider.jpg',
+    badge: '/product-icons/sales-rider.png',
   },
   {
     stage: 'IMPLEMENT',
@@ -75,6 +82,7 @@ const products: Product[] = [
     cta: 'Create with Content Creator',
     href: '/members/products/content-creator',
     image: '/packages/content-creator.jpg',
+    badge: '/product-icons/content-creator.png',
   },
   {
     stage: 'IMPLEMENT',
@@ -84,6 +92,7 @@ const products: Product[] = [
     cta: 'Automate the Work',
     href: '/members/products/automation-architect',
     image: '/packages/automation-architect.jpg',
+    badge: '/product-icons/automation-architect.png',
   },
   {
     stage: 'TRANSFORM',
@@ -93,6 +102,7 @@ const products: Product[] = [
     cta: 'Go Big Kahuna',
     href: '/members/products/big-kahuna',
     image: '/packages/big-kahuna.jpg',
+    badge: '/product-icons/big-kahuna.png',
     featured: true,
   },
 ];
@@ -120,6 +130,12 @@ function ProductCard({ product }: { product: Product }) {
           }}
         />
         <span className="product-card__stage">{product.stage}</span>
+        <img
+          src={product.badge}
+          alt={`${product.name} Ocean Crew level badge`}
+          className="product-card__badge"
+          loading="lazy"
+        />
       </div>
       <div className="product-card__body">
         <p className="product-card__category">{product.category}</p>
@@ -156,6 +172,8 @@ export default function ProductCatalog() {
         .product-card__image-wrap--fallback::after { content: 'AI SURFER'; position: absolute; inset: 0; display: grid; place-items: center; color: rgba(103,232,249,.55); font-size: 1.5rem; font-weight: 900; letter-spacing: .18em; }
         .product-card__image { width: 100%; height: 270px; display: block; object-fit: cover; }
         .product-card__stage { position: absolute; top: 14px; left: 14px; padding: 7px 10px; border-radius: 999px; color: #00131a; background: #a5f3fc; font-size: .68rem; font-weight: 950; letter-spacing: .1em; }
+        .product-card__badge { position: absolute; top: 10px; right: 10px; z-index: 2; width: 104px; height: 104px; object-fit: contain; filter: drop-shadow(0 8px 14px rgba(0,0,0,.55)); transition: transform .2s ease; }
+        .product-card:hover .product-card__badge { transform: translateY(-2px) scale(1.04); }
         .product-card__body { padding: 25px 26px 28px; }
         .product-card__category { margin: 0 0 8px; color: #67e8f9; font-size: .72rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
         .product-card h3 { margin: 0; font-size: 1.65rem; }
@@ -167,6 +185,7 @@ export default function ProductCatalog() {
           .product-grid { grid-template-columns: 1fr; }
           .product-stage__heading { align-items: start; flex-direction: column; }
           .product-card__image-wrap, .product-card__image { min-height: 220px; height: 220px; }
+          .product-card__badge { width: 88px; height: 88px; }
         }
       `}</style>
 
