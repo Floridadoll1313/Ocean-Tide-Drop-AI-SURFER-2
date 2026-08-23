@@ -1,28 +1,22 @@
 import { ReactNode, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../context/AuthContext";
 
 export default function MemberGate({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { user } = useAuth();
   const [status, setStatus] = useState<"checking" | "allowed" | "denied">("checking");
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     let active = true;
+
     const check = async () => {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError || !session) {
-        if (active) {
-          setStatus("denied");
-          setErrorMessage(sessionError?.message || "Please sign in to continue.");
-        }
-        navigate("/login", { replace: true, state: { from: location.pathname } });
-        return;
-      }
+      if (!user) return;
 
       const { data, error } = await supabase.functions.invoke("member-access-v2", {
-        body: { user_id: session.user.id },
+        body: { user_id: user.id },
       });
 
       if (!active) return;
@@ -41,11 +35,10 @@ export default function MemberGate({ children }: { children: ReactNode }) {
     };
 
     check();
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session) navigate("/login", { replace: true, state: { from: location.pathname } });
-    });
-    return () => { active = false; listener.subscription.unsubscribe(); };
-  }, [location.pathname, navigate]);
+    return () => {
+      active = false;
+    };
+  }, [user]);
 
   if (status === "checking") return <div style={styles.center}>🌊 Verifying your membership...</div>;
   if (status === "denied") return (
