@@ -82,10 +82,7 @@ export default function App() {
 
       <div style={styles.container}>
         <nav style={styles.nav}>
-          <div style={styles.brand}>
-            <img src="/ocean_tide_logo.png" alt="Ocean Tide Drop AI Surfer" style={styles.logo} />
-            <span>Ocean Tide Drop AI</span>
-          </div>
+          <span style={styles.brand}>Ocean Tide Drop AI</span>
           <Link to="/members" style={styles.navBtn}>Member Dashboard</Link>
         </nav>
 
@@ -171,7 +168,6 @@ const styles: Record<string, React.CSSProperties> = {
   container: { maxWidth: 1200, margin: '0 auto', padding: '0 20px' },
   nav: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '30px 0' },
   brand: { display: 'flex', alignItems: 'center', gap: 12, fontWeight: 800 },
-  logo: { width: 48, height: 48, objectFit: 'contain', borderRadius: 12 },
   navBtn: { background: 'linear-gradient(90deg,#00f2fe,#4facfe)', color: '#000', fontWeight: 800, padding: '10px 22px', borderRadius: 30, textDecoration: 'none' },
   hero: { textAlign: 'center', padding: '80px 20px' },
   heroActions: { display: 'flex', justifyContent: 'center', gap: 14, flexWrap: 'wrap', marginTop: 28 },

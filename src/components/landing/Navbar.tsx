@@ -23,13 +23,12 @@ export default function Navbar() {
       }}
 
       className="
-        fixed
-        top-6
-        left-1/2
-        -translate-x-1/2
+        sticky
+        top-3
         z-50
         w-[90%]
         max-w-6xl
+        mx-auto
         rounded-full
         border
         border-white/20
@@ -48,26 +47,9 @@ export default function Navbar() {
 
         <Link
           to="/"
-          className="flex items-center gap-3"
+          className="flex items-center gap-3 font-bold text-white"
         >
-
-          <img
-            src="/ocean_tide_logo.png"
-            alt="Ocean Tide Drop AI SURFER"
-            className="h-12 w-auto"
-          />
-
-
-          <span
-            className="
-              font-bold
-              text-white
-              hidden
-              sm:block
-            "
-          >
-            AI SURFER
-          </span>
+          <span>AI SURFER</span>
 
 
         </Link>
