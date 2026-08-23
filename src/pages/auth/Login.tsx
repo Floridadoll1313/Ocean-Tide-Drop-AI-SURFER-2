@@ -2,6 +2,31 @@ import { FormEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 
+const AUTH_RETURN_PATH_KEY = "ai-surfer:auth-return-path";
+const DEFAULT_AUTH_DESTINATION = "/members";
+
+function safeReturnPath(value: unknown) {
+  if (typeof value !== "string" || value.includes("\\")) {
+    return DEFAULT_AUTH_DESTINATION;
+  }
+
+  try {
+    const candidate = new URL(value, window.location.origin);
+    const isProtectedPath =
+      candidate.pathname === "/members" ||
+      candidate.pathname.startsWith("/members/") ||
+      candidate.pathname === "/launch-desk";
+
+    if (candidate.origin !== window.location.origin || !isProtectedPath) {
+      return DEFAULT_AUTH_DESTINATION;
+    }
+
+    return `${candidate.pathname}${candidate.search}${candidate.hash}`;
+  } catch {
+    return DEFAULT_AUTH_DESTINATION;
+  }
+}
+
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -12,11 +37,19 @@ export default function Login() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  const stateFrom = (location.state as { from?: unknown } | null)?.from;
+  const destination = safeReturnPath(
+    stateFrom ?? window.sessionStorage.getItem(AUTH_RETURN_PATH_KEY),
+  );
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/members", { replace: true });
+      if (data.session) {
+        window.sessionStorage.removeItem(AUTH_RETURN_PATH_KEY);
+        navigate(destination, { replace: true });
+      }
     });
-  }, [navigate]);
+  }, [destination, navigate]);
 
   const clearMessages = () => {
     setMessage("");
@@ -44,7 +77,8 @@ export default function Login() {
         }
 
         if (data.session) {
-          navigate("/members", { replace: true });
+          window.sessionStorage.removeItem(AUTH_RETURN_PATH_KEY);
+          navigate(destination, { replace: true });
         } else {
           setMessage("Account created! Check your email to confirm your account, then sign in. 🌊");
           setMode("signin");
@@ -76,7 +110,7 @@ export default function Login() {
         return;
       }
 
-      const destination = (location.state as { from?: string } | null)?.from || "/members";
+      window.sessionStorage.removeItem(AUTH_RETURN_PATH_KEY);
       navigate(destination, { replace: true });
     } finally {
       setLoading(false);
@@ -87,12 +121,15 @@ export default function Login() {
     setLoading(true);
     clearMessages();
 
+    window.sessionStorage.setItem(AUTH_RETURN_PATH_KEY, destination);
+
     const { error: googleError } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/members` },
+      options: { redirectTo: `${window.location.origin}/login` },
     });
 
     if (googleError) {
+      window.sessionStorage.removeItem(AUTH_RETURN_PATH_KEY);
       setError(googleError.message);
       setLoading(false);
     }
