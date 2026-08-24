@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import RouterApp from "./RouterApp";
+import { AuthProvider } from "./context/AuthContext";
 
 describe("shared site branding", () => {
   it.each(["/", "/wave-check", "/login"])(
@@ -9,7 +10,9 @@ describe("shared site branding", () => {
     (route) => {
       const html = renderToStaticMarkup(
         <MemoryRouter initialEntries={[route]}>
-          <RouterApp />
+          <AuthProvider>
+            <RouterApp />
+          </AuthProvider>
         </MemoryRouter>,
       );
 

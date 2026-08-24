@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 
 export default function Navbar() {
+  const { user, loading } = useAuth();
 
   return (
 
@@ -105,7 +107,7 @@ export default function Navbar() {
 
 
           <Link
-            to="/login"
+            to={user ? "/members" : "/login"}
             className="
               rounded-full
               bg-cyan-400
@@ -117,7 +119,7 @@ export default function Navbar() {
               transition
             "
           >
-            Enter Harbor
+            {loading ? "Checking Tide..." : user ? "My Dashboard" : "Enter Harbor"}
           </Link>
 
 

@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
-import { ArrowLeft, ArrowRight, Check, Loader2, Sparkles, Waves } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowLeft, ArrowRight, Check, Loader2, Sparkles } from "lucide-react";
 import OceanBackground from "../../components/landing/OceanBackground";
 import SunriseGlow from "../../components/landing/SunriseGlow";
 import BioluminescentParticles from "../../components/landing/BioluminescentParticles";
@@ -9,6 +8,7 @@ import Navbar from "../../components/landing/Navbar";
 import { calculateWaveAuditResult } from "../../features/wave-audit/scoring";
 import { saveWaveAuditLead } from "../../features/wave-audit/leadCapture";
 import type { WaveAuditAnswers } from "../../features/wave-audit/types";
+import FullWaveReport from "./FullWaveReport";
 
 type Question = {
   key: keyof WaveAuditAnswers;
@@ -58,7 +58,8 @@ export default function WaveAudit() {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState("");
+  const [submissionId, setSubmissionId] = useState("");
+  const [saveStatus, setSaveStatus] = useState<"saving" | "saved" | "uncertain">("saving");
 
   const result = useMemo(() => Object.values(answers).every(Boolean) ? calculateWaveAuditResult(answers) : null, [answers]);
   const currentQuestion = QUESTIONS[step];
@@ -73,14 +74,17 @@ export default function WaveAudit() {
     event.preventDefault();
     if (!result || !email.trim()) return;
     setSubmitting(true);
-    setSubmitError("");
-    const saved = await saveWaveAuditLead({ email, answers, result, source: "wave-audit" });
-    setSubmitting(false);
-    if (!saved.ok) {
-      setSubmitError(saved.message);
-      return;
-    }
+    const receipt = submissionId || globalThis.crypto.randomUUID();
+    setSubmissionId(receipt);
+    setSaveStatus("saving");
     setSubmitted(true);
+    setSubmitting(false);
+    void saveWaveAuditLead({ email, answers, result, source: "wave-audit", submissionId: receipt })
+      .then((saved) => setSaveStatus(saved.status))
+      .catch((error) => {
+        console.error("Wave Audit background save failed:", error);
+        setSaveStatus("uncertain");
+      });
   };
 
   return (
@@ -114,13 +118,7 @@ export default function WaveAudit() {
             {step > 0 && <button type="button" onClick={() => setStep((current) => current - 1)} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white"><ArrowLeft size={16} /> Back</button>}
           </section>
         ) : submitted ? (
-          <section className="mx-auto max-w-3xl rounded-[2rem] border border-cyan-300/20 bg-slate-900/75 p-8 text-center shadow-2xl backdrop-blur-xl md:p-12">
-            <Waves className="mx-auto text-cyan-300" size={46} />
-            <div className="mt-5 text-sm font-bold uppercase tracking-[0.18em] text-cyan-300">Your report is on the way</div>
-            <h2 className="mt-3 text-4xl font-black">Your biggest wave is {result.topCategory}.</h2>
-            <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-300">We saved your audit so the detailed Wave Report can be delivered to <span className="font-semibold text-white">{email}</span>.</p>
-            <Link to="/pricing" className="mt-8 inline-flex items-center gap-2 rounded-full bg-cyan-300 px-7 py-4 font-black text-slate-950 hover:bg-cyan-200">Explore Your Next Wave <ArrowRight size={18} /></Link>
-          </section>
+          <FullWaveReport email={email.trim().toLowerCase()} submissionId={submissionId} saveStatus={saveStatus} answers={answers} result={result} />
         ) : (
           <section className="mx-auto max-w-4xl">
             <div className="grid gap-6 md:grid-cols-[.8fr_1.2fr]">
@@ -139,15 +137,14 @@ export default function WaveAudit() {
             </div>
             <div className="mt-6 rounded-[2rem] border border-white/10 bg-slate-900/80 p-7 shadow-2xl backdrop-blur-xl md:p-9">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-amber-200">Unlock the full report</div>
-              <h2 className="mt-2 text-3xl font-black">Send me my full AI Wave Report</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">We’ll use your answers and score to prepare the detailed next-step report and point you toward the AI Surfer service that fits your biggest opportunity.</p>
+              <h2 className="mt-2 text-3xl font-black">Open my full AI Wave Report</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">Enter your email to open the complete report immediately, including your 30-day Wave Plan, practical first move, and the AI Surfer service that fits your biggest opportunity.</p>
               <form onSubmit={submitLead} className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <label className="sr-only" htmlFor="wave-audit-email">Email address</label>
                 <input id="wave-audit-email" name="email" type="email" required autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@yourbusiness.com" className="min-w-0 flex-1 rounded-full border border-white/15 bg-slate-950/70 px-5 py-4 text-white outline-none transition focus:border-cyan-300" />
-                <button disabled={submitting} type="submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-teal-300 px-6 py-4 font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-70">{submitting ? <Loader2 size={18} className="animate-spin" /> : <ArrowRight size={18} />}{submitting ? "Saving..." : "Unlock My Full AI Wave Report"}</button>
+                <button disabled={submitting} type="submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-teal-300 px-6 py-4 font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-70">{submitting ? <Loader2 size={18} className="animate-spin" /> : <ArrowRight size={18} />}{submitting ? "Opening..." : "Open My Full AI Wave Report"}</button>
               </form>
-              {submitError && <p className="mt-4 text-sm font-semibold text-amber-200" role="alert">{submitError}</p>}
-              <p className="mt-4 text-xs text-slate-500">Your instant result stays visible even if the report cannot be saved right now.</p>
+              <p className="mt-4 text-xs text-slate-500">Your full report opens here even if the online save confirmation is interrupted.</p>
             </div>
           </section>
         )}
