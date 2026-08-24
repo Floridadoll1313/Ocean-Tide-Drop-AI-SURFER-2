@@ -1,7 +1,7 @@
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -14,6 +14,8 @@ const authMocks = vi.hoisted(() => ({
 }));
 
 vi.mock("../../lib/supabase", () => ({
+  supabaseUrl: "https://project.supabase.co",
+  supabaseAnonKey: "publishable-test-key",
   supabase: { auth: authMocks },
 }));
 
@@ -48,8 +50,16 @@ async function renderLogin(from?: string) {
   return { container, root };
 }
 
+beforeEach(() => {
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ external: { email: true, google: true } }),
+  }));
+});
+
 afterEach(() => {
   vi.clearAllMocks();
+  vi.unstubAllGlobals();
   window.sessionStorage.clear();
   document.body.replaceChildren();
 });
@@ -137,5 +147,26 @@ describe("Login return navigation", () => {
     expect(window.sessionStorage.getItem("ai-surfer:auth-return-path")).toBeNull();
 
     await act(async () => secondRender.root.unmount());
+  });
+
+  it("offers email sign-in instead of a broken Google button when Google is disabled", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ external: { email: true, google: false } }),
+    }));
+    authMocks.getSession.mockResolvedValue({
+      data: { session: null },
+      error: null,
+    });
+
+    const { container, root } = await renderLogin();
+
+    expect(container.textContent).not.toContain("Sign in with Google");
+    expect(container.textContent).toContain(
+      "Google sign-in is temporarily unavailable. Please use email below.",
+    );
+    expect(container.textContent).toContain("Sign In & Enter Members Area");
+
+    await act(async () => root.unmount());
   });
 });

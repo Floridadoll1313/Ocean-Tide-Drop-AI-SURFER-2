@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { supabase } from "../../lib/supabase";
+import { supabase, supabaseAnonKey, supabaseUrl } from "../../lib/supabase";
 
 const AUTH_RETURN_PATH_KEY = "ai-surfer:auth-return-path";
 const DEFAULT_AUTH_DESTINATION = "/members";
@@ -36,11 +36,12 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [googleAvailable, setGoogleAvailable] = useState<boolean | null>(null);
 
   const stateFrom = (location.state as { from?: unknown } | null)?.from;
-  const destination = safeReturnPath(
+  const [destination] = useState(() => safeReturnPath(
     stateFrom ?? window.sessionStorage.getItem(AUTH_RETURN_PATH_KEY),
-  );
+  ));
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -50,6 +51,25 @@ export default function Login() {
       }
     });
   }, [destination, navigate]);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch(`${supabaseUrl}/auth/v1/settings`, {
+      headers: { apikey: supabaseAnonKey },
+    })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error("Auth settings unavailable")))
+      .then((settings: { external?: { google?: boolean } }) => {
+        if (active) setGoogleAvailable(settings.external?.google === true);
+      })
+      .catch(() => {
+        if (active) setGoogleAvailable(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const clearMessages = () => {
     setMessage("");
@@ -150,13 +170,19 @@ export default function Login() {
         <h1 style={styles.title}>{title}</h1>
         <p style={styles.copy}>{copy}</p>
 
-        {mode === "signin" && (
+        {mode === "signin" && googleAvailable && (
           <button type="button" onClick={signInWithGoogle} disabled={loading} style={styles.googleButton}>
             {loading ? "Connecting..." : "🌐 Sign in with Google"}
           </button>
         )}
 
-        {mode === "signin" && <div style={styles.divider}><span>or continue with email</span></div>}
+        {mode === "signin" && googleAvailable === false && (
+          <div role="status" style={styles.authNotice}>
+            Google sign-in is temporarily unavailable. Please use email below.
+          </div>
+        )}
+
+        {mode === "signin" && googleAvailable && <div style={styles.divider}><span>or continue with email</span></div>}
 
         <form onSubmit={submit} style={styles.form}>
           <label style={styles.label}>
@@ -228,6 +254,7 @@ const styles: Record<string, React.CSSProperties> = {
   title: { textAlign: "center", fontSize: 30, margin: "12px 0" },
   copy: { textAlign: "center", color: "#cbd5e1", lineHeight: 1.6 },
   googleButton: { width: "100%", padding: 13, borderRadius: 999, border: "1px solid #64748b", background: "#fff", color: "#111827", fontWeight: 800, cursor: "pointer", marginTop: 18 },
+  authNotice: { marginTop: 18, padding: 12, borderRadius: 10, background: "rgba(125,211,252,.1)", border: "1px solid rgba(125,211,252,.3)", color: "#bae6fd", fontSize: 14, lineHeight: 1.5, textAlign: "center" },
   divider: { display: "flex", alignItems: "center", gap: 12, margin: "22px 0 4px", color: "#64748b", fontSize: 12 },
   form: { display: "grid", gap: 18, marginTop: 22 },
   label: { display: "grid", gap: 7, fontWeight: 700 },
