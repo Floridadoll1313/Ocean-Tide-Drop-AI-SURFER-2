@@ -13,7 +13,7 @@ vi.mock("./context/AuthContext", () => ({
 }));
 
 describe("members route", () => {
-  it("shows the dashboard to an authenticated surfer without a second broken gate", () => {
+  it("shows the dashboard over the members command-deck background", () => {
     const html = renderToStaticMarkup(
       <MemoryRouter initialEntries={["/members"]}>
         <RouterApp />
@@ -21,6 +21,25 @@ describe("members route", () => {
     );
 
     expect(html).toContain("Welcome to your AI-Surfer Dashboard.");
+    expect(html).toContain(
+      'background-image:url(&quot;/OTD-AI-Surfer-Members-bg.png&quot;)',
+    );
     expect(html).not.toContain("Verifying your membership");
+  });
+
+  it("opens a product for an authenticated surfer without asking them to sign in again", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter initialEntries={["/members/products/wave-scout"]}>
+        <RouterApp />
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("Loading your product access");
+    expect(html).toContain(
+      'background-image:url(&quot;/OTD-AI-Surfer-Members-bg.png&quot;)',
+    );
+    expect(html).not.toContain("Verifying your membership");
+    expect(html).not.toContain("Members only");
+    expect(html).not.toContain("Sign in");
   });
 });
