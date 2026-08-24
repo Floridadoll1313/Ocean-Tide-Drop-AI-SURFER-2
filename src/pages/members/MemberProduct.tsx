@@ -23,6 +23,9 @@ const tierRank: Record<Tier, number> = {
 };
 
 const products: Product[] = [
+  { name: "AI Opportunity Report", icon: "📊", slug: "ai-opportunity-report", description: "Turn scattered AI possibilities into a prioritized list of the opportunities most likely to create measurable business value.", minimumTier: "Starter Access", nextStep: "Review your AI opportunities" },
+  { name: "AEO Blueprint", icon: "🗺️", slug: "aeo-blueprint", description: "Build a practical roadmap for becoming more visible, understandable, and authoritative across AI-powered search and answer engines.", minimumTier: "Innovator Tier", nextStep: "Build your AEO roadmap" },
+  { name: "Automation Blueprint", icon: "🏗️", slug: "automation-blueprint", description: "Map repetitive work into AI-powered workflows that reduce manual effort, connect your tools, and make operations more scalable.", minimumTier: "Innovator Tier", nextStep: "Map your automation roadmap" },
   { name: "Wave Scout", icon: "🔎", slug: "wave-scout", description: "Find AI opportunities, visibility gaps, and qualified leads.", minimumTier: "Starter Access", nextStep: "Start with your Wave Audit" },
   { name: "Sales Rider", icon: "💰", slug: "sales-rider", description: "Turn conversations into a repeatable AI-assisted sales system.", minimumTier: "Starter Access", nextStep: "Map your sales workflow" },
   { name: "Content Creator", icon: "✍️", slug: "content-creator", description: "Build an AI-powered content engine for consistent business growth.", minimumTier: "Innovator Tier", nextStep: "Build your content plan" },
