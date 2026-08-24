@@ -187,6 +187,26 @@ npm run build
 Deploy (Cloudflare Pages)
 Push to your connected GitHub repo — Cloudflare builds automatically.
 
+### Browser Run website health check
+
+`POST /api/site-health` uses Cloudflare Browser Run Quick Actions to capture
+the live AI SURFER homepage as a screenshot, Markdown, and accessibility tree.
+The endpoint is intentionally fixed to `https://otdaisurfer.surf/` and requires
+an internal bearer key so public callers cannot spend Browser Run time.
+
+Configure these as encrypted Cloudflare Pages environment variables:
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_BROWSER_TOKEN` — a custom token with `Browser Rendering - Edit`
+- `SITE_HEALTH_API_KEY` — a long random value used only by trusted health-check callers
+
+Example request:
+
+```bash
+curl -X POST https://otdaisurfer.surf/api/site-health \
+  -H "Authorization: Bearer $SITE_HEALTH_API_KEY"
+```
+
 ---
 
 🔥 Brand Identity
