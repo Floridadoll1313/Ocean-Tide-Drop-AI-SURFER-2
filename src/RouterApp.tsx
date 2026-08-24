@@ -43,6 +43,7 @@ export default function RouterApp() {
             <Route index element={<MembersDashboard />} />
             <Route path="products/:slug" element={<MemberProduct />} />
             <Route path="crew" element={<CrewDeck />} />
+            <Route path="crew/approvals" element={<ApprovalQueue />} />
             <Route path="crew/:agentSlug" element={<AgentWorkspace />} />
           </Route>
 
