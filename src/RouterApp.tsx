@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import MembersLayout from "./components/members/MembersLayout";
 import Login from "./pages/auth/Login";
 import AgentWorkspace from "./pages/members/AgentWorkspace";
+import ApprovalQueue from "./pages/members/ApprovalQueue";
 import CrewDeck from "./pages/members/CrewDeck";
 import MembersDashboard from "./pages/members/MembersDashboard";
 import MemberProduct from "./pages/members/MemberProduct";
