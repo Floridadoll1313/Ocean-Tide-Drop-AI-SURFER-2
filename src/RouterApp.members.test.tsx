@@ -5,8 +5,8 @@ import RouterApp from "./RouterApp";
 
 vi.mock("./context/AuthContext", () => ({
   useAuth: () => ({
-    session: { user: { id: "surfer-1", email: "surfer@example.com" } },
-    user: { id: "surfer-1", email: "surfer@example.com" },
+    session: { user: { id: "surfer-1", email: "surfer@example.com", app_metadata: { role: "owner" } } },
+    user: { id: "surfer-1", email: "surfer@example.com", app_metadata: { role: "owner" } },
     loading: false,
     signOut: vi.fn(),
   }),
@@ -24,7 +24,8 @@ describe("members route", () => {
     expect(html).toContain(
       'background-image:url(&quot;/OTD-AI-Surfer-Members-bg.png&quot;)',
     );
-    expect(html).toContain("<strong>Owner</strong>");\n    expect(html).not.toContain("Verifying your membership");
+    expect(html).toContain("<strong>Owner</strong>");
+    expect(html).not.toContain("Verifying your membership");
   });
 
   it("opens a product for an authenticated surfer without asking them to sign in again", () => {
