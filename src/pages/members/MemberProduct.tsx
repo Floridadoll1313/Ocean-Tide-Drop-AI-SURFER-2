@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../lib/supabase";
 
-type Tier = "Starter Access" | "Innovator Tier" | "Console Tier" | "Full Takeover" | "Member";
+type Tier = "Starter Access" | "Innovator Tier" | "Console Tier" | "Full Takeover" | "Owner" | "Member";
 
 type Product = {
   name: string;
@@ -20,6 +20,7 @@ const tierRank: Record<Tier, number> = {
   "Innovator Tier": 2,
   "Console Tier": 3,
   "Full Takeover": 4,
+  Owner: 5,
 };
 
 const products: Product[] = [
@@ -47,6 +48,14 @@ export default function MemberProduct() {
     let active = true;
 
     if (!user) {
+      return () => {
+        active = false;
+      };
+    }
+
+    if (user.app_metadata?.role === "owner") {
+      setTier("Owner");
+      setLoading(false);
       return () => {
         active = false;
       };
