@@ -1,5 +1,5 @@
 import type { MembershipTier } from "../../src/crew/types";
-import type { CrewEnv } from "./env";
+import type { ResolvedCrewEnv } from "./env";
 
 type VerifiedUser = {
   id: string;
@@ -9,11 +9,11 @@ type VerifiedUser = {
 };
 
 type SupabaseRequest = {
-  env: CrewEnv;
+  env: ResolvedCrewEnv;
   token: string;
 };
 
-function headers(env: CrewEnv, token: string, extra?: HeadersInit): Headers {
+function headers(env: ResolvedCrewEnv, token: string, extra?: HeadersInit): Headers {
   const result = new Headers(extra);
   result.set("apikey", env.SUPABASE_ANON_KEY);
   result.set("Authorization", `Bearer ${token}`);
