@@ -25,4 +25,17 @@ describe("shared site branding", () => {
       expect(html).toContain('src="/ocean_tide_logo.png"');
     },
   );
+
+  it("opens a dedicated password-recovery screen from the email link", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter initialEntries={["/reset-password"]}>
+        <AuthProvider>
+          <RouterApp />
+        </AuthProvider>
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("Set a New Password");
+    expect(html).toContain("Choose a secure new password for your AI-Surfer account.");
+  });
 });
