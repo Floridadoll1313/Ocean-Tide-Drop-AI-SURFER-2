@@ -33,6 +33,30 @@ async function parseJson(response: Response): Promise<unknown> {
   try { return JSON.parse(text); } catch { return null; }
 }
 
+
+async function finalizeEmail(
+  env: ResolvedCrewEnv,
+  token: string,
+  approvalId: string,
+  succeeded: boolean,
+  providerMessageId: string | null,
+): Promise<boolean> {
+  const response = await fetch(
+    `${env.SUPABASE_URL}/rest/v1/rpc/finalize_crew_email`,
+    {
+      method: "POST",
+      headers: headers(env, token),
+      body: JSON.stringify({
+        requested_approval_id: approvalId,
+        requested_provider_message_id: providerMessageId,
+        succeeded,
+        requested_error_code: succeeded ? null : "provider_rejected",
+      }),
+    },
+  );
+  return response.ok;
+}
+
 export async function onRequestPost(context: Context): Promise<Response> {
   let env: ResolvedCrewEnv;
   try {
@@ -132,72 +156,26 @@ export async function onRequestPost(context: Context): Promise<Response> {
   const resendPayload = await parseJson(resendResponse) as { id?: string } | null;
 
   if (!resendResponse.ok || !resendPayload?.id) {
-    await fetch(
-      `${env.SUPABASE_URL}/rest/v1/outbound_messages?id=eq.${claim.id}`,
-      {
-        method: "PATCH",
-        headers: headers(env, token, "return=minimal"),
-        body: JSON.stringify({
-          status: "failed",
-          error_code: "provider_rejected",
-          updated_at: new Date().toISOString(),
-        }),
-      },
-    );
-    await fetch(
-      `${env.SUPABASE_URL}/rest/v1/approval_requests?id=eq.${approvalId}`,
-      {
-        method: "PATCH",
-        headers: headers(env, token, "return=minimal"),
-        body: JSON.stringify({
-          status: "failed",
-          last_error_code: "provider_rejected",
-          updated_at: new Date().toISOString(),
-        }),
-      },
-    );
+    await finalizeEmail(env, token, approvalId, false, null);
     return Response.json(
       { error: "email_delivery_failed", message: "The email was not delivered. You can review and retry it." },
       { status: 502 },
     );
   }
 
-  const now = new Date().toISOString();
-  await Promise.all([
-    fetch(
-      `${env.SUPABASE_URL}/rest/v1/outbound_messages?id=eq.${claim.id}`,
-      {
-        method: "PATCH",
-        headers: headers(env, token, "return=minimal"),
-        body: JSON.stringify({
-          status: "sent",
-          provider_message_id: resendPayload.id,
-          updated_at: now,
-        }),
-      },
-    ),
-    fetch(
-      `${env.SUPABASE_URL}/rest/v1/approval_requests?id=eq.${approvalId}`,
-      {
-        method: "PATCH",
-        headers: headers(env, token, "return=minimal"),
-        body: JSON.stringify({
-          status: "sent",
-          sent_at: now,
-          updated_at: now,
-        }),
-      },
-    ),
-    fetch(`${env.SUPABASE_URL}/rest/v1/usage_events`, {
-      method: "POST",
-      headers: headers(env, token, "return=minimal"),
-      body: JSON.stringify({
-        auth_id: user.id,
-        event_type: "email_send",
-        quantity: 1,
-      }),
-    }),
-  ]);
+  const finalized = await finalizeEmail(
+    env,
+    token,
+    approvalId,
+    true,
+    resendPayload.id,
+  );
+  if (!finalized) {
+    return Response.json(
+      { error: "email_finalize_failed", message: "Delivery succeeded, but its status needs reconciliation." },
+      { status: 503 },
+    );
+  }
 
   return Response.json({
     status: "sent",
