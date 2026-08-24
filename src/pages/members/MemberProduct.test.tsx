@@ -40,6 +40,7 @@ function LocationProbe() {
 
 afterEach(() => {
   vi.clearAllMocks();
+  authState.user.app_metadata = {};
   document.body.replaceChildren();
 });
 
