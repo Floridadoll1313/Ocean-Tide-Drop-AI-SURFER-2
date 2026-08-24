@@ -8,7 +8,7 @@ import {
   extractBearerToken,
   tierFromVerifiedUser,
 } from "../../../src/server/crew/runContract";
-import { requireCrewEnv, type CrewEnv } from "../../_shared/env";
+import { requireCrewEnv, type CrewEnv, type ResolvedCrewEnv } from "../../_shared/env";
 import {
   completeCrewRun,
   loadBusinessProfile,
@@ -59,7 +59,7 @@ function reservationError(error: unknown): Response {
 }
 
 export async function onRequestPost(context: CrewPagesContext): Promise<Response> {
-  let env: CrewEnv;
+  let env: ResolvedCrewEnv;
   try {
     env = requireCrewEnv(context.env);
   } catch {
