@@ -24,7 +24,7 @@ describe("members route", () => {
     expect(html).toContain(
       'background-image:url(&quot;/OTD-AI-Surfer-Members-bg.png&quot;)',
     );
-    expect(html).not.toContain("Verifying your membership");
+    expect(html).toContain("<strong>Owner</strong>");\n    expect(html).not.toContain("Verifying your membership");
   });
 
   it("opens a product for an authenticated surfer without asking them to sign in again", () => {
