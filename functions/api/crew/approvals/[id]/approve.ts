@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { extractBearerToken } from "../../../../../src/server/crew/runContract";
-import { requireCrewEnv, type CrewEnv } from "../../../../_shared/env";
+import { requireCrewEnv, type CrewEnv, type ResolvedCrewEnv } from "../../../../_shared/env";
 import { verifySupabaseUser } from "../../../../_shared/supabase";
 
 type Context = {
@@ -20,7 +20,7 @@ function headers(env: CrewEnv, token: string): HeadersInit {
 }
 
 export async function onRequestPost(context: Context): Promise<Response> {
-  let env: CrewEnv;
+  let env: ResolvedCrewEnv;
   try {
     env = requireCrewEnv(context.env);
   } catch {
