@@ -68,12 +68,12 @@ export default function MembersDashboard() {
 
       <section style={styles.productsSection}>
         <div style={styles.sectionHeading}>
-          <div><p style={styles.kicker}>YOUR AI TOOLKIT</p><h2>Your AI Surfer Products</h2></div>
+          <div><p style={styles.kicker}>YOUR AI CREW</p><h2>Your AI Surfer Crew Deck</h2></div>
           <span style={styles.tierPill}>{tier}</span>
         </div>
         <div style={styles.grid}>
           {products.map(([icon, name, text, slug]) => (
-            <button key={name} onClick={() => navigate(`/members/products/${slug}`)} style={styles.product}>
+            <button key={name} onClick={() => navigate(`/members/crew/${slug}`)} style={styles.product}>
               <span style={{ fontSize: 30 }}>{icon}</span>
               <strong>{name}</strong>
               <span style={styles.productText}>{text}</span>
