@@ -2,10 +2,10 @@ import { createClient } from "@supabase/supabase-js";
 
 // Publishable Supabase credentials are safe to ship to the browser. Deployment
 // variables can override these defaults without leaving the app unconfigured.
-const supabaseUrl =
+export const supabaseUrl =
   import.meta.env.VITE_SUPABASE_URL ||
   "https://mkgnyarwiscttobnytin.supabase.co";
-const supabaseAnonKey =
+export const supabaseAnonKey =
   import.meta.env.VITE_SUPABASE_ANON_KEY ||
   "sb_publishable_Jp0Laxs-KoieNMD5hqLA0w_jCnrxATm";
 

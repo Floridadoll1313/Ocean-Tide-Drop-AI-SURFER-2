@@ -33,9 +33,7 @@ export default function RouterApp() {
             path="/members"
             element={
               <ProtectedRoute>
-                <MemberGate>
-                  <MembersDashboard />
-                </MemberGate>
+                <MembersDashboard />
               </ProtectedRoute>
             }
           />
