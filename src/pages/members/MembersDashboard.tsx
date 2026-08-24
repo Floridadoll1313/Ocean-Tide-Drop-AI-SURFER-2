@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../lib/supabase";
 
 const products = [
@@ -13,21 +14,34 @@ const products = [
 
 export default function MembersDashboard() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [tier, setTier] = useState("Member");
+  const { user, signOut: authSignOut } = useAuth();
+  const [email, setEmail] = useState(user?.email ?? "");
+  const [tier, setTier] = useState(
+    user?.app_metadata?.role === "owner" ? "Owner" : "Member",
+  );
 
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data }) => {
-      const user = data.user;
-      if (!user) return;
-      setEmail(user.email ?? "");
-      const { data: profile } = await supabase.from("users").select("tier").eq("id", user.id).maybeSingle();
-      if (profile?.tier) setTier(profile.tier);
-    });
-  }, []);
+    if (!user) return;
+
+    setEmail(user.email ?? "");
+
+    if (user.app_metadata?.role === "owner") {
+      setTier("Owner");
+      return;
+    }
+
+    supabase
+      .from("users")
+      .select("tier")
+      .eq("auth_id", user.id)
+      .maybeSingle()
+      .then(({ data: profile }) => {
+        if (profile?.tier) setTier(profile.tier);
+      });
+  }, [user]);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    await authSignOut();
     navigate("/", { replace: true });
   };
 
