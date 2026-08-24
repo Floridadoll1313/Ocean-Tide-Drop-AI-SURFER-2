@@ -6,7 +6,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
 const authState = vi.hoisted(() => ({
-  user: {\n    id: "auth-surfer-1",\n    email: "surfer@example.com",\n    app_metadata: {} as Record<string, string>,\n  },
+  user: {
+    id: "auth-surfer-1",
+    email: "surfer@example.com",
+    app_metadata: {} as Record<string, string>,
+  },
 }));
 
 const supabaseMocks = vi.hoisted(() => ({
