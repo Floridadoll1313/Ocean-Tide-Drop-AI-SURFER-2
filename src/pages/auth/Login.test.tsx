@@ -65,6 +65,45 @@ afterEach(() => {
 });
 
 describe("Login return navigation", () => {
+  it("sends password recovery emails back to the reset-password screen", async () => {
+    authMocks.getSession.mockResolvedValue({
+      data: { session: null },
+      error: null,
+    });
+    authMocks.resetPasswordForEmail.mockResolvedValue({ data: {}, error: null });
+
+    const { container, root } = await renderLogin();
+    const forgotPasswordLink = Array.from(container.querySelectorAll("button"))
+      .find((button) => button.textContent === "Forgot Password?");
+
+    await act(async () => forgotPasswordLink?.click());
+
+    const emailInput = container.querySelector<HTMLInputElement>('input[type="email"]');
+    const setInputValue = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )?.set;
+
+    await act(async () => {
+      setInputValue?.call(emailInput, "surfer@example.com");
+      emailInput?.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+
+    await act(async () => {
+      container.querySelector("form")?.dispatchEvent(
+        new Event("submit", { bubbles: true, cancelable: true }),
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(authMocks.resetPasswordForEmail).toHaveBeenCalledWith(
+      "surfer@example.com",
+      { redirectTo: `${window.location.origin}/reset-password` },
+    );
+
+    await act(async () => root.unmount());
+  });
+
   it("guides a surfer to confirmation when signup loses the response after reaching Supabase", async () => {
     authMocks.getSession.mockResolvedValue({
       data: { session: null },
