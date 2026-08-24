@@ -5,6 +5,7 @@ import { hasCrewAccess } from "../../crew/entitlements";
 import type { MembershipTier } from "../../crew/types";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../lib/supabase";
+import EmailDraftPanel from "../../components/crew/EmailDraftPanel";
 import "./crew-deck.css";
 
 type Activity = { message: string; status: "running" | "done" };
