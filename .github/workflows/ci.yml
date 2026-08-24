@@ -35,4 +35,4 @@ jobs:
         run: npm run build
 
       - name: Build Cloudflare Pages Functions
-        run: npx wrangler@4 pages functions build --outdir=.wrangler/functions
+        run: npx wrangler@4 pages functions build --outdir=.wrangler/functions --compatibility-date=2026-08-24 --compatibility-flags=nodejs_compat
