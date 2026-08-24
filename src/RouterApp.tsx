@@ -3,6 +3,7 @@ import App from "./App";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MembersLayout from "./components/members/MembersLayout";
 import Login from "./pages/auth/Login";
+import ResetPassword from "./pages/auth/ResetPassword";
 import MembersDashboard from "./pages/members/MembersDashboard";
 import MemberProduct from "./pages/members/MemberProduct";
 import WaveAudit from "./pages/wave-audit/WaveAudit";
@@ -20,6 +21,7 @@ export default function RouterApp() {
           <Route path="/wave-audit" element={<WaveAudit />} />
           <Route path="/wave-check" element={<WaveAudit />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route
             path="/launch-desk"
