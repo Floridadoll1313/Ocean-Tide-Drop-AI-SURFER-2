@@ -33,3 +33,6 @@ jobs:
 
       - name: Build Vite app
         run: npm run build
+
+      - name: Build Cloudflare Pages Functions
+        run: npx wrangler@4 pages functions build --outdir=.wrangler/functions
