@@ -1,8 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import App from "./App";
 import ProtectedRoute from "./components/ProtectedRoute";
+import MembersLayout from "./components/members/MembersLayout";
 import Login from "./pages/auth/Login";
-import MemberGate from "./pages/members/MemberGate";
 import MembersDashboard from "./pages/members/MembersDashboard";
 import MemberProduct from "./pages/members/MemberProduct";
 import WaveAudit from "./pages/wave-audit/WaveAudit";
@@ -33,20 +33,13 @@ export default function RouterApp() {
             path="/members"
             element={
               <ProtectedRoute>
-                <MembersDashboard />
+                <MembersLayout />
               </ProtectedRoute>
             }
-          />
-          <Route
-            path="/members/products/:slug"
-            element={
-              <ProtectedRoute>
-                <MemberGate>
-                  <MemberProduct />
-                </MemberGate>
-              </ProtectedRoute>
-            }
-          />
+          >
+            <Route index element={<MembersDashboard />} />
+            <Route path="products/:slug" element={<MemberProduct />} />
+          </Route>
 
           <Route path="/dashboard" element={<Navigate to="/members" replace />} />
           <Route path="/ai-dashboard" element={<Navigate to="/members" replace />} />

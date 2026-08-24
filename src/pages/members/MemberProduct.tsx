@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../lib/supabase";
 
 type Tier = "Starter Access" | "Innovator Tier" | "Console Tier" | "Full Takeover" | "Member";
@@ -33,6 +34,7 @@ const products: Product[] = [
 export default function MemberProduct() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [tier, setTier] = useState<Tier>("Member");
   const [loading, setLoading] = useState(true);
 
@@ -40,19 +42,29 @@ export default function MemberProduct() {
 
   useEffect(() => {
     let active = true;
-    supabase.auth.getUser().then(async ({ data }) => {
-      if (!data.user) {
-        navigate("/login", { replace: true });
-        return;
-      }
-      const { data: profile } = await supabase.from("users").select("tier").eq("id", data.user.id).maybeSingle();
-      if (active) {
-        setTier((profile?.tier as Tier) || "Member");
-        setLoading(false);
-      }
-    });
-    return () => { active = false; };
-  }, [navigate]);
+
+    if (!user) {
+      return () => {
+        active = false;
+      };
+    }
+
+    supabase
+      .from("users")
+      .select("tier")
+      .eq("auth_id", user.id)
+      .maybeSingle()
+      .then(({ data: profile }) => {
+        if (active) {
+          setTier((profile?.tier as Tier) || "Member");
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [user]);
 
   if (!product) {
     return <PageShell><h1>Product not found</h1><button onClick={() => navigate("/members")} style={styles.cta}>Back to Command Center</button></PageShell>;
@@ -95,7 +107,7 @@ function PageShell({ children }: { children: React.ReactNode }) {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  page: { minHeight: "100vh", background: "radial-gradient(circle at 10% 0%,#123b59,#050914 48%)", color: "white", fontFamily: "system-ui, sans-serif" },
+  page: { minHeight: "100vh", background: "transparent", color: "white", fontFamily: "system-ui, sans-serif" },
   container: { maxWidth: 900, margin: "0 auto", padding: "32px 20px 80px" },
   back: { background: "transparent", border: "1px solid #31506a", color: "#cbd5e1", borderRadius: 999, padding: "9px 16px", cursor: "pointer" },
   hero: { textAlign: "center", padding: "70px 20px 45px" },

@@ -73,7 +73,7 @@ export default function MembersDashboard() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  page: { minHeight: "100vh", padding: "24px clamp(18px,5vw,70px) 70px", background: "radial-gradient(circle at 10% 0%,#123b59,#050914 48%)", color: "white", fontFamily: "system-ui, sans-serif" },
+  page: { minHeight: "100vh", padding: "24px clamp(18px,5vw,70px) 70px", background: "transparent", color: "white", fontFamily: "system-ui, sans-serif" },
   header: { maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 30 },
   brand: { fontWeight: 900, letterSpacing: 2, color: "#00f2fe" },
   sub: { color: "#94a3b8", fontSize: 13 },

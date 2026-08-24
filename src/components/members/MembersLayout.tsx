@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import { Outlet, Navigate } from "react-router-dom";
-import { supabase } from "../../lib/supabase";
+import { useState } from "react";
+import { Outlet } from "react-router-dom";
 
 type TideMode = "auto" | "high" | "low";
 
@@ -28,93 +27,8 @@ function getTideInfo(mode: TideMode): TideInfo {
 
 export default function MembersLayout() {
   const [tideMode] = useState<TideMode>("auto");
-  const [loading, setLoading] = useState(true);
-  const [authenticated, setAuthenticated] = useState(false);
 
   const tide = getTideInfo(tideMode);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function checkSession() {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-
-        if (!mounted) return;
-
-        setAuthenticated(!!session);
-        setLoading(false);
-      } catch (error) {
-        console.error("Members authentication check failed:", error);
-
-        if (!mounted) return;
-
-        setAuthenticated(false);
-        setLoading(false);
-      }
-    }
-
-    checkSession();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!mounted) return;
-
-      setAuthenticated(!!session);
-      setLoading(false);
-    });
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  if (loading) {
-    return (
-      <main
-        className="
-          min-h-screen
-          flex
-          items-center
-          justify-center
-          bg-slate-950
-          text-white
-        "
-      >
-        <div className="text-center">
-          <div
-            className="
-              mx-auto
-              mb-5
-              h-12
-              w-12
-              animate-spin
-              rounded-full
-              border-4
-              border-cyan-300/20
-              border-t-cyan-300
-            "
-          />
-
-          <h1 className="text-xl font-bold">
-            Checking your Surfer access...
-          </h1>
-
-          <p className="mt-2 text-sm text-white/60">
-            Catching the next wave 🌊
-          </p>
-        </div>
-      </main>
-    );
-  }
-
-  if (!authenticated) {
-    return <Navigate to="/login" replace />;
-  }
 
   return (
     <div
@@ -127,8 +41,7 @@ export default function MembersLayout() {
         text-white
       "
       style={{
-        backgroundImage:
-          'url("/OTD-AI-Surfer-Members-bg.png")',
+        backgroundImage: 'url("/OTD-AI-Surfer-Members-bg.png")',
       }}
     >
       <div
