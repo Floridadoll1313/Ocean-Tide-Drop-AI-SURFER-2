@@ -255,6 +255,7 @@ export default function AgentWorkspace() {
               {sources.map((source) => <a key={source} href={source} target="_blank" rel="noreferrer">{source}</a>)}
             </div>
           )}
+          {output && <EmailDraftPanel projectId={projectId} agentSlug={agent.slug} output={output} />}
         </section>
       </div>
     </main>
