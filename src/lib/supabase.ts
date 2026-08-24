@@ -1,13 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 
-// Publishable Supabase credentials are safe to ship to the browser. Deployment
-// variables can override these defaults without leaving the app unconfigured.
-export const supabaseUrl =
-  import.meta.env.VITE_SUPABASE_URL ||
-  "https://mkgnyarwiscttobnytin.supabase.co";
-export const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  "sb_publishable_Jp0Laxs-KoieNMD5hqLA0w_jCnrxATm";
+// Pin the browser client to the connected AI-Surfer project. The production
+// host still has stale deployment variables from an older Supabase project,
+// so allowing a build-time override would silently send member accounts to
+// the wrong database again.
+export const supabaseUrl = "https://mkgnyarwiscttobnytin.supabase.co";
+export const supabaseAnonKey = "sb_publishable_Jp0Laxs-KoieNMD5hqLA0w_jCnrxATm";
 
 export const supabase = createClient(
   supabaseUrl,
