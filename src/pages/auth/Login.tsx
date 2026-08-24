@@ -92,6 +92,12 @@ export default function Login() {
         });
 
         if (signUpError) {
+          if (/networkerror|failed to fetch|fetch resource/i.test(signUpError.message)) {
+            setMessage("Your account request may have reached us—check your email for the confirmation link. If it arrived, confirm your account, then sign in. 🌊");
+            setMode("signin");
+            return;
+          }
+
           setError(signUpError.message);
           return;
         }

@@ -65,6 +65,51 @@ afterEach(() => {
 });
 
 describe("Login return navigation", () => {
+  it("guides a surfer to confirmation when signup loses the response after reaching Supabase", async () => {
+    authMocks.getSession.mockResolvedValue({
+      data: { session: null },
+      error: null,
+    });
+    authMocks.signUp.mockResolvedValue({
+      data: { user: null, session: null },
+      error: new Error("NetworkError when attempting to fetch resource."),
+    });
+
+    const { container, root } = await renderLogin();
+    const createAccountLink = Array.from(container.querySelectorAll("button"))
+      .find((button) => button.textContent === "Create Account");
+
+    await act(async () => createAccountLink?.click());
+
+    const emailInput = container.querySelector<HTMLInputElement>('input[type="email"]');
+    const passwordInput = container.querySelector<HTMLInputElement>('input[type="password"]');
+    const setInputValue = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )?.set;
+
+    await act(async () => {
+      setInputValue?.call(emailInput, "surfer@example.com");
+      emailInput?.dispatchEvent(new Event("input", { bubbles: true }));
+      setInputValue?.call(passwordInput, "wave-rider-123");
+      passwordInput?.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+
+    const form = container.querySelector("form");
+    await act(async () => {
+      form?.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(container.textContent).toContain("Your account request may have reached us");
+    expect(container.textContent).toContain("check your email");
+    expect(container.textContent).toContain("Sign In & Enter Members Area");
+    expect(container.textContent).toContain("Forgot Password?");
+    expect(container.textContent).not.toContain("NetworkError when attempting to fetch resource");
+
+    await act(async () => root.unmount());
+  });
+
   it("returns an existing session to the complete protected URL", async () => {
     authMocks.getSession.mockResolvedValue({
       data: { session: { user: { id: "surfer-1" } } },
