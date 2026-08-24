@@ -40,6 +40,43 @@ afterEach(() => {
 });
 
 describe("MemberProduct", () => {
+  it.each([
+    ["ai-opportunity-report", "AI Opportunity Report"],
+    ["aeo-blueprint", "AEO Blueprint"],
+    ["automation-blueprint", "Automation Blueprint"],
+    ["wave-scout", "Wave Scout"],
+    ["sales-rider", "Sales Rider"],
+    ["content-creator", "Content Creator"],
+    ["automation-architect", "Automation Architect"],
+    ["big-kahuna", "Big Kahuna"],
+  ])("opens the catalog product %s", async (slug, productName) => {
+    supabaseMocks.maybeSingle.mockResolvedValue({
+      data: { tier: "Full Takeover" },
+      error: null,
+    });
+
+    const { default: MemberProduct } = await import("./MemberProduct");
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+
+    await act(async () => {
+      root.render(
+        <MemoryRouter initialEntries={[`/members/products/${slug}`]}>
+          <Routes>
+            <Route path="/members/products/:slug" element={<MemberProduct />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(container.textContent).toContain(productName);
+    expect(container.textContent).not.toContain("Product not found");
+
+    await act(async () => root.unmount());
+  });
+
   it("keeps an authenticated surfer on the product when a fresh auth request is unavailable", async () => {
     supabaseMocks.getUser.mockResolvedValue({
       data: { user: null },
