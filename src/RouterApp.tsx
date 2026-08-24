@@ -3,6 +3,8 @@ import App from "./App";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MembersLayout from "./components/members/MembersLayout";
 import Login from "./pages/auth/Login";
+import AgentWorkspace from "./pages/members/AgentWorkspace";
+import CrewDeck from "./pages/members/CrewDeck";
 import MembersDashboard from "./pages/members/MembersDashboard";
 import MemberProduct from "./pages/members/MemberProduct";
 import WaveAudit from "./pages/wave-audit/WaveAudit";
@@ -39,6 +41,8 @@ export default function RouterApp() {
           >
             <Route index element={<MembersDashboard />} />
             <Route path="products/:slug" element={<MemberProduct />} />
+            <Route path="crew" element={<CrewDeck />} />
+            <Route path="crew/:agentSlug" element={<AgentWorkspace />} />
           </Route>
 
           <Route path="/dashboard" element={<Navigate to="/members" replace />} />
