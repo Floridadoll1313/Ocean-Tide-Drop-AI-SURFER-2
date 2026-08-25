@@ -120,7 +120,7 @@ export default function HomeLanding() {
 
 const styles: Record<string, React.CSSProperties> = {
   page: { minHeight: "100vh", position: "relative", overflow: "hidden", background: "#04111f", color: "#f8fafc", fontFamily: "Inter, system-ui, sans-serif" },
-  sparkleLayer: { position: "fixed", inset: 0, zIndex: 1, pointerEvents: "none" },
+  sparkleLayer: { position: "fixed", inset: 0, zIndex: 70, pointerEvents: "none" },
   contentLayer: { position: "relative", zIndex: 2 },
   hero: { position: "relative", overflow: "hidden", padding: "92px 20px 110px", background: "radial-gradient(circle at 50% 0%, rgba(0,229,255,.2), transparent 42%), linear-gradient(180deg,rgba(6,26,44,.92) 0%,rgba(4,17,31,.92) 100%)" },
   glowOne: { position: "absolute", width: 420, height: 420, borderRadius: "50%", background: "rgba(0,229,255,.11)", filter: "blur(70px)", top: -180, left: -120 },

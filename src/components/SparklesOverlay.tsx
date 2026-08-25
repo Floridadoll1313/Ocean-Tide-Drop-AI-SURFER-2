@@ -24,7 +24,12 @@ interface ClickSparkle {
 
 export default function SparklesOverlay() {
   const [backgroundSparkles] = useState<SparkleItem[]>(() => {
-    const colors = [
+    const topColors = [
+      'text-white drop-shadow-[0_0_12px_rgba(255,255,255,1)]',
+      'text-slate-100 drop-shadow-[0_0_10px_rgba(226,232,240,0.95)]',
+      'text-slate-300 drop-shadow-[0_0_9px_rgba(203,213,225,0.9)]',
+    ];
+    const lowerColors = [
       'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.7)]',
       'text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.7)]',
       'text-yellow-300 drop-shadow-[0_0_8px_rgba(253,224,71,0.7)]',
@@ -34,12 +39,13 @@ export default function SparklesOverlay() {
 
     return Array.from({ length: 40 }, (_, id) => {
       const isTopDense = Math.random() < 0.65;
+      const palette = isTopDense ? topColors : lowerColors;
       return {
         id,
         x: Math.random() * 100,
         y: isTopDense ? Math.random() * 35 : Math.random() * 100,
         size: Math.random() * 10 + 6,
-        color: colors[Math.floor(Math.random() * colors.length)],
+        color: palette[Math.floor(Math.random() * palette.length)],
         delay: Math.random() * 5,
         duration: Math.random() * 3 + 3,
       };
