@@ -6,6 +6,7 @@ import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import MembersDashboard from "./pages/members/MembersDashboard";
 import MemberProduct from "./pages/members/MemberProduct";
+import HomeLanding from "./pages/home/HomeLanding";
 import WaveAudit from "./pages/wave-audit/WaveAudit";
 import LaunchDesk from "./launch-desk/LaunchDesk";
 import SiteLogoHeader from "./components/SiteLogoHeader";
@@ -16,7 +17,7 @@ export default function RouterApp() {
       <SiteLogoHeader />
       <div data-site-route-content="true">
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<HomeLanding />} />
           <Route path="/pricing" element={<App />} />
           <Route path="/wave-audit" element={<WaveAudit />} />
           <Route path="/wave-check" element={<WaveAudit />} />
@@ -45,7 +46,7 @@ export default function RouterApp() {
 
           <Route path="/dashboard" element={<Navigate to="/members" replace />} />
           <Route path="/ai-dashboard" element={<Navigate to="/members" replace />} />
-          <Route path="*" element={<App />} />
+          <Route path="*" element={<HomeLanding />} />
         </Routes>
       </div>
     </>
