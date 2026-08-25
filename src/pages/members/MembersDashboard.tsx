@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../lib/supabase";
 
@@ -48,7 +49,16 @@ export default function MembersDashboard() {
   return (
     <main style={styles.page}>
       <header style={styles.header}>
-        <div><div style={styles.brand}>🌊 AI-SURFER</div><div style={styles.sub}>Members Command Center</div></div>
+        <div style={styles.brandPanel} aria-label="Members Command Center brand">
+          <span aria-hidden="true" style={styles.silverSparkles}>
+            <motion.span style={styles.sparkleTopLeft} animate={{ opacity: [0.35, 1, 0.35], scale: [0.8, 1.2, 0.8] }} transition={{ duration: 2.4, repeat: Infinity }}>✦</motion.span>
+            <motion.span style={styles.sparkleTopRight} animate={{ opacity: [0.45, 1, 0.45], scale: [0.9, 1.25, 0.9] }} transition={{ duration: 2.8, delay: 0.5, repeat: Infinity }}>✧</motion.span>
+            <motion.span style={styles.sparkleBottomLeft} animate={{ opacity: [0.4, 1, 0.4], scale: [0.85, 1.15, 0.85] }} transition={{ duration: 2.6, delay: 0.9, repeat: Infinity }}>✧</motion.span>
+            <motion.span style={styles.sparkleBottomRight} animate={{ opacity: [0.35, 1, 0.35], scale: [0.8, 1.2, 0.8] }} transition={{ duration: 2.2, delay: 0.25, repeat: Infinity }}>✦</motion.span>
+          </span>
+          <div style={styles.brand}>🌊 AI-SURFER</div>
+          <div style={styles.sub}>Members Command Center</div>
+        </div>
         <button onClick={signOut} style={styles.signOut}>Sign out</button>
       </header>
 
@@ -89,8 +99,31 @@ export default function MembersDashboard() {
 const styles: Record<string, React.CSSProperties> = {
   page: { minHeight: "100vh", padding: "24px clamp(18px,5vw,70px) 70px", background: "transparent", color: "white", fontFamily: "system-ui, sans-serif" },
   header: { maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 30 },
-  brand: { fontWeight: 900, letterSpacing: 2, color: "#00f2fe" },
-  sub: { color: "#94a3b8", fontSize: 13 },
+  brandPanel: {
+    position: "relative",
+    isolation: "isolate",
+    minWidth: 238,
+    padding: "16px 22px",
+    borderRadius: 18,
+    border: "1px solid rgba(226,232,240,.3)",
+    background: "rgba(2,6,23,.88)",
+    backdropFilter: "blur(14px)",
+    boxShadow: "0 14px 38px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08)",
+  },
+  silverSparkles: {
+    position: "absolute",
+    inset: -12,
+    zIndex: 2,
+    pointerEvents: "none",
+    color: "#f8fafc",
+    textShadow: "0 0 10px rgba(255,255,255,.95), 0 0 18px rgba(203,213,225,.75)",
+  },
+  sparkleTopLeft: { position: "absolute", top: 0, left: 8, fontSize: 19 },
+  sparkleTopRight: { position: "absolute", top: 3, right: 4, fontSize: 16 },
+  sparkleBottomLeft: { position: "absolute", bottom: 1, left: 26, fontSize: 14 },
+  sparkleBottomRight: { position: "absolute", right: 22, bottom: -1, fontSize: 18 },
+  brand: { position: "relative", zIndex: 3, fontWeight: 950, letterSpacing: 2.2, color: "#67e8f9", textShadow: "0 0 18px rgba(103,232,249,.34)" },
+  sub: { position: "relative", zIndex: 3, marginTop: 4, color: "#f8fafc", fontSize: 14, fontWeight: 800, letterSpacing: ".04em" },
   signOut: { background: "transparent", border: "1px solid #31506a", color: "#cbd5e1", borderRadius: 999, padding: "9px 16px", cursor: "pointer" },
   hero: { maxWidth: 1200, margin: "0 auto 45px", display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 28, alignItems: "stretch" },
   kicker: { color: "#00f2fe", fontWeight: 800, letterSpacing: 2, fontSize: 13, marginBottom: 8 },
