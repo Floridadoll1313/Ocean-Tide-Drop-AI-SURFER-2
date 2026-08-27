@@ -108,10 +108,6 @@ export default function App() {
 
   return (
     <div style={styles.page}>
-      <div style={styles.bar}>
-        🌊 LAUNCH WEEK SPECIAL: Get 20% OFF with code <strong>OCEANTIDE20</strong> at checkout! 🏄‍♀️
-      </div>
-
       <div style={styles.container}>
         <nav style={styles.nav}>
           <span style={styles.brand}>Ocean Tide Drop AI SURFER</span>
@@ -216,7 +212,6 @@ export default function App() {
 
 const styles: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: '#060c18', color: '#fff', fontFamily: 'system-ui, sans-serif' },
-  bar: { background: 'linear-gradient(90deg,#00f2fe,#4facfe)', color: '#000', textAlign: 'center', padding: 12, fontWeight: 700 },
   container: { maxWidth: 1200, margin: '0 auto', padding: '0 20px' },
   nav: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '30px 0' },
   brand: { display: 'flex', alignItems: 'center', gap: 12, fontWeight: 800 },
