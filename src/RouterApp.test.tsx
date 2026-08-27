@@ -38,4 +38,16 @@ describe("shared site branding", () => {
     expect(html).toContain("Set a New Password");
     expect(html).toContain("Choose a secure new password for your AI-Surfer account.");
   });
+
+  it("shows the launch discount banner only once on the pricing page", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter initialEntries={["/pricing"]}>
+        <AuthProvider>
+          <RouterApp />
+        </AuthProvider>
+      </MemoryRouter>,
+    );
+
+    expect(html.match(/LAUNCH WEEK SPECIAL/g)).toHaveLength(1);
+  });
 });
