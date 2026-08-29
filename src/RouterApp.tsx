@@ -11,6 +11,7 @@ import Pricing from "./pages/pricing/Pricing";
 import WaveAudit from "./pages/wave-audit/WaveAudit";
 import LaunchDesk from "./launch-desk/LaunchDesk";
 import SiteLogoHeader from "./components/SiteLogoHeader";
+import AiFinChat from "./features/ai-fin/AiFinChat";
 
 function SiteChrome() {
   const { pathname } = useLocation();
@@ -42,6 +43,11 @@ function SiteChrome() {
   );
 }
 
+function PublicAiFinLauncher() {
+  const { pathname } = useLocation();
+  return pathname === "/" ? <AiFinChat mode="public" /> : null;
+}
+
 export default function RouterApp() {
   return (
     <>
@@ -64,6 +70,14 @@ export default function RouterApp() {
             }
           />
           <Route
+            path="/ai-fin/owner"
+            element={
+              <ProtectedRoute>
+                <AiFinChat mode="owner" embedded />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/members"
             element={
               <ProtectedRoute>
@@ -80,6 +94,7 @@ export default function RouterApp() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
+      <PublicAiFinLauncher />
     </>
   );
 }
