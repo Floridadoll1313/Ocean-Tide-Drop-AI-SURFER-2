@@ -193,6 +193,29 @@ export async function handleAiFinChat(
     const preview = effectiveMode === 'owner' && input.preview === true;
     const knowledge = await loadKnowledge(supabase, effectiveMode, { preview, limit: 120 });
 
+    let leadSaved = false;
+    if (input.lead) {
+      try {
+        await saveLead(supabase, input.lead);
+        leadSaved = true;
+      } catch {
+        return jsonResponse(
+          request,
+          env,
+          {
+            answer:
+              'Your chat is safe, but I could not save your contact request. Please try submitting it again.',
+            recommendedProductId: null,
+            knowledgeVersion: null,
+            leadSaved: false,
+            escalationRequired: false,
+            traceId,
+          },
+          503,
+        );
+      }
+    }
+
     setDefaultOpenAIKey(env.OPENAI_API_KEY);
     // AI Fin conversations can contain lead details and owner-only context. Disable
     // SDK trace export by default so raw chat/tool payloads are not copied into traces.
@@ -203,6 +226,7 @@ export async function handleAiFinChat(
       knowledge,
       model: env.OPENAI_MODEL,
       traceId,
+      leadSaved,
       saveLead: (lead) => saveLead(supabase, lead),
     });
 
