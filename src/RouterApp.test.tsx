@@ -5,7 +5,7 @@ import RouterApp from "./RouterApp";
 import { AuthProvider } from "./context/AuthContext";
 
 describe("shared site branding", () => {
-  it.each(["/", "/wave-check", "/login"])(
+  it.each(["/wave-check", "/login"])(
     "keeps the centered Ocean Tide Drop emblem above %s",
     (route) => {
       const html = renderToStaticMarkup(
@@ -26,6 +26,23 @@ describe("shared site branding", () => {
     },
   );
 
+  it("renders the approved AI Surfer landing page at the site root", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter initialEntries={["/"]}>
+        <AuthProvider>
+          <RouterApp />
+        </AuthProvider>
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("Ride the Wave.");
+    expect(html).toContain("Grow with AI.");
+    expect(html).toContain("THE AI SURFER PRODUCT WAVE");
+    expect(html).toContain('aria-label="Ocean Tide Drop AI SURFER home"');
+    expect(html).not.toContain('aria-label="Ocean Tide Drop AI Surfer brand"');
+    expect(html.match(/Launch wave/g)).toHaveLength(1);
+  });
+
   it("opens a dedicated password-recovery screen from the email link", () => {
     const html = renderToStaticMarkup(
       <MemoryRouter initialEntries={["/reset-password"]}>
@@ -39,7 +56,7 @@ describe("shared site branding", () => {
     expect(html).toContain("Choose a secure new password for your AI-Surfer account.");
   });
 
-  it("shows the launch discount banner only once on the pricing page", () => {
+  it("renders the dedicated pricing experience at /pricing", () => {
     const html = renderToStaticMarkup(
       <MemoryRouter initialEntries={["/pricing"]}>
         <AuthProvider>
@@ -48,6 +65,24 @@ describe("shared site branding", () => {
       </MemoryRouter>,
     );
 
+    expect(html).toContain("Choose Your AI Wave");
+    expect(html).toContain("AI Surfer Memberships");
+    expect(html).not.toContain("AI for your business, without the tech headache.");
     expect(html.match(/LAUNCH WEEK SPECIAL/g)).toHaveLength(1);
+  });
+
+  it("renders a clear not-found page for unknown public routes", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter initialEntries={["/__healthcheck-not-found__"]}>
+        <AuthProvider>
+          <RouterApp />
+        </AuthProvider>
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("404");
+    expect(html).toContain("That wave drifted out to sea.");
+    expect(html).toContain('href="/"');
+    expect(html).not.toContain("AI for your business, without the tech headache.");
   });
 });
