@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { Bot, ChevronDown, LoaderCircle, LockKeyhole, MessageCircle, Send, Sparkles, X } from 'lucide-react';
+import { Bot, ChevronDown, Loader2, LockKeyhole, MessageCircle, Send, Sparkles, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import type { AccessMode, LeadDraft } from './contracts';
 import { useAiFin } from './useAiFin';
@@ -226,7 +226,7 @@ export default function AiFinChat({ mode, embedded = false }: AiFinChatProps) {
         ))}
         {loading && (
           <div style={{ ...styles.assistantMessage, display: 'flex', gap: 8, alignItems: 'center' }}>
-            <LoaderCircle size={16} style={{ animation: 'spin 1s linear infinite' }} />
+            <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
             AI Fin is checking the wave...
           </div>
         )}
