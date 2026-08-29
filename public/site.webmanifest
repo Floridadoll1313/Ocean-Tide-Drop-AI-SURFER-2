@@ -1,0 +1,23 @@
+{
+  "name": "Ocean Tide Drop AI SURFER",
+  "short_name": "AI SURFER",
+  "description": "Ride the Wave 🌊 Grow with AI.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060c18",
+  "theme_color": "#060c18",
+  "icons": [
+    {
+      "src": "/ocean_tide_logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
