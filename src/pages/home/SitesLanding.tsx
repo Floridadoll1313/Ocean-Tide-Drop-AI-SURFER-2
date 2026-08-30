@@ -2,7 +2,7 @@ import "./SitesLanding.css";
 
 const LIVE_SITE = "https://otdaisurfer.surf";
 
-const stages = ["Discover", "Diagnose", "Plan", "Implement", "Transform"];
+const revenueFunnel = ["LAND", "CAPTURE", "AUDIT", "RESULTS", "SELL", "IMPLEMENT", "RETAIN"];
 
 const products = [
   {
@@ -160,13 +160,19 @@ export default function SitesLanding() {
         </div>
       </section>
 
-      <section className="journey" aria-label="AI Surfer growth journey">
-        {stages.map((stage, index) => (
-          <div className="journey-step" key={stage}>
-            <span>0{index + 1}</span>
-            <strong>{stage}</strong>
-          </div>
-        ))}
+      <section className="revenue-funnel" aria-label="AI Surfer revenue funnel">
+        <p className="eyebrow">YOUR COMPLETE AI SALES MACHINE</p>
+        <div className="revenue-funnel-track">
+          {revenueFunnel.map((stage, index) => (
+            <div className="revenue-funnel-step" key={stage}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{stage}</strong>
+            </div>
+          ))}
+        </div>
+        <p className="revenue-funnel-caption">
+          Attract the right visitor, turn interest into action, and keep the relationship growing.
+        </p>
       </section>
 
       <section className="wave-check" aria-labelledby="wave-check-title">
@@ -209,7 +215,7 @@ export default function SitesLanding() {
               <p className="product-category">{product.category}</p>
               <h3>{product.name}</h3>
               <p className="product-description">{product.description}</p>
-              <a href={`${LIVE_SITE}${product.href}`}>
+              <a className="product-card-cta button button-primary" href={`${LIVE_SITE}${product.href}`}>
                 {product.cta} <span aria-hidden="true">→</span>
               </a>
             </article>
@@ -255,4 +261,3 @@ export default function SitesLanding() {
     </main>
   );
 }
-
