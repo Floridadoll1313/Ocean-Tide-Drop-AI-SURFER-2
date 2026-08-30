@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { launchHandler } from "./api/launch";
+import { aiFinLeadHandler } from "./api/aiFinLeads";
 
 dotenv.config();
 
@@ -10,10 +11,19 @@ app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
 app.get("/health", (_req, res) => {
-  res.json({ status: "ok", service: "launch-desk-api", openaiConfigured: Boolean(process.env.OPENAI_API_KEY) });
+  res.json({
+    status: "ok",
+    service: "launch-desk-api",
+    openaiConfigured: Boolean(process.env.OPENAI_API_KEY),
+    supabaseConfigured: Boolean(
+      (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL) &&
+      (process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY),
+    ),
+  });
 });
 
 app.post("/api/launch", launchHandler);
+app.post("/api/ai-fin/leads", aiFinLeadHandler);
 
 app.get("/api/dashboard", (_req, res) => {
   res.json({
