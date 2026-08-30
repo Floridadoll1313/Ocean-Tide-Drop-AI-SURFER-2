@@ -3,12 +3,12 @@ import { getReportSellRoute } from "./reportSellRoute";
 
 describe("getReportSellRoute", () => {
   it.each([
-    ["Wave Scout", "/products/wave-scout", "See How Wave Scout Can Help"],
-    ["Sales Rider", "/products/sales-rider", "Fix My Sales Follow-Up"],
-    ["Content Creator", "/products/content-creator", "Build My Authority Content"],
-    ["Customer Care Cove", "/products/customer-care-cove", "Improve My Customer Support"],
-    ["Automation Architect", "/products/automation-architect", "Map My Automation Plan"],
-    ["Big Kahuna", "/products/big-kahuna", "Talk Strategy With Big Kahuna"],
+    ["Wave Scout", "/members/products/wave-scout", "See How Wave Scout Can Help"],
+    ["Sales Rider", "/members/products/sales-rider", "Fix My Sales Follow-Up"],
+    ["Content Creator", "/members/products/content-creator", "Build My Authority Content"],
+    ["Customer Care Cove", "/members/products/customer-care-cove", "Improve My Customer Support"],
+    ["Automation Architect", "/members/products/automation-architect", "Map My Automation Plan"],
+    ["Big Kahuna", "/members/products/big-kahuna", "Talk Strategy With Big Kahuna"],
   ])("routes %s to its focused solution page", (recommendation, path, cta) => {
     expect(getReportSellRoute(recommendation)).toEqual({ path, cta });
   });
