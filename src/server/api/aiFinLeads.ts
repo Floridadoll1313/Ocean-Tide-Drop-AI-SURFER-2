@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { Request, Response } from "express";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
@@ -75,6 +76,7 @@ export async function aiFinLeadHandler(req: Request, res: Response) {
   }
 
   const lead = parsed.data;
+  const leadId = randomUUID();
   const nextAction =
     lead.leadStage === "SURF'S UP"
       ? "begin_onboarding"
@@ -82,34 +84,31 @@ export async function aiFinLeadHandler(req: Request, res: Response) {
         ? "human_review"
         : "follow_up";
 
-  const { data, error } = await supabase
-    .from("leads")
-    .insert({
-      name: lead.contactName,
-      company: lead.businessName,
-      email: lead.email,
-      phone: lead.phone ?? null,
-      website: lead.website ?? null,
-      industry: lead.industry ?? null,
-      primary_problem: lead.primaryProblem,
-      secondary_problem: lead.secondaryProblem ?? null,
-      current_process: lead.currentProcess ?? null,
-      desired_outcome: lead.desiredOutcome ?? null,
-      recommended_product: lead.recommendedProduct,
-      recommended_package: lead.recommendedPackage ?? null,
-      lead_stage: lead.leadStage,
-      urgency: lead.urgency,
-      systems_used: lead.systemsUsed,
-      conversation_summary: lead.conversationSummary,
-      consent_to_follow_up: true,
-      source: lead.source,
-      next_action: nextAction,
-      status: "new",
-    })
-    .select("id")
-    .single();
+  const { error } = await supabase.from("leads").insert({
+    id: leadId,
+    name: lead.contactName,
+    company: lead.businessName,
+    email: lead.email,
+    phone: lead.phone ?? null,
+    website: lead.website ?? null,
+    industry: lead.industry ?? null,
+    primary_problem: lead.primaryProblem,
+    secondary_problem: lead.secondaryProblem ?? null,
+    current_process: lead.currentProcess ?? null,
+    desired_outcome: lead.desiredOutcome ?? null,
+    recommended_product: lead.recommendedProduct,
+    recommended_package: lead.recommendedPackage ?? null,
+    lead_stage: lead.leadStage,
+    urgency: lead.urgency,
+    systems_used: lead.systemsUsed,
+    conversation_summary: lead.conversationSummary,
+    consent_to_follow_up: true,
+    source: lead.source,
+    next_action: nextAction,
+    status: "new",
+  });
 
-  if (error || !data?.id) {
+  if (error) {
     console.error("AI Fin lead save failed", error);
     return res.status(500).json({
       ok: false,
@@ -121,7 +120,7 @@ export async function aiFinLeadHandler(req: Request, res: Response) {
   return res.status(201).json({
     ok: true,
     status: "saved",
-    leadId: data.id,
+    leadId,
     nextAction,
   });
 }
