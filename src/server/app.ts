@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { launchHandler } from "./api/launch";
 import { aiFinLeadHandler } from "./api/aiFinLeads";
+import { aiFinAuditStartHandler } from "./api/aiFinAudits";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.get("/health", (_req, res) => {
 
 app.post("/api/launch", launchHandler);
 app.post("/api/ai-fin/leads", aiFinLeadHandler);
+app.post("/api/ai-fin/audit/start", aiFinAuditStartHandler);
 
 app.get("/api/dashboard", (_req, res) => {
   res.json({
