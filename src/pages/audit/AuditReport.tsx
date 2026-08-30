@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { supabase, supabaseAnonKey, supabaseUrl } from "../../lib/supabase";
+import { getReportSellRoute } from "./reportSellRoute";
 
 type Finding = {
   what_we_found: string;
@@ -121,6 +122,8 @@ export default function AuditReport() {
     );
   }
 
+  const sellRoute = getReportSellRoute(report.primary_recommendation);
+
   return (
     <main className="min-h-screen bg-slate-950 px-5 py-12 text-white">
       <div className="mx-auto max-w-5xl space-y-8">
@@ -182,7 +185,8 @@ export default function AuditReport() {
           <h2 className="mt-3 text-3xl font-black">{report.primary_recommendation}</h2>
           <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-300">{report.recommendation_reason}</p>
           {report.secondary_recommendation && <p className="mt-3 text-sm text-slate-400">Also worth exploring: <strong className="text-white">{report.secondary_recommendation}</strong></p>}
-          <Link to="/members" className="mt-7 inline-flex rounded-full bg-gradient-to-r from-cyan-300 via-blue-300 to-pink-300 px-7 py-4 font-black text-slate-950">Help Me Implement This 🌊</Link>
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-6 text-emerald-100/80">AI Fin picked this as your strongest next move based on the audit. Start here instead of trying to fix everything at once.</p>
+          <Link to={sellRoute.path} className="mt-7 inline-flex rounded-full bg-gradient-to-r from-cyan-300 via-blue-300 to-pink-300 px-7 py-4 font-black text-slate-950">{sellRoute.cta} 🌊</Link>
         </section>
       </div>
     </main>
