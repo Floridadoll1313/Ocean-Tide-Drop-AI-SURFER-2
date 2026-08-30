@@ -546,11 +546,10 @@
 }
 
 @keyframes sites-button-shimmer {
-  .sites-landing to { background-position: 230% center; }
+  to { background-position: 230% center; }
 }
 
 @keyframes sites-neon-wink {
   .sites-landing from { text-shadow: 0 0 7px rgba(24,238,241,.12); }
   .sites-landing to { text-shadow: 0 0 16px rgba(24,238,241,.45), 0 0 28px rgba(255,60,185,.18); }
 }
-
