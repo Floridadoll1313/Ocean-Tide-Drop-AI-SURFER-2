@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { supabaseAnonKey, supabaseUrl } from "../../lib/supabase";
 import { AEO_AUDIT_QUESTIONS } from "../../features/aeo-audit/scoring";
@@ -60,6 +60,7 @@ export default function AuditIntake() {
   const [status, setStatus] = useState<"verifying" | "ready" | "saving" | "saved" | "error">("verifying");
   const [error, setError] = useState("");
   const [businessName, setBusinessName] = useState("");
+  const [auditOrderId, setAuditOrderId] = useState("");
   const [form, setForm] = useState<IntakeState>(EMPTY);
   const [scoredAnswers, setScoredAnswers] = useState<Record<string, number>>({});
 
@@ -74,7 +75,7 @@ export default function AuditIntake() {
       },
       body: JSON.stringify(body),
     });
-    const payload = await response.json() as { ok?: boolean; error?: string; business_name?: string; total_score?: number; score_level?: string };
+    const payload = await response.json() as { ok?: boolean; error?: string; business_name?: string; total_score?: number; score_level?: string; order_id?: string };
     if (!response.ok || !payload.ok) throw new Error(payload.error || "Audit verification failed");
     return payload;
   };
@@ -92,6 +93,7 @@ export default function AuditIntake() {
       .then((payload) => {
         if (cancelled) return;
         setBusinessName(payload.business_name || "your business");
+        setAuditOrderId(payload.order_id || "");
         setStatus("ready");
       })
       .catch((err) => {
@@ -115,7 +117,7 @@ export default function AuditIntake() {
     setStatus("saving");
     setError("");
     try {
-      await callIntake({
+      const payload = await callIntake({
         action: "save",
         stripe_session_id: stripeSessionId,
         intake: {
@@ -124,6 +126,7 @@ export default function AuditIntake() {
           scored_answers: scoredAnswers,
         },
       });
+      setAuditOrderId(payload.order_id || auditOrderId);
       setStatus("saved");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save your audit intake");
@@ -149,6 +152,7 @@ export default function AuditIntake() {
             <div className="text-3xl">✅</div>
             <h2 className="mt-3 text-2xl font-black">Your Audit Intake Is In</h2>
             <p className="mt-3 text-emerald-100">We securely saved your paid AEO Wave Audit for {businessName || "your business"}, including all 30 scored answers. Your deterministic score is ready for AI Fin to interpret and turn into your personalized report.</p>
+            {auditOrderId && <Link to={`/audit/report/${auditOrderId}`} className="mt-6 inline-flex rounded-full bg-gradient-to-r from-cyan-300 via-blue-300 to-pink-300 px-7 py-4 font-black text-slate-950">Build My AI Fin Report 🐬</Link>}
           </div>
         )}
 
