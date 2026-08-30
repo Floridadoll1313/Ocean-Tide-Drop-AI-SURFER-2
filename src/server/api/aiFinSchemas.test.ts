@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { aiFinAuditStartSchema } from "./aiFinAudits";
+import { aiFinHandoffSchema } from "./aiFinHandoffs";
 import { aiFinLeadSchema } from "./aiFinLeads";
 
 describe("AI Fin request schemas", () => {
@@ -49,6 +50,23 @@ describe("AI Fin request schemas", () => {
     expect(aiFinLeadSchema.safeParse(baseLead).success).toBe(false);
     expect(
       aiFinLeadSchema.safeParse({ ...baseLead, consentToFollowUp: true }).success,
+    ).toBe(true);
+  });
+
+  it("requires explicit consent for human handoff", () => {
+    const baseHandoff = {
+      contactName: "Test Surfer",
+      businessName: "Ocean Test Co",
+      email: "test@example.com",
+      reason: "complex_scope",
+      recommendedProduct: "Big Kahuna",
+      conversationSummary: "Needs several connected AI workflows.",
+      urgency: "High",
+    };
+
+    expect(aiFinHandoffSchema.safeParse(baseHandoff).success).toBe(false);
+    expect(
+      aiFinHandoffSchema.safeParse({ ...baseHandoff, consentToFollowUp: true }).success,
     ).toBe(true);
   });
 });
