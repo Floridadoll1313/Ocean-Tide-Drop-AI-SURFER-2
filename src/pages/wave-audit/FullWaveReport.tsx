@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { AlertTriangle, Check, Clipboard, Download, Gauge, Target, Waves } from "lucide-react";
-import { Link } from "react-router-dom";
 import { buildWaveAuditReport, formatWaveAuditReport } from "../../features/wave-audit/report";
 import type { WaveAuditAnswers, WaveAuditResult } from "../../features/wave-audit/types";
 
@@ -107,7 +106,7 @@ export default function FullWaveReport({
             {copied ? <Check size={17} /> : <Clipboard size={17} />}{copied ? "Copied" : "Copy Report"}
           </button>
           <button type="button" onClick={downloadReport} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 font-bold text-white hover:bg-white/10"><Download size={17} /> Download Report</button>
-          <Link to="/pricing" className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-teal-300 px-6 py-3 font-black text-slate-950 hover:from-cyan-200 hover:to-teal-200">Ride Your Next Wave 🌊</Link>
+          <button type="button" className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-teal-300 px-6 py-3 font-black text-slate-950 hover:from-cyan-200 hover:to-teal-200">Get My $97 AEO Wave Audit</button>
         </div>
         <p className="mt-5 break-all text-xs text-slate-500">Report receipt: {submissionId}</p>
       </div>
