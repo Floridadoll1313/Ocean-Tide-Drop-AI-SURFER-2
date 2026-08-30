@@ -6,6 +6,7 @@ import { aiFinLeadHandler } from "./api/aiFinLeads";
 import { aiFinAuditStartHandler } from "./api/aiFinAudits";
 import { aiFinHandoffHandler } from "./api/aiFinHandoffs";
 import { aiFinFollowUpHandler } from "./api/aiFinFollowUps";
+import { aiFinOnboardingHandler } from "./api/aiFinOnboarding";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.post("/api/ai-fin/leads", aiFinLeadHandler);
 app.post("/api/ai-fin/audit/start", aiFinAuditStartHandler);
 app.post("/api/ai-fin/handoff", aiFinHandoffHandler);
 app.post("/api/ai-fin/follow-up", aiFinFollowUpHandler);
+app.post("/api/ai-fin/onboarding", aiFinOnboardingHandler);
 
 app.get("/api/dashboard", (_req, res) => {
   res.json({
