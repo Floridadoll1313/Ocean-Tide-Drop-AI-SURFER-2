@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { randomUUID } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
+import { getAiFinStripePriceId } from "../config/aiFinStripe";
 
 export const aiFinOnboardingSchema = z.object({
   leadId: z.string().uuid().optional().nullable(),
@@ -39,7 +40,9 @@ export async function aiFinOnboardingHandler(req: Request, res: Response) {
   const onboarding = parsed.data;
   const onboardingId = randomUUID();
   const checkoutRequested = onboarding.nextStepType === "checkout";
-  const checkoutConfigured = Boolean(process.env.AI_FIN_STRIPE_CHECKOUT_ENABLED === "true");
+  const packagePrice = getAiFinStripePriceId(onboarding.recommendedPackage);
+  const stripeSecretConfigured = Boolean(process.env.STRIPE_SECRET_KEY?.trim());
+  const checkoutConfigured = checkoutRequested && packagePrice.configured && stripeSecretConfigured;
   const status = checkoutRequested && !checkoutConfigured ? "waiting_configuration" : "ready";
   const checkoutStatus = checkoutRequested
     ? checkoutConfigured ? "ready" : "configuration_required"
@@ -71,5 +74,12 @@ export async function aiFinOnboardingHandler(req: Request, res: Response) {
     checkoutStatus,
     url: null,
     requiresConfiguration: checkoutRequested && !checkoutConfigured,
+    checkoutConfiguration: checkoutRequested
+      ? {
+          stripeSecretConfigured,
+          packagePriceConfigured: packagePrice.configured,
+          requiredPriceEnvironmentVariable: packagePrice.envName,
+        }
+      : null,
   });
 }
