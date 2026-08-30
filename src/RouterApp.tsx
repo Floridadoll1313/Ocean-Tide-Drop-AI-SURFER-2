@@ -9,32 +9,18 @@ import SitesLanding from "./pages/home/SitesLanding";
 import NotFound from "./pages/not-found/NotFound";
 import Pricing from "./pages/pricing/Pricing";
 import WaveAudit from "./pages/wave-audit/WaveAudit";
+import AuditCheckout from "./pages/audit/AuditCheckout";
+import AuditSuccess from "./pages/audit/AuditSuccess";
 import LaunchDesk from "./launch-desk/LaunchDesk";
 import SiteLogoHeader from "./components/SiteLogoHeader";
 
 function SiteChrome() {
   const { pathname } = useLocation();
-
   if (pathname === "/") return null;
 
   return (
     <>
-      <div
-        role="status"
-        aria-label="Launch week discount"
-        style={{
-          position: "relative",
-          zIndex: 60,
-          boxSizing: "border-box",
-          width: "100%",
-          padding: "12px 16px",
-          background: "linear-gradient(90deg,#00f2fe,#4facfe)",
-          color: "#020305",
-          textAlign: "center",
-          fontWeight: 800,
-          lineHeight: 1.4,
-        }}
-      >
+      <div role="status" aria-label="Launch week discount" style={{ position: "relative", zIndex: 60, boxSizing: "border-box", width: "100%", padding: "12px 16px", background: "linear-gradient(90deg,#00f2fe,#4facfe)", color: "#020305", textAlign: "center", fontWeight: 800, lineHeight: 1.4 }}>
         🌊 LAUNCH WEEK SPECIAL: Get 20% OFF with code <strong>OCEANTIDE20</strong> at checkout! 🏄‍♀️
       </div>
       <SiteLogoHeader />
@@ -54,23 +40,11 @@ export default function RouterApp() {
           <Route path="/wave-check" element={<WaveAudit />} />
           <Route path="/login" element={<Login />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/audit/success" element={<AuditSuccess />} />
+          <Route path="/audit/checkout" element={<ProtectedRoute><AuditCheckout /></ProtectedRoute>} />
 
-          <Route
-            path="/launch-desk"
-            element={
-              <ProtectedRoute>
-                <LaunchDesk />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/members"
-            element={
-              <ProtectedRoute>
-                <MembersLayout />
-              </ProtectedRoute>
-            }
-          >
+          <Route path="/launch-desk" element={<ProtectedRoute><LaunchDesk /></ProtectedRoute>} />
+          <Route path="/members" element={<ProtectedRoute><MembersLayout /></ProtectedRoute>}>
             <Route index element={<MembersDashboard />} />
             <Route path="products/:slug" element={<MemberProduct />} />
           </Route>
