@@ -11,6 +11,7 @@ import Pricing from "./pages/pricing/Pricing";
 import WaveAudit from "./pages/wave-audit/WaveAudit";
 import AuditCheckout from "./pages/audit/AuditCheckout";
 import AuditSuccess from "./pages/audit/AuditSuccess";
+import AuditIntake from "./pages/audit/AuditIntake";
 import LaunchDesk from "./launch-desk/LaunchDesk";
 import SiteLogoHeader from "./components/SiteLogoHeader";
 
@@ -42,6 +43,7 @@ export default function RouterApp() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/audit/success" element={<AuditSuccess />} />
           <Route path="/audit/checkout" element={<ProtectedRoute><AuditCheckout /></ProtectedRoute>} />
+          <Route path="/audit/intake" element={<ProtectedRoute><AuditIntake /></ProtectedRoute>} />
 
           <Route path="/launch-desk" element={<ProtectedRoute><LaunchDesk /></ProtectedRoute>} />
           <Route path="/members" element={<ProtectedRoute><MembersLayout /></ProtectedRoute>}>
