@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { aiFinAuditStartSchema } from "./aiFinAudits";
 import { aiFinHandoffSchema } from "./aiFinHandoffs";
 import { aiFinLeadSchema } from "./aiFinLeads";
+import { aiFinFollowUpSchema } from "./aiFinFollowUps";
 
 describe("AI Fin request schemas", () => {
   it("accepts an audit start with a website", () => {
@@ -67,6 +68,22 @@ describe("AI Fin request schemas", () => {
     expect(aiFinHandoffSchema.safeParse(baseHandoff).success).toBe(false);
     expect(
       aiFinHandoffSchema.safeParse({ ...baseHandoff, consentToFollowUp: true }).success,
+    ).toBe(true);
+  });
+
+  it("requires explicit consent before queuing follow-up", () => {
+    const baseFollowUp = {
+      contactName: "Test Surfer",
+      email: "test@example.com",
+      recommendedProduct: "Sales Rider",
+      recommendedPackage: "Wave Starter",
+      conversationSummary: "Needs a recommendation summary and next steps.",
+      messageType: "next_steps",
+    };
+
+    expect(aiFinFollowUpSchema.safeParse(baseFollowUp).success).toBe(false);
+    expect(
+      aiFinFollowUpSchema.safeParse({ ...baseFollowUp, consentToFollowUp: true }).success,
     ).toBe(true);
   });
 });
