@@ -43,6 +43,35 @@ describe("shared site branding", () => {
     expect(html.match(/Launch wave/g)).toHaveLength(1);
   });
 
+  it("keeps the seven-step revenue funnel and colored product actions on the landing page", () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter initialEntries={["/"]}>
+        <AuthProvider>
+          <RouterApp />
+        </AuthProvider>
+      </MemoryRouter>,
+    );
+
+    const funnelStages = [
+      "LAND",
+      "CAPTURE",
+      "AUDIT",
+      "RESULTS",
+      "SELL",
+      "IMPLEMENT",
+      "RETAIN",
+    ];
+    const funnelStart = html.indexOf('aria-label="AI Surfer revenue funnel"');
+
+    expect(funnelStart).toBeGreaterThanOrEqual(0);
+    funnelStages.reduce((previousPosition, stage) => {
+      const stagePosition = html.indexOf(`>${stage}<`, previousPosition + 1);
+      expect(stagePosition).toBeGreaterThan(previousPosition);
+      return stagePosition;
+    }, funnelStart);
+    expect(html.match(/class="product-card-cta button button-primary"/g)).toHaveLength(9);
+  });
+
   it("opens a dedicated password-recovery screen from the email link", () => {
     const html = renderToStaticMarkup(
       <MemoryRouter initialEntries={["/reset-password"]}>
