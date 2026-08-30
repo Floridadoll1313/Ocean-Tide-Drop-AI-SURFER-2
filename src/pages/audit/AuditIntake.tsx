@@ -2,6 +2,8 @@ import { FormEvent, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { supabaseAnonKey, supabaseUrl } from "../../lib/supabase";
+import { AEO_AUDIT_QUESTIONS } from "../../features/aeo-audit/scoring";
+import ScoredQuestionnaire from "./ScoredQuestionnaire";
 
 type IntakeState = {
   industry: string;
@@ -59,6 +61,7 @@ export default function AuditIntake() {
   const [error, setError] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [form, setForm] = useState<IntakeState>(EMPTY);
+  const [scoredAnswers, setScoredAnswers] = useState<Record<string, number>>({});
 
   const callIntake = async (body: Record<string, unknown>) => {
     if (!session?.access_token) throw new Error("Please sign in to continue.");
@@ -71,7 +74,7 @@ export default function AuditIntake() {
       },
       body: JSON.stringify(body),
     });
-    const payload = await response.json() as { ok?: boolean; error?: string; business_name?: string };
+    const payload = await response.json() as { ok?: boolean; error?: string; business_name?: string; total_score?: number; score_level?: string };
     if (!response.ok || !payload.ok) throw new Error(payload.error || "Audit verification failed");
     return payload;
   };
@@ -100,10 +103,15 @@ export default function AuditIntake() {
   }, [session?.access_token, stripeSessionId]);
 
   const update = (key: keyof IntakeState, value: string) => setForm((current) => ({ ...current, [key]: value }));
+  const updateScore = (questionId: string, score: number) => setScoredAnswers((current) => ({ ...current, [questionId]: score }));
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     if (!stripeSessionId) return;
+    if (Object.keys(scoredAnswers).length !== AEO_AUDIT_QUESTIONS.length) {
+      setError("Please answer all 30 AEO scoring questions before submitting your audit.");
+      return;
+    }
     setStatus("saving");
     setError("");
     try {
@@ -113,6 +121,7 @@ export default function AuditIntake() {
         intake: {
           ...form,
           employee_count: form.employee_count.trim() === "" ? null : Number.parseInt(form.employee_count, 10),
+          scored_answers: scoredAnswers,
         },
       });
       setStatus("saved");
@@ -124,41 +133,53 @@ export default function AuditIntake() {
 
   return (
     <main className="min-h-screen bg-slate-950 px-5 py-14 text-white">
-      <section className="mx-auto max-w-3xl rounded-[2rem] border border-cyan-300/25 bg-slate-900/80 p-7 shadow-2xl md:p-10">
+      <section className="mx-auto max-w-4xl rounded-[2rem] border border-cyan-300/25 bg-slate-900/80 p-7 shadow-2xl md:p-10">
         <div className="text-center">
           <div className="text-5xl" aria-hidden="true">🌊</div>
           <p className="mt-4 text-xs font-black uppercase tracking-[0.2em] text-cyan-300">Paid AEO Wave Audit Intake</p>
           <h1 className="mt-3 text-4xl font-black">Tell AI Fin About Your Business</h1>
-          <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-300">We use these details to turn your paid audit into a personalized visibility analysis, Customer Question Map, and 30-Day Wave Plan.</p>
+          <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-300">We use your business context plus a 30-question, 100-point AEO assessment to build your personalized visibility analysis, Customer Question Map, and 30-Day Wave Plan.</p>
         </div>
 
         {status === "verifying" && <div role="status" className="mt-8 rounded-2xl border border-cyan-300/20 bg-cyan-300/5 p-5 text-center text-cyan-100">Verifying your paid audit…</div>}
-
         {status === "error" && <div role="alert" className="mt-8 rounded-2xl border border-rose-300/25 bg-rose-300/10 p-5 text-rose-100">{error}</div>}
 
         {status === "saved" && (
           <div role="status" className="mt-8 rounded-3xl border border-emerald-300/25 bg-emerald-300/10 p-7 text-center">
             <div className="text-3xl">✅</div>
-            <h2 className="mt-3 text-2xl font-black">Your Intake Is In</h2>
-            <p className="mt-3 text-emerald-100">We securely saved your paid AEO Wave Audit intake for {businessName || "your business"}. Your audit is now ready for the scoring and AI Fin analysis stage.</p>
+            <h2 className="mt-3 text-2xl font-black">Your Audit Intake Is In</h2>
+            <p className="mt-3 text-emerald-100">We securely saved your paid AEO Wave Audit for {businessName || "your business"}, including all 30 scored answers. Your deterministic score is ready for AI Fin to interpret and turn into your personalized report.</p>
           </div>
         )}
 
         {(status === "ready" || status === "saving") && (
-          <form onSubmit={submit} className="mt-8 space-y-5">
+          <form onSubmit={submit} className="mt-8 space-y-10">
             {businessName && <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/5 p-4 text-sm text-cyan-100">Paid audit verified for <strong>{businessName}</strong>.</div>}
-            {FIELDS.map((field) => (
-              <label key={field.key} className="block">
-                <span className="mb-2 block font-bold text-slate-100">{field.label}</span>
-                {field.multiline ? (
-                  <textarea required value={form[field.key]} onChange={(event) => update(field.key, event.target.value)} placeholder={field.placeholder} rows={4} className="w-full rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-white outline-none transition focus:border-cyan-300" />
-                ) : (
-                  <input required type={field.key === "employee_count" ? "number" : "text"} min={field.key === "employee_count" ? 0 : undefined} value={form[field.key]} onChange={(event) => update(field.key, event.target.value)} placeholder={field.placeholder} className="w-full rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-white outline-none transition focus:border-cyan-300" />
-                )}
-              </label>
-            ))}
-            <button type="submit" disabled={status === "saving"} className="w-full rounded-full bg-gradient-to-r from-cyan-300 to-teal-300 px-7 py-4 text-lg font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-60">{status === "saving" ? "Saving My Intake…" : "Submit My AEO Wave Audit Intake 🌊"}</button>
-            <p className="text-center text-xs text-slate-500">Your intake is accepted only after your signed-in account and paid Stripe order are verified.</p>
+
+            <section className="space-y-5">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">Business Context</p>
+                <h2 className="mt-2 text-2xl font-black">First, Tell Us What Matters Most</h2>
+              </div>
+              {FIELDS.map((field) => (
+                <label key={field.key} className="block">
+                  <span className="mb-2 block font-bold text-slate-100">{field.label}</span>
+                  {field.multiline ? (
+                    <textarea required value={form[field.key]} onChange={(event) => update(field.key, event.target.value)} placeholder={field.placeholder} rows={4} className="w-full rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-white outline-none transition focus:border-cyan-300" />
+                  ) : (
+                    <input required type={field.key === "employee_count" ? "number" : "text"} min={field.key === "employee_count" ? 0 : undefined} value={form[field.key]} onChange={(event) => update(field.key, event.target.value)} placeholder={field.placeholder} className="w-full rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-white outline-none transition focus:border-cyan-300" />
+                  )}
+                </label>
+              ))}
+            </section>
+
+            <ScoredQuestionnaire answers={scoredAnswers} onChange={updateScore} />
+
+            <div className="rounded-3xl border border-pink-300/20 bg-pink-300/5 p-5 text-center">
+              <p className="text-sm text-slate-300">Answered <strong className="text-white">{Object.keys(scoredAnswers).length}/30</strong> scored questions.</p>
+            </div>
+            <button type="submit" disabled={status === "saving"} className="w-full rounded-full bg-gradient-to-r from-cyan-300 via-blue-300 to-pink-300 px-7 py-4 text-lg font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-60">{status === "saving" ? "Scoring & Saving My Audit…" : "Submit My 100-Point AEO Wave Audit 🌊"}</button>
+            <p className="text-center text-xs text-slate-500">Your audit is accepted only after your signed-in account and paid Stripe order are verified. Your raw score is calculated deterministically from your answers.</p>
           </form>
         )}
       </section>
