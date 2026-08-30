@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../lib/supabase";
+import { getImplementationOffer } from "./implementationOffer";
 
 type Tier = "Starter Access" | "Innovator Tier" | "Console Tier" | "Full Takeover" | "Owner" | "Member";
 
@@ -43,6 +44,7 @@ export default function MemberProduct() {
   const [loading, setLoading] = useState(true);
 
   const product = useMemo(() => products.find((item) => item.slug === slug), [slug]);
+  const implementationOffer = useMemo(() => getImplementationOffer(slug), [slug]);
 
   useEffect(() => {
     let active = true;
@@ -95,6 +97,7 @@ export default function MemberProduct() {
         <h1>{product.name}</h1>
         <p style={styles.copy}>{product.description}</p>
       </div>
+
       {hasAccess ? (
         <section style={styles.card}>
           <p style={styles.kicker}>ACCESS CONFIRMED</p>
@@ -104,10 +107,32 @@ export default function MemberProduct() {
         </section>
       ) : (
         <section style={styles.card}>
-          <p style={styles.kicker}>UPGRADE REQUIRED</p>
-          <h2>Catch this wave with {product.minimumTier}.</h2>
-          <p>Your current membership is <strong>{tier}</strong>. Upgrade your plan to unlock {product.name}.</p>
-          <button onClick={() => navigate("/pricing")} style={styles.cta}>View Plans 💳</button>
+          <p style={styles.kicker}>MEMBERSHIP WORKSPACE</p>
+          <h2>Unlock the ongoing {product.name} workspace with {product.minimumTier}.</h2>
+          <p>Your current membership is <strong>{tier}</strong>. Membership controls ongoing workspace access, while implementation can be purchased separately below.</p>
+          <button onClick={() => navigate("/pricing")} style={styles.cta}>View Membership Plans 💳</button>
+        </section>
+      )}
+
+      {implementationOffer && (
+        <section style={{ ...styles.card, ...styles.implementationCard }}>
+          <p style={styles.implementationKicker}>READY TO IMPLEMENT?</p>
+          <h2>Turn {product.name} into a working system for your business.</h2>
+          {implementationOffer.kind === "checkout" ? (
+            <>
+              <p style={styles.copy}>AI Surfer will design and build the implementation around your business, workflows, and goals.</p>
+              <p style={styles.price}>${implementationOffer.price.toLocaleString()} <span style={styles.priceNote}>one-time implementation</span></p>
+              <a href={implementationOffer.checkoutUrl} target="_blank" rel="noopener noreferrer" style={{ ...styles.cta, ...styles.linkButton }}>
+                {implementationOffer.cta} 🌊
+              </a>
+              <p style={styles.microcopy}>Secure checkout powered by Stripe.</p>
+            </>
+          ) : (
+            <>
+              <p style={styles.copy}>Big Kahuna is a high-touch strategy and implementation engagement, so we start with the right scope instead of forcing a one-size-fits-all checkout.</p>
+              <button onClick={() => navigate(implementationOffer.path)} style={styles.cta}>{implementationOffer.cta} 🌊</button>
+            </>
+          )}
         </section>
       )}
     </PageShell>
@@ -126,6 +151,12 @@ const styles: Record<string, React.CSSProperties> = {
   icon: { fontSize: 58 },
   kicker: { color: "#00f2fe", fontWeight: 800, letterSpacing: 2, fontSize: 13 },
   copy: { color: "#94a3b8", fontSize: 18, lineHeight: 1.6 },
-  card: { maxWidth: 680, margin: "0 auto", padding: 32, borderRadius: 24, background: "rgba(10,20,38,.9)", border: "1px solid rgba(0,242,254,.35)" },
-  cta: { border: 0, borderRadius: 999, padding: "13px 22px", fontWeight: 800, cursor: "pointer", background: "linear-gradient(90deg,#00f2fe,#4facfe)", color: "#001018" },
+  card: { maxWidth: 680, margin: "0 auto 24px", padding: 32, borderRadius: 24, background: "rgba(10,20,38,.9)", border: "1px solid rgba(0,242,254,.35)" },
+  implementationCard: { border: "1px solid rgba(244,114,182,.45)", background: "linear-gradient(135deg,rgba(8,47,73,.94),rgba(76,29,149,.58),rgba(80,7,36,.58))", boxShadow: "0 24px 80px rgba(0,0,0,.35)" },
+  implementationKicker: { color: "#f9a8d4", fontWeight: 900, letterSpacing: 2, fontSize: 13 },
+  price: { color: "#67e8f9", fontSize: 38, fontWeight: 900, margin: "22px 0" },
+  priceNote: { color: "#cbd5e1", fontSize: 14, fontWeight: 600 },
+  cta: { border: 0, borderRadius: 999, padding: "13px 22px", fontWeight: 800, cursor: "pointer", background: "linear-gradient(90deg,#00f2fe,#4facfe,#f9a8d4)", color: "#001018" },
+  linkButton: { display: "inline-block", textDecoration: "none" },
+  microcopy: { color: "#94a3b8", fontSize: 12, marginTop: 12 },
 };
