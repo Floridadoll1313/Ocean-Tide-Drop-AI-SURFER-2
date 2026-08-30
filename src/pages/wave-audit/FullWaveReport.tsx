@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { AlertTriangle, Check, Clipboard, Download, Gauge, Target, Waves } from "lucide-react";
+import { Link } from "react-router-dom";
 import { buildWaveAuditReport, formatWaveAuditReport } from "../../features/wave-audit/report";
 import type { WaveAuditAnswers, WaveAuditResult } from "../../features/wave-audit/types";
 
@@ -11,13 +12,7 @@ interface FullWaveReportProps {
   result: WaveAuditResult;
 }
 
-export default function FullWaveReport({
-  email,
-  submissionId,
-  saveStatus,
-  answers,
-  result,
-}: FullWaveReportProps) {
+export default function FullWaveReport({ email, submissionId, saveStatus, answers, result }: FullWaveReportProps) {
   const [copied, setCopied] = useState(false);
   const report = useMemo(() => buildWaveAuditReport(answers, result), [answers, result]);
   const reportText = useMemo(() => formatWaveAuditReport(report, submissionId), [report, submissionId]);
@@ -38,14 +33,16 @@ export default function FullWaveReport({
     URL.revokeObjectURL(url);
   };
 
+  const rememberCheckoutContext = () => {
+    window.sessionStorage.setItem("ai-surfer:aeo-checkout-context", JSON.stringify({ email, submissionId }));
+  };
+
   return (
     <section className="mx-auto max-w-5xl" aria-labelledby="full-wave-report-title">
       <div className="rounded-[2rem] border border-cyan-300/25 bg-slate-900/80 p-7 shadow-2xl backdrop-blur-xl md:p-10">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-start">
           <div>
-            <div className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-cyan-300">
-              <Waves size={18} /> Your Full AI Wave Report
-            </div>
+            <div className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-cyan-300"><Waves size={18} /> Your Full AI Wave Report</div>
             <h2 id="full-wave-report-title" className="mt-3 text-4xl font-black md:text-5xl">{report.headline}</h2>
             <p className="mt-4 max-w-3xl leading-7 text-slate-300">{report.businessSnapshot}</p>
           </div>
@@ -55,58 +52,24 @@ export default function FullWaveReport({
             <div className="mt-1 text-sm text-slate-300">{report.opportunityLevel}</div>
           </div>
         </div>
-
         <div className={`mt-6 flex items-start gap-3 rounded-2xl border p-4 text-sm ${saveStatus === "saved" ? "border-emerald-300/20 bg-emerald-300/5 text-emerald-100" : "border-amber-300/25 bg-amber-300/5 text-amber-100"}`} role="status">
           {saveStatus === "saved" ? <Check className="mt-0.5 shrink-0" size={17} /> : saveStatus === "saving" ? <Waves className="mt-0.5 shrink-0 animate-pulse" size={17} /> : <AlertTriangle className="mt-0.5 shrink-0" size={17} />}
-          <div>
-            <div className="font-bold">{saveStatus === "saved" ? "Saved securely" : saveStatus === "saving" ? "Saving securely" : "Report unlocked—save confirmation pending"}</div>
-            <div className="mt-1 opacity-80">{saveStatus === "saved" ? `Your audit is saved for ${email}.` : saveStatus === "saving" ? "Your report is already open while the receipt is confirmed in the background." : "Keep the receipt below. Your full report remains available on this screen."}</div>
-          </div>
+          <div><div className="font-bold">{saveStatus === "saved" ? "Saved securely" : saveStatus === "saving" ? "Saving securely" : "Report unlocked—save confirmation pending"}</div><div className="mt-1 opacity-80">{saveStatus === "saved" ? `Your audit is saved for ${email}.` : saveStatus === "saving" ? "Your report is already open while the receipt is confirmed in the background." : "Keep the receipt below. Your full report remains available on this screen."}</div></div>
         </div>
-
         <div className="mt-8 grid gap-5 md:grid-cols-2">
-          <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-amber-200"><Gauge size={17} /> What this means</div>
-            <p className="mt-4 leading-7 text-slate-200">{report.diagnosis}</p>
-          </article>
-          <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-amber-200"><Target size={17} /> Priority actions</div>
-            <ol className="mt-4 space-y-3 text-sm leading-6 text-slate-200">
-              {report.priorityActions.map((action, index) => <li key={action} className="flex gap-3"><span className="font-black text-cyan-300">{index + 1}</span><span>{action}</span></li>)}
-            </ol>
-          </article>
+          <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6"><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-amber-200"><Gauge size={17} /> What this means</div><p className="mt-4 leading-7 text-slate-200">{report.diagnosis}</p></article>
+          <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6"><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-amber-200"><Target size={17} /> Priority actions</div><ol className="mt-4 space-y-3 text-sm leading-6 text-slate-200">{report.priorityActions.map((action, index) => <li key={action} className="flex gap-3"><span className="font-black text-cyan-300">{index + 1}</span><span>{action}</span></li>)}</ol></article>
         </div>
-
-        <div className="mt-8">
-          <div className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-300">🌊 30-Day Wave Plan</div>
-          <div className="mt-4 grid gap-4 md:grid-cols-3">
-            {report.plan.map((phase) => <article key={phase.window} className="rounded-3xl border border-cyan-300/15 bg-slate-950/45 p-5"><div className="text-sm font-black text-cyan-200">{phase.window}</div><h3 className="mt-2 text-xl font-black">{phase.title}</h3><p className="mt-3 text-sm leading-6 text-slate-300">{phase.action}</p></article>)}
-          </div>
-        </div>
-
+        <div className="mt-8"><div className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-300">🌊 30-Day Wave Plan</div><div className="mt-4 grid gap-4 md:grid-cols-3">{report.plan.map((phase) => <article key={phase.window} className="rounded-3xl border border-cyan-300/15 bg-slate-950/45 p-5"><div className="text-sm font-black text-cyan-200">{phase.window}</div><h3 className="mt-2 text-xl font-black">{phase.title}</h3><p className="mt-3 text-sm leading-6 text-slate-300">{phase.action}</p></article>)}</div></div>
         <div className="mt-8 grid gap-5 md:grid-cols-2">
-          <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
-            <div className="text-xs font-bold uppercase tracking-[0.16em] text-cyan-300">📈 Signals to track</div>
-            <ul className="mt-4 space-y-3 text-sm text-slate-200">{report.metrics.map((metric) => <li key={metric} className="flex gap-2"><span aria-hidden="true">🏄</span>{metric}</li>)}</ul>
-          </article>
-          <article className="rounded-3xl border border-fuchsia-300/20 bg-fuchsia-300/5 p-6">
-            <div className="text-xs font-bold uppercase tracking-[0.16em] text-fuchsia-200">Recommended AI Surfer Agent</div>
-            <h3 className="mt-2 text-3xl font-black">{report.agent.name}</h3>
-            <p className="mt-3 text-sm leading-6 text-slate-200">{report.agent.fit}</p>
-          </article>
+          <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6"><div className="text-xs font-bold uppercase tracking-[0.16em] text-cyan-300">📈 Signals to track</div><ul className="mt-4 space-y-3 text-sm text-slate-200">{report.metrics.map((metric) => <li key={metric} className="flex gap-2"><span aria-hidden="true">🏄</span>{metric}</li>)}</ul></article>
+          <article className="rounded-3xl border border-fuchsia-300/20 bg-fuchsia-300/5 p-6"><div className="text-xs font-bold uppercase tracking-[0.16em] text-fuchsia-200">Recommended AI Surfer Agent</div><h3 className="mt-2 text-3xl font-black">{report.agent.name}</h3><p className="mt-3 text-sm leading-6 text-slate-200">{report.agent.fit}</p></article>
         </div>
-
-        <div className="mt-8 rounded-3xl border border-amber-200/20 bg-amber-100/5 p-6">
-          <div className="text-xs font-bold uppercase tracking-[0.16em] text-amber-200">🐚 Your practical first move</div>
-          <p className="mt-3 text-lg font-semibold leading-8">{report.firstRecommendation}</p>
-        </div>
-
+        <div className="mt-8 rounded-3xl border border-amber-200/20 bg-amber-100/5 p-6"><div className="text-xs font-bold uppercase tracking-[0.16em] text-amber-200">🐚 Your practical first move</div><p className="mt-3 text-lg font-semibold leading-8">{report.firstRecommendation}</p></div>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <button type="button" onClick={copyReport} className="inline-flex items-center justify-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-300/10 px-6 py-3 font-bold text-cyan-100 hover:bg-cyan-300/15">
-            {copied ? <Check size={17} /> : <Clipboard size={17} />}{copied ? "Copied" : "Copy Report"}
-          </button>
+          <button type="button" onClick={copyReport} className="inline-flex items-center justify-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-300/10 px-6 py-3 font-bold text-cyan-100 hover:bg-cyan-300/15">{copied ? <Check size={17} /> : <Clipboard size={17} />}{copied ? "Copied" : "Copy Report"}</button>
           <button type="button" onClick={downloadReport} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 font-bold text-white hover:bg-white/10"><Download size={17} /> Download Report</button>
-          <button type="button" className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-teal-300 px-6 py-3 font-black text-slate-950 hover:from-cyan-200 hover:to-teal-200">Get My $97 AEO Wave Audit</button>
+          <Link to="/audit/checkout" onClick={rememberCheckoutContext} className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-teal-300 px-6 py-3 font-black text-slate-950 hover:from-cyan-200 hover:to-teal-200">Get My $97 AEO Wave Audit</Link>
         </div>
         <p className="mt-5 break-all text-xs text-slate-500">Report receipt: {submissionId}</p>
       </div>
