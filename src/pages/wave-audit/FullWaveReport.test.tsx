@@ -3,31 +3,35 @@ import { renderToString } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
 import FullWaveReport from "./FullWaveReport";
 
+function renderReport() {
+  return renderToString(
+    <MemoryRouter>
+      <FullWaveReport
+        email="surfer@example.com"
+        submissionId="5ed95f2f-1321-4aa8-bc88-f8f952cc6975"
+        saveStatus="saved"
+        answers={{
+          businessType: "ecommerce",
+          teamSize: "solo",
+          timeDrain: "multiple",
+          lostOpportunity: "leads",
+          aiPriority: "sales",
+        }}
+        result={{
+          score: 99,
+          topCategory: "Lead & Sales Follow-Up",
+          opportunities: ["Faster response", "Consistent follow-up"],
+          recommendedAgent: "Sales Rider",
+          confidenceLabel: "High opportunity",
+        }}
+      />
+    </MemoryRouter>,
+  );
+}
+
 describe("FullWaveReport", () => {
   it("renders the unlocked report and portable report controls", () => {
-    const html = renderToString(
-      <MemoryRouter>
-        <FullWaveReport
-          email="surfer@example.com"
-          submissionId="5ed95f2f-1321-4aa8-bc88-f8f952cc6975"
-          saveStatus="saved"
-          answers={{
-            businessType: "ecommerce",
-            teamSize: "solo",
-            timeDrain: "multiple",
-            lostOpportunity: "leads",
-            aiPriority: "sales",
-          }}
-          result={{
-            score: 99,
-            topCategory: "Lead & Sales Follow-Up",
-            opportunities: ["Faster response", "Consistent follow-up"],
-            recommendedAgent: "Sales Rider",
-            confidenceLabel: "High opportunity",
-          }}
-        />
-      </MemoryRouter>,
-    );
+    const html = renderReport();
 
     expect(html).toContain("Your Full AI Wave Report");
     expect(html).toContain("30-Day Wave Plan");
@@ -35,5 +39,18 @@ describe("FullWaveReport", () => {
     expect(html).toContain("Download Report");
     expect(html).toContain("Saved securely");
     expect(html).not.toContain("on the way");
+  });
+
+  it("offers the paid AEO Wave Audit instead of sending the surfer to generic pricing", () => {
+    const html = renderReport();
+
+    expect(html).toContain("Get My $97 AEO Wave Audit");
+    expect(html).not.toContain('href="/pricing"');
+  });
+
+  it("routes the paid audit CTA into the protected checkout handoff", () => {
+    const html = renderReport();
+
+    expect(html).toContain('href="/audit/checkout"');
   });
 });

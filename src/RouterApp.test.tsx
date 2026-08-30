@@ -10,15 +10,11 @@ describe("shared site branding", () => {
     (route) => {
       const html = renderToStaticMarkup(
         <MemoryRouter initialEntries={[route]}>
-          <AuthProvider>
-            <RouterApp />
-          </AuthProvider>
+          <AuthProvider><RouterApp /></AuthProvider>
         </MemoryRouter>,
       );
-
       const headerPosition = html.indexOf('aria-label="Ocean Tide Drop AI Surfer brand"');
       const routeContentPosition = html.indexOf('data-site-route-content="true"');
-
       expect(headerPosition).toBeGreaterThanOrEqual(0);
       expect(routeContentPosition).toBeGreaterThan(headerPosition);
       expect(html).toContain('data-site-emblem="true"');
@@ -27,14 +23,7 @@ describe("shared site branding", () => {
   );
 
   it("renders the approved AI Surfer landing page at the site root", () => {
-    const html = renderToStaticMarkup(
-      <MemoryRouter initialEntries={["/"]}>
-        <AuthProvider>
-          <RouterApp />
-        </AuthProvider>
-      </MemoryRouter>,
-    );
-
+    const html = renderToStaticMarkup(<MemoryRouter initialEntries={["/"]}><AuthProvider><RouterApp /></AuthProvider></MemoryRouter>);
     expect(html).toContain("Ride the Wave.");
     expect(html).toContain("Grow with AI.");
     expect(html).toContain("THE AI SURFER PRODUCT WAVE");
@@ -44,25 +33,9 @@ describe("shared site branding", () => {
   });
 
   it("keeps the seven-step revenue funnel and colored product actions on the landing page", () => {
-    const html = renderToStaticMarkup(
-      <MemoryRouter initialEntries={["/"]}>
-        <AuthProvider>
-          <RouterApp />
-        </AuthProvider>
-      </MemoryRouter>,
-    );
-
-    const funnelStages = [
-      "LAND",
-      "CAPTURE",
-      "AUDIT",
-      "RESULTS",
-      "SELL",
-      "IMPLEMENT",
-      "RETAIN",
-    ];
+    const html = renderToStaticMarkup(<MemoryRouter initialEntries={["/"]}><AuthProvider><RouterApp /></AuthProvider></MemoryRouter>);
+    const funnelStages = ["LAND", "CAPTURE", "AUDIT", "RESULTS", "SELL", "IMPLEMENT", "RETAIN"];
     const funnelStart = html.indexOf('aria-label="AI Surfer revenue funnel"');
-
     expect(funnelStart).toBeGreaterThanOrEqual(0);
     funnelStages.reduce((previousPosition, stage) => {
       const stagePosition = html.indexOf(`>${stage}<`, previousPosition + 1);
@@ -73,42 +46,27 @@ describe("shared site branding", () => {
   });
 
   it("opens a dedicated password-recovery screen from the email link", () => {
-    const html = renderToStaticMarkup(
-      <MemoryRouter initialEntries={["/reset-password"]}>
-        <AuthProvider>
-          <RouterApp />
-        </AuthProvider>
-      </MemoryRouter>,
-    );
-
+    const html = renderToStaticMarkup(<MemoryRouter initialEntries={["/reset-password"]}><AuthProvider><RouterApp /></AuthProvider></MemoryRouter>);
     expect(html).toContain("Set a New Password");
     expect(html).toContain("Choose a secure new password for your AI-Surfer account.");
   });
 
   it("renders the dedicated pricing experience at /pricing", () => {
-    const html = renderToStaticMarkup(
-      <MemoryRouter initialEntries={["/pricing"]}>
-        <AuthProvider>
-          <RouterApp />
-        </AuthProvider>
-      </MemoryRouter>,
-    );
-
+    const html = renderToStaticMarkup(<MemoryRouter initialEntries={["/pricing"]}><AuthProvider><RouterApp /></AuthProvider></MemoryRouter>);
     expect(html).toContain("Choose Your AI Wave");
     expect(html).toContain("AI Surfer Memberships");
     expect(html).not.toContain("AI for your business, without the tech headache.");
     expect(html.match(/LAUNCH WEEK SPECIAL/g)).toHaveLength(1);
   });
 
-  it("renders a clear not-found page for unknown public routes", () => {
-    const html = renderToStaticMarkup(
-      <MemoryRouter initialEntries={["/__healthcheck-not-found__"]}>
-        <AuthProvider>
-          <RouterApp />
-        </AuthProvider>
-      </MemoryRouter>,
-    );
+  it("renders the paid audit success handoff after Stripe returns", () => {
+    const html = renderToStaticMarkup(<MemoryRouter initialEntries={["/audit/success?session_id=cs_live_123"]}><AuthProvider><RouterApp /></AuthProvider></MemoryRouter>);
+    expect(html).toContain("Your AEO Wave Audit Is Paid");
+    expect(html).toContain("Continue to My Audit Intake");
+  });
 
+  it("renders a clear not-found page for unknown public routes", () => {
+    const html = renderToStaticMarkup(<MemoryRouter initialEntries={["/__healthcheck-not-found__"]}><AuthProvider><RouterApp /></AuthProvider></MemoryRouter>);
     expect(html).toContain("404");
     expect(html).toContain("That wave drifted out to sea.");
     expect(html).toContain('href="/"');
