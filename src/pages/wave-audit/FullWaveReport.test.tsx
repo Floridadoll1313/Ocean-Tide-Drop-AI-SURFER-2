@@ -36,4 +36,33 @@ describe("FullWaveReport", () => {
     expect(html).toContain("Saved securely");
     expect(html).not.toContain("on the way");
   });
+
+  it("offers the paid AEO Wave Audit instead of sending the surfer to generic pricing", () => {
+    const html = renderToString(
+      <MemoryRouter>
+        <FullWaveReport
+          email="surfer@example.com"
+          submissionId="5ed95f2f-1321-4aa8-bc88-f8f952cc6975"
+          saveStatus="saved"
+          answers={{
+            businessType: "ecommerce",
+            teamSize: "solo",
+            timeDrain: "multiple",
+            lostOpportunity: "leads",
+            aiPriority: "sales",
+          }}
+          result={{
+            score: 99,
+            topCategory: "Lead & Sales Follow-Up",
+            opportunities: ["Faster response", "Consistent follow-up"],
+            recommendedAgent: "Sales Rider",
+            confidenceLabel: "High opportunity",
+          }}
+        />
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("Get My $97 AEO Wave Audit");
+    expect(html).not.toContain('href="/pricing"');
+  });
 });
