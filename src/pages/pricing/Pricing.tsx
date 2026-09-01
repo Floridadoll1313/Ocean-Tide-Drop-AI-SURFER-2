@@ -75,7 +75,7 @@ export default function Pricing() {
 
 
       {/* PREMIUM AI BUILDS */}
-      <section className="max-w-7xl mx-auto">
+      <section id="premium-builds" className="max-w-7xl mx-auto scroll-mt-10">
 
 
         <h2
