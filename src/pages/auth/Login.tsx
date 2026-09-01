@@ -1,9 +1,11 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase, supabaseAnonKey, supabaseUrl } from "../../lib/supabase";
+import { buildStoredAuditCheckoutContext } from "../audit/auditCheckoutContext";
 import { buildAuthRedirectUrl, safeAuthReturnPath } from "./authReturn";
 
 const AUTH_RETURN_PATH_KEY = "ai-surfer:auth-return-path";
+const AEO_CHECKOUT_CONTEXT_KEY = "ai-surfer:aeo-checkout-context";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -23,9 +25,15 @@ export default function Login() {
     window.location.origin,
   ));
 
+  const restoreAuditCheckoutContext = (sessionEmail?: string | null) => {
+    const context = buildStoredAuditCheckoutContext(destination, sessionEmail);
+    if (context) window.sessionStorage.setItem(AEO_CHECKOUT_CONTEXT_KEY, context);
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
+        restoreAuditCheckoutContext(data.session.user.email);
         window.sessionStorage.removeItem(AUTH_RETURN_PATH_KEY);
         navigate(destination, { replace: true });
       }
@@ -70,6 +78,7 @@ export default function Login() {
           return;
         }
         if (data.session) {
+          restoreAuditCheckoutContext(data.session.user.email ?? cleanEmail);
           window.sessionStorage.removeItem(AUTH_RETURN_PATH_KEY);
           navigate(destination, { replace: true });
         } else {
@@ -86,8 +95,9 @@ export default function Login() {
         return;
       }
 
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
       if (signInError) { setError(signInError.message); return; }
+      restoreAuditCheckoutContext(signInData.session?.user.email ?? cleanEmail);
       window.sessionStorage.removeItem(AUTH_RETURN_PATH_KEY);
       navigate(destination, { replace: true });
     } finally {
