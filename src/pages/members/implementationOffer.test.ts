@@ -17,6 +17,15 @@ describe("getImplementationOffer", () => {
     });
   });
 
+  it("gives AEO Blueprint a high-touch implementation path", () => {
+    expect(getImplementationOffer("aeo-blueprint")).toEqual({
+      kind: "high-touch",
+      label: "AEO Strategy & Implementation",
+      cta: "Start My AEO Implementation",
+      path: "/pricing#premium-builds",
+    });
+  });
+
   it("keeps Big Kahuna as a high-touch implementation path", () => {
     expect(getImplementationOffer("big-kahuna")).toEqual({
       kind: "high-touch",
@@ -26,7 +35,7 @@ describe("getImplementationOffer", () => {
     });
   });
 
-  it("returns null for products without a paid implementation offer", () => {
-    expect(getImplementationOffer("aeo-blueprint")).toBeNull();
+  it("returns null for an unknown product", () => {
+    expect(getImplementationOffer("not-a-product")).toBeNull();
   });
 });
