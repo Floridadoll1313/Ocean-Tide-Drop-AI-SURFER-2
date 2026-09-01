@@ -12,7 +12,7 @@ const products = [
     description:
       "Find the visibility gaps that keep AI systems from understanding, trusting, citing, and recommending your business.",
     cta: "Run the Wave Audit",
-    href: "/wave-audit",
+    href: "/wave-check",
     featured: true,
   },
   {
