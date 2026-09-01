@@ -6,24 +6,30 @@ function request(path: string) {
 }
 
 describe("Pages catch-all SPA fallback", () => {
-  it("serves the app shell when a known React route misses the static asset server", async () => {
-    const next = vi.fn(async () => new Response("asset not found", { status: 404 }));
-    const assetFetch = vi.fn(async () =>
-      new Response("app shell", {
-        status: 200,
-        headers: { "Content-Type": "text/html; charset=utf-8" },
-      }),
-    );
+  it.each(["/wave-audit", "/audit/checkout"])(
+    "serves the app shell when known React route %s misses the static asset server",
+    async (path) => {
+      const next = vi.fn(async () => new Response("asset not found", { status: 404 }));
+      const assetFetch = vi.fn(async () =>
+        new Response("app shell", {
+          status: 200,
+          headers: { "Content-Type": "text/html; charset=utf-8" },
+        }),
+      );
 
-    const response = await onRequest({
-      request: request("/wave-audit"),
-      next,
-      env: { ASSETS: { fetch: assetFetch } },
-    });
+      const response = await onRequest({
+        request: request(path),
+        next,
+        env: { ASSETS: { fetch: assetFetch } },
+      });
 
-    expect(response.status).toBe(200);
-    expect(await response.text()).toBe("app shell");
-    expect(assetFetch).toHaveBeenCalledOnce();
-    expect(new URL(String(assetFetch.mock.calls[0]?.[0])).pathname).toBe("/");
-  });
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe("app shell");
+      expect(assetFetch).toHaveBeenCalledOnce();
+
+      const input = assetFetch.mock.calls[0]?.[0];
+      const shellUrl = input instanceof Request ? input.url : String(input);
+      expect(new URL(shellUrl).pathname).toBe("/");
+    },
+  );
 });
