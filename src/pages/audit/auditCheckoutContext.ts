@@ -22,3 +22,17 @@ export function resolveAuditSubmissionId(search: string, storedContext: string |
     return null;
   }
 }
+
+export function buildStoredAuditCheckoutContext(destination: string, email?: string | null) {
+  try {
+    const target = new URL(destination, "https://ai-surfer.local");
+    if (target.pathname !== "/audit/checkout") return null;
+
+    const submissionId = resolveAuditSubmissionId(target.search, null);
+    if (!submissionId) return null;
+
+    return JSON.stringify({ submissionId, email: email ?? "" });
+  } catch {
+    return null;
+  }
+}
