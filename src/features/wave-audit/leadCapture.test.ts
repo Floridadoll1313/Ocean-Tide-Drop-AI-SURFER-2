@@ -1,14 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { saveWaveAuditLead } from "./leadCapture";
 
-const { insert } = vi.hoisted(() => ({ insert: vi.fn() }));
-
-vi.mock("../../lib/supabase", () => ({
-  supabase: {
-    from: vi.fn(() => ({ insert })),
-  },
-}));
-
 const payload = {
   email: "surfer@example.com",
   answers: {
@@ -30,59 +22,69 @@ const payload = {
 };
 
 describe("saveWaveAuditLead", () => {
-  beforeEach(() => insert.mockReset());
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
 
-  it("stores a normalized lead under a stable idempotency receipt", async () => {
-    insert.mockResolvedValueOnce({ data: null, error: null, count: null, status: 201, statusText: "Created" });
+  it("posts a normalized lead to the same-origin Wave Check endpoint", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      status: "saved",
+      submissionId: payload.submissionId,
+    }), { status: 200, headers: { "Content-Type": "application/json" } }));
+    vi.stubGlobal("fetch", fetchMock);
 
     await expect(saveWaveAuditLead({ ...payload, email: " Surfer@Example.COM " })).resolves.toEqual({
       status: "saved",
       submissionId: payload.submissionId,
     });
-    expect(insert).toHaveBeenCalledWith({
-      submission_id: payload.submissionId,
-      email: "surfer@example.com",
-      answers: payload.answers,
-      score: 82,
-      top_category: "Lead & Sales Follow-Up",
-      opportunities: ["Faster lead response", "Automated follow-up"],
-      recommended_agent: "Sales Rider",
-      confidence_label: "High opportunity",
-      source: "wave-audit",
-      report_version: 1,
-    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith("/api/wave-check-submit", expect.objectContaining({
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        submission_id: payload.submissionId,
+        email: "surfer@example.com",
+        answers: payload.answers,
+        score: 82,
+        top_category: "Lead & Sales Follow-Up",
+        opportunities: ["Faster lead response", "Automated follow-up"],
+        recommended_agent: "Sales Rider",
+        confidence_label: "High opportunity",
+        source: "wave-audit",
+        report_version: 1,
+      }),
+    }));
   });
 
   it("retries a lost response with the same receipt", async () => {
-    insert
+    const fetchMock = vi.fn()
       .mockRejectedValueOnce(new TypeError("Failed to fetch"))
-      .mockResolvedValueOnce({
-        data: null,
-        error: { code: "23505", message: "duplicate key value violates unique constraint" },
-        count: null,
-        status: 409,
-        statusText: "Conflict",
-      });
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        status: "saved",
+        submissionId: payload.submissionId,
+      }), { status: 200, headers: { "Content-Type": "application/json" } }));
+    vi.stubGlobal("fetch", fetchMock);
 
     await expect(saveWaveAuditLead(payload)).resolves.toEqual({
       status: "saved",
       submissionId: payload.submissionId,
     });
-    expect(insert).toHaveBeenCalledTimes(2);
-    expect(insert.mock.calls[0]).toEqual(insert.mock.calls[1]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock.mock.calls[0]).toEqual(fetchMock.mock.calls[1]);
   });
 
-  it("returns an honest uncertain state without blocking the unlocked report", async () => {
-    insert
+  it("returns an honest uncertain state after two failed attempts", async () => {
+    const fetchMock = vi.fn()
       .mockRejectedValueOnce(new TypeError("Failed to fetch"))
       .mockRejectedValueOnce(new TypeError("Failed to fetch"));
+    vi.stubGlobal("fetch", fetchMock);
 
-    const result = await saveWaveAuditLead(payload);
-    expect(result).toEqual({
+    await expect(saveWaveAuditLead(payload)).resolves.toEqual({
       status: "uncertain",
       submissionId: payload.submissionId,
-      message: "Your full report is unlocked below. We couldn't confirm the online save, so keep your receipt and try again later.",
+      message: "We couldn't confirm the online save. Please try again so your Wave Check is not lost.",
     });
-    expect(insert).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });

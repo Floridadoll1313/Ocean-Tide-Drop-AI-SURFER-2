@@ -1,4 +1,3 @@
-import { supabase } from "../../lib/supabase";
 import type { WaveAuditAnswers, WaveAuditResult } from "./types";
 
 export interface LeadCapturePayload {
@@ -32,14 +31,20 @@ export async function saveWaveAuditLead(
   let lastError: unknown;
   for (let attempt = 0; attempt < 2; attempt += 1) {
     try {
-      const { error } = await supabase
-        .from("wave_audit_leads")
-        .insert(record);
+      const response = await fetch("/api/wave-check-submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(record),
+      });
 
-      if (!error || error.code === "23505") {
-        return { status: "saved", submissionId: payload.submissionId };
+      if (response.ok) {
+        const body = await response.json() as { status?: string; submissionId?: string };
+        if (body.status === "saved") {
+          return { status: "saved", submissionId: body.submissionId || payload.submissionId };
+        }
       }
-      lastError = error;
+
+      lastError = new Error(`Wave Check save returned HTTP ${response.status}`);
     } catch (error) {
       lastError = error;
     }
@@ -49,6 +54,6 @@ export async function saveWaveAuditLead(
   return {
     status: "uncertain",
     submissionId: payload.submissionId,
-    message: "Your full report is unlocked below. We couldn't confirm the online save, so keep your receipt and try again later.",
+    message: "We couldn't confirm the online save. Please try again so your Wave Check is not lost.",
   };
 }
