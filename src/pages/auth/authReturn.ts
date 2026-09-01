@@ -12,7 +12,8 @@ export function safeAuthReturnPath(value: unknown, origin: string) {
       candidate.pathname.startsWith("/members/") ||
       candidate.pathname === "/launch-desk" ||
       candidate.pathname === "/audit/checkout" ||
-      candidate.pathname === "/audit/intake";
+      candidate.pathname === "/audit/intake" ||
+      candidate.pathname.startsWith("/audit/report/");
 
     if (candidate.origin !== origin || !isProtectedPath) {
       return DEFAULT_AUTH_DESTINATION;
