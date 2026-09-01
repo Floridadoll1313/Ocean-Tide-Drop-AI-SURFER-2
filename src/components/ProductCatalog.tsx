@@ -19,7 +19,7 @@ const products: Product[] = [
     category: 'AI Visibility & Discovery',
     description: 'Find the visibility gaps that keep AI systems from understanding, trusting, citing, and recommending your business.',
     cta: 'Run the Wave Audit',
-    href: '/wave-audit',
+    href: '/wave-check',
     image: '/packages/aeo-wave-audit.jpg',
     badge: '/product-icons/aeo-wave-audit.png',
     featured: true,
