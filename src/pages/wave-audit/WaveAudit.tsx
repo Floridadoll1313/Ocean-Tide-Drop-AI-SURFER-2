@@ -60,6 +60,7 @@ export default function WaveAudit() {
   const [submitted, setSubmitted] = useState(false);
   const [submissionId, setSubmissionId] = useState("");
   const [saveStatus, setSaveStatus] = useState<"saving" | "saved" | "uncertain">("saving");
+  const [saveError, setSaveError] = useState("");
 
   const result = useMemo(() => Object.values(answers).every(Boolean) ? calculateWaveAuditResult(answers) : null, [answers]);
   const currentQuestion = QUESTIONS[step];
@@ -70,31 +71,51 @@ export default function WaveAudit() {
     if (step < QUESTIONS.length - 1) window.setTimeout(() => setStep((current) => current + 1), 180);
   };
 
-  const persistLead = (receipt: string) => {
-    if (!result || !email.trim()) return;
+  const persistLead = async (receipt: string) => {
+    if (!result || !email.trim()) return false;
     setSaveStatus("saving");
-    void saveWaveAuditLead({ email, answers, result, source: "wave-audit", submissionId: receipt })
-      .then((saved) => setSaveStatus(saved.status))
-      .catch((error) => {
-        console.error("Wave Audit background save failed:", error);
-        setSaveStatus("uncertain");
-      });
+    setSaveError("");
+    try {
+      const saved = await saveWaveAuditLead({ email, answers, result, source: "wave-audit", submissionId: receipt });
+      setSaveStatus(saved.status);
+      if (saved.status !== "saved") {
+        setSaveError("We couldn't confirm your report was saved. Please try again so we don't lose your Wave Check.");
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error("Wave Audit save failed:", error);
+      setSaveStatus("uncertain");
+      setSaveError("We couldn't save your report yet. Please try again.");
+      return false;
+    }
   };
 
-  const submitLead = (event: FormEvent<HTMLFormElement>) => {
+  const submitLead = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!result || !email.trim()) return;
+    if (!result || !email.trim() || submitting) return;
     setSubmitting(true);
     const receipt = submissionId || globalThis.crypto.randomUUID();
     setSubmissionId(receipt);
-    setSubmitted(true);
+
+    const saved = await saveWaveAuditLead({ email, answers, result, source: "wave-audit", submissionId: receipt });
+    setSaveStatus(saved.status);
+
+    if (saved.status === "saved") {
+      setSaveError("");
+      setSubmitted(true);
+    } else {
+      setSaveError("We couldn't confirm your report was saved. Please try again so we don't lose your Wave Check.");
+    }
     setSubmitting(false);
-    persistLead(receipt);
   };
 
-  const retryLeadSave = () => {
+  const retryLeadSave = async () => {
     if (!submissionId) return;
-    persistLead(submissionId);
+    setSubmitting(true);
+    const saved = await persistLead(submissionId);
+    if (saved) setSubmitted(true);
+    setSubmitting(false);
   };
 
   return (
@@ -128,7 +149,7 @@ export default function WaveAudit() {
             {step > 0 && <button type="button" onClick={() => setStep((current) => current - 1)} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white"><ArrowLeft size={16} /> Back</button>}
           </section>
         ) : submitted ? (
-          <FullWaveReport email={email.trim().toLowerCase()} submissionId={submissionId} saveStatus={saveStatus} onRetrySave={retryLeadSave} answers={answers} result={result} />
+          <FullWaveReport email={email.trim().toLowerCase()} submissionId={submissionId} saveStatus={saveStatus} onRetrySave={() => void retryLeadSave()} answers={answers} result={result} />
         ) : (
           <section className="mx-auto max-w-4xl">
             <div className="grid gap-6 md:grid-cols-[.8fr_1.2fr]">
@@ -152,9 +173,10 @@ export default function WaveAudit() {
               <form onSubmit={submitLead} className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <label className="sr-only" htmlFor="wave-audit-email">Email address</label>
                 <input id="wave-audit-email" name="email" type="email" required autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@yourbusiness.com" className="min-w-0 flex-1 rounded-full border border-white/15 bg-slate-950/70 px-5 py-4 text-white outline-none transition focus:border-cyan-300" />
-                <button disabled={submitting} type="submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-teal-300 px-6 py-4 font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-70">{submitting ? <Loader2 size={18} className="animate-spin" /> : <ArrowRight size={18} />}{submitting ? "Opening..." : "Open My Full AI Wave Report"}</button>
+                <button disabled={submitting} type="submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-teal-300 px-6 py-4 font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-70">{submitting ? <Loader2 size={18} className="animate-spin" /> : <ArrowRight size={18} />}{submitting ? "Saving..." : "Open My Full AI Wave Report"}</button>
               </form>
-              <p className="mt-4 text-xs text-slate-500">Your full report opens here even if the online save confirmation is interrupted.</p>
+              {saveError && <p role="alert" className="mt-4 rounded-2xl border border-amber-300/25 bg-amber-300/10 px-4 py-3 text-sm font-semibold text-amber-100">{saveError}</p>}
+              <p className="mt-4 text-xs text-slate-500">Your full report opens after we confirm your Wave Check is saved securely.</p>
             </div>
           </section>
         )}
