@@ -1,7 +1,9 @@
-name: Deploy to Cloudflare Pages
+name: Verify Cloudflare Pages Build
 
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
@@ -9,15 +11,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: cloudflare-pages-production
+  group: cloudflare-pages-build-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  verify:
     runs-on: ubuntu-latest
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
     steps:
       - name: Checkout
@@ -28,12 +27,6 @@ jobs:
         with:
           node-version: 22
           cache: npm
-
-      - name: Verify Cloudflare credentials
-        shell: bash
-        run: |
-          test -n "$CLOUDFLARE_API_TOKEN" || { echo "CLOUDFLARE_API_TOKEN GitHub secret is missing"; exit 1; }
-          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "CLOUDFLARE_ACCOUNT_ID GitHub secret is missing"; exit 1; }
 
       - name: Install dependencies
         run: npm install
@@ -47,10 +40,3 @@ jobs:
           test -f dist/index.html
           test -f dist/_redirects
           grep -F '/* /index.html 200' dist/_redirects
-
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=aisurferotd --branch=main
