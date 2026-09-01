@@ -1,28 +1,9 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase, supabaseAnonKey, supabaseUrl } from "../../lib/supabase";
+import { buildAuthRedirectUrl, safeAuthReturnPath } from "./authReturn";
 
 const AUTH_RETURN_PATH_KEY = "ai-surfer:auth-return-path";
-const DEFAULT_AUTH_DESTINATION = "/members";
-
-function safeReturnPath(value: unknown) {
-  if (typeof value !== "string" || value.includes("\\")) return DEFAULT_AUTH_DESTINATION;
-
-  try {
-    const candidate = new URL(value, window.location.origin);
-    const isProtectedPath =
-      candidate.pathname === "/members" ||
-      candidate.pathname.startsWith("/members/") ||
-      candidate.pathname === "/launch-desk" ||
-      candidate.pathname === "/audit/checkout" ||
-      candidate.pathname === "/audit/intake";
-
-    if (candidate.origin !== window.location.origin || !isProtectedPath) return DEFAULT_AUTH_DESTINATION;
-    return `${candidate.pathname}${candidate.search}${candidate.hash}`;
-  } catch {
-    return DEFAULT_AUTH_DESTINATION;
-  }
-}
 
 export default function Login() {
   const navigate = useNavigate();
@@ -36,7 +17,11 @@ export default function Login() {
   const [googleAvailable, setGoogleAvailable] = useState<boolean | null>(null);
 
   const stateFrom = (location.state as { from?: unknown } | null)?.from;
-  const [destination] = useState(() => safeReturnPath(stateFrom ?? window.sessionStorage.getItem(AUTH_RETURN_PATH_KEY)));
+  const queryReturn = new URLSearchParams(location.search).get("returnTo");
+  const [destination] = useState(() => safeAuthReturnPath(
+    stateFrom ?? queryReturn ?? window.sessionStorage.getItem(AUTH_RETURN_PATH_KEY),
+    window.location.origin,
+  ));
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -73,7 +58,7 @@ export default function Login() {
         const { data, error: signUpError } = await supabase.auth.signUp({
           email: cleanEmail,
           password,
-          options: { emailRedirectTo: `${window.location.origin}/members` },
+          options: { emailRedirectTo: buildAuthRedirectUrl(window.location.origin, destination) },
         });
         if (signUpError) {
           if (/networkerror|failed to fetch|fetch resource/i.test(signUpError.message)) {
