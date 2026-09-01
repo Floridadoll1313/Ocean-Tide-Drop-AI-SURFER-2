@@ -17,6 +17,7 @@ const AGENT_CHECKOUT = "https://buy.stripe.com/aFa3cv3tx6hc0Uydcb4gg08";
 const AUTOMATION_CHECKOUT = "https://buy.stripe.com/5kQ6oH5BFgVQ5aO0pp4gg06";
 
 const OFFERS: Record<string, ImplementationOffer> = {
+  "aeo-blueprint": { kind: "high-touch", label: "AEO Strategy & Implementation", cta: "Start My AEO Implementation", path: "/pricing#premium-builds" },
   "wave-scout": { kind: "checkout", label: "AI Agent Systems", price: 2500, checkoutUrl: AGENT_CHECKOUT, cta: "Build My Wave Scout System" },
   "sales-rider": { kind: "checkout", label: "AI Agent Systems", price: 2500, checkoutUrl: AGENT_CHECKOUT, cta: "Build My Sales Rider System" },
   "content-creator": { kind: "checkout", label: "AI Agent Systems", price: 2500, checkoutUrl: AGENT_CHECKOUT, cta: "Build My Content System" },
