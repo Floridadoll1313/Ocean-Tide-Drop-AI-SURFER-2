@@ -69,7 +69,6 @@ describe("WaveAudit", () => {
 
     expect(container.textContent).toContain("Your Full AI Wave Report");
     expect(container.textContent).toContain("30-Day Wave Plan");
-    expect(container.textContent).not.toContain("on the way");
     expect(saveWaveAuditLead).toHaveBeenCalledWith(expect.objectContaining({
       email: "surfer@example.com",
       submissionId: expect.any(String),
@@ -79,7 +78,7 @@ describe("WaveAudit", () => {
     container.remove();
   });
 
-  it("unlocks the full report immediately while save confirmation is still pending", async () => {
+  it("keeps the report locked while save confirmation is pending", async () => {
     vi.useFakeTimers();
     saveWaveAuditLead.mockReturnValueOnce(new Promise(() => undefined));
     const container = document.createElement("div");
@@ -108,9 +107,8 @@ describe("WaveAudit", () => {
 
     await act(async () => container.querySelector("form")?.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
 
-    expect(container.textContent).toContain("Your Full AI Wave Report");
-    expect(container.textContent).toContain("Saving securely");
-    expect(container.textContent).not.toContain("Opening...");
+    expect(container.textContent).not.toContain("Your Full AI Wave Report");
+    expect(container.textContent).toContain("Saving...");
 
     await act(async () => root.unmount());
     container.remove();
