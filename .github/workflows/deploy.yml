@@ -15,6 +15,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
     steps:
       - name: Checkout
@@ -26,11 +29,24 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Verify Cloudflare credentials
+        shell: bash
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "CLOUDFLARE_API_TOKEN GitHub secret is missing"; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "CLOUDFLARE_ACCOUNT_ID GitHub secret is missing"; exit 1; }
+
       - name: Install dependencies
         run: npm install
 
       - name: Build project
         run: npm run build
+
+      - name: Verify SPA deployment artifact
+        shell: bash
+        run: |
+          test -f dist/index.html
+          test -f dist/_redirects
+          grep -F '/* /index.html 200' dist/_redirects
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
