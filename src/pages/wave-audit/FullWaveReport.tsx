@@ -8,11 +8,12 @@ interface FullWaveReportProps {
   email: string;
   submissionId: string;
   saveStatus: "saving" | "saved" | "uncertain";
+  onRetrySave: () => void;
   answers: WaveAuditAnswers;
   result: WaveAuditResult;
 }
 
-export default function FullWaveReport({ email, submissionId, saveStatus, answers, result }: FullWaveReportProps) {
+export default function FullWaveReport({ email, submissionId, saveStatus, onRetrySave, answers, result }: FullWaveReportProps) {
   const [copied, setCopied] = useState(false);
   const report = useMemo(() => buildWaveAuditReport(answers, result), [answers, result]);
   const reportText = useMemo(() => formatWaveAuditReport(report, submissionId), [report, submissionId]);
@@ -54,7 +55,11 @@ export default function FullWaveReport({ email, submissionId, saveStatus, answer
         </div>
         <div className={`mt-6 flex items-start gap-3 rounded-2xl border p-4 text-sm ${saveStatus === "saved" ? "border-emerald-300/20 bg-emerald-300/5 text-emerald-100" : "border-amber-300/25 bg-amber-300/5 text-amber-100"}`} role="status">
           {saveStatus === "saved" ? <Check className="mt-0.5 shrink-0" size={17} /> : saveStatus === "saving" ? <Waves className="mt-0.5 shrink-0 animate-pulse" size={17} /> : <AlertTriangle className="mt-0.5 shrink-0" size={17} />}
-          <div><div className="font-bold">{saveStatus === "saved" ? "Saved securely" : saveStatus === "saving" ? "Saving securely" : "Report unlocked—save confirmation pending"}</div><div className="mt-1 opacity-80">{saveStatus === "saved" ? `Your audit is saved for ${email}.` : saveStatus === "saving" ? "Your report is already open while the receipt is confirmed in the background." : "Keep the receipt below. Your full report remains available on this screen."}</div></div>
+          <div>
+            <div className="font-bold">{saveStatus === "saved" ? "Saved securely" : saveStatus === "saving" ? "Saving securely" : "Report unlocked—save confirmation pending"}</div>
+            <div className="mt-1 opacity-80">{saveStatus === "saved" ? `Your audit is saved for ${email}.` : saveStatus === "saving" ? "Your report is already open while the receipt is confirmed in the background." : "Keep the receipt below. Your full report remains available on this screen."}</div>
+            {saveStatus === "uncertain" && <button type="button" onClick={onRetrySave} className="mt-3 rounded-full border border-amber-200/40 bg-amber-100/10 px-4 py-2 font-bold text-amber-50 transition hover:bg-amber-100/20">Retry Save</button>}
+          </div>
         </div>
         <div className="mt-8 grid gap-5 md:grid-cols-2">
           <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6"><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-amber-200"><Gauge size={17} /> What this means</div><p className="mt-4 leading-7 text-slate-200">{report.diagnosis}</p></article>
