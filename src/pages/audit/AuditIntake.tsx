@@ -6,6 +6,8 @@ import { AEO_AUDIT_QUESTIONS } from "../../features/aeo-audit/scoring";
 import ScoredQuestionnaire from "./ScoredQuestionnaire";
 
 type IntakeState = {
+  business_name: string;
+  website: string;
   industry: string;
   service_area: string;
   main_product_service: string;
@@ -22,6 +24,8 @@ type IntakeState = {
 };
 
 const EMPTY: IntakeState = {
+  business_name: "",
+  website: "",
   industry: "",
   service_area: "",
   main_product_service: "",
@@ -37,7 +41,9 @@ const EMPTY: IntakeState = {
   ai_goal: "",
 };
 
-const FIELDS: Array<{ key: keyof IntakeState; label: string; placeholder: string; multiline?: boolean }> = [
+const FIELDS: Array<{ key: keyof IntakeState; label: string; placeholder: string; multiline?: boolean; required?: boolean }> = [
+  { key: "business_name", label: "Business name", placeholder: "Your business name" },
+  { key: "website", label: "Website", placeholder: "https://yourbusiness.com", required: false },
   { key: "industry", label: "Industry", placeholder: "Example: HVAC, real estate, restaurant" },
   { key: "service_area", label: "Location or service area", placeholder: "Where do you serve customers?" },
   { key: "main_product_service", label: "Main product or service", placeholder: "What do you most want customers to buy?" },
@@ -126,6 +132,7 @@ export default function AuditIntake() {
           scored_answers: scoredAnswers,
         },
       });
+      setBusinessName(form.business_name.trim() || businessName);
       setAuditOrderId(payload.order_id || auditOrderId);
       setStatus("saved");
     } catch (err) {
@@ -158,7 +165,7 @@ export default function AuditIntake() {
 
         {(status === "ready" || status === "saving") && (
           <form onSubmit={submit} className="mt-8 space-y-10">
-            {businessName && <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/5 p-4 text-sm text-cyan-100">Paid audit verified for <strong>{businessName}</strong>.</div>}
+            {businessName && businessName !== "your business" && <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/5 p-4 text-sm text-cyan-100">Paid audit verified for <strong>{businessName}</strong>.</div>}
 
             <section className="space-y-5">
               <div>
@@ -169,9 +176,9 @@ export default function AuditIntake() {
                 <label key={field.key} className="block">
                   <span className="mb-2 block font-bold text-slate-100">{field.label}</span>
                   {field.multiline ? (
-                    <textarea required value={form[field.key]} onChange={(event) => update(field.key, event.target.value)} placeholder={field.placeholder} rows={4} className="w-full rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-white outline-none transition focus:border-cyan-300" />
+                    <textarea required={field.required !== false} value={form[field.key]} onChange={(event) => update(field.key, event.target.value)} placeholder={field.placeholder} rows={4} className="w-full rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-white outline-none transition focus:border-cyan-300" />
                   ) : (
-                    <input required type={field.key === "employee_count" ? "number" : "text"} min={field.key === "employee_count" ? 0 : undefined} value={form[field.key]} onChange={(event) => update(field.key, event.target.value)} placeholder={field.placeholder} className="w-full rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-white outline-none transition focus:border-cyan-300" />
+                    <input required={field.required !== false} type={field.key === "employee_count" ? "number" : field.key === "website" ? "url" : "text"} min={field.key === "employee_count" ? 0 : undefined} value={form[field.key]} onChange={(event) => update(field.key, event.target.value)} placeholder={field.placeholder} className="w-full rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-white outline-none transition focus:border-cyan-300" />
                   )}
                 </label>
               ))}
