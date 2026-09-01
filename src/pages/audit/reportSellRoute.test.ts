@@ -3,6 +3,10 @@ import { getReportSellRoute } from "./reportSellRoute";
 
 describe("getReportSellRoute", () => {
   it.each([
+    ["AEO Visibility Implementation", "/members/products/aeo-blueprint", "Build My AEO Visibility Plan"],
+    ["Customer Question Map + AEO Content Implementation", "/members/products/content-creator", "Build My AEO Content System"],
+    ["Entity Authority Optimization", "/members/products/aeo-blueprint", "Strengthen My Entity Authority"],
+    ["Technical AEO Implementation", "/members/products/aeo-blueprint", "Fix My Technical AEO"],
     ["Wave Scout", "/members/products/wave-scout", "See How Wave Scout Can Help"],
     ["Sales Rider", "/members/products/sales-rider", "Fix My Sales Follow-Up"],
     ["Content Creator", "/members/products/content-creator", "Build My Authority Content"],
