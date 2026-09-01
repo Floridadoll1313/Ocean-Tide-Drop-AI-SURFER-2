@@ -17,7 +17,7 @@ function reportElement(
         email="surfer@example.com"
         submissionId="5ed95f2f-1321-4aa8-bc88-f8f952cc6975"
         saveStatus={saveStatus}
-        onRetrySave={onRetrySave}
+        onRetrySave={onRetrySave ?? (() => undefined)}
         answers={{
           businessType: "ecommerce",
           teamSize: "solo",
