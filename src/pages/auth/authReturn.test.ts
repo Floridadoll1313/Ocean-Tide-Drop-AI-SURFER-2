@@ -15,6 +15,15 @@ describe("AEO checkout auth return", () => {
     ).toBe("/audit/intake?session_id=cs_live_example");
   });
 
+  it("preserves a paid audit report route after authentication", () => {
+    expect(
+      safeAuthReturnPath(
+        "/audit/report/order-123",
+        "https://otdaisurfer.surf",
+      ),
+    ).toBe("/audit/report/order-123");
+  });
+
   it("rejects an external return destination", () => {
     expect(
       safeAuthReturnPath("https://example.com/steal", "https://otdaisurfer.surf"),
