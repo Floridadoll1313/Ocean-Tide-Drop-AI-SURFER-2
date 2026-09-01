@@ -1,4 +1,5 @@
 type Next = () => Promise<Response>;
+type SpaFallback = () => Promise<Response>;
 
 const EXACT_APP_ROUTES = new Set([
   "/",
@@ -13,16 +14,37 @@ const EXACT_APP_ROUTES = new Set([
   "/ai-dashboard",
 ]);
 
-function isKnownRoute(pathname: string): boolean {
+export function isKnownAppRoute(pathname: string): boolean {
   if (EXACT_APP_ROUTES.has(pathname)) return true;
   if (pathname.startsWith("/members/")) return true;
+  if (pathname.startsWith("/audit/")) return true;
+  return false;
+}
+
+function isKnownRoute(pathname: string): boolean {
+  if (isKnownAppRoute(pathname)) return true;
   if (pathname.startsWith("/api/")) return true;
   return /\/[^/]+\.[^/]+$/.test(pathname);
 }
 
-export async function handleRouteStatus(request: Request, next: Next): Promise<Response> {
+export async function handleRouteStatus(
+  request: Request,
+  next: Next,
+  spaFallback?: SpaFallback,
+): Promise<Response> {
   const response = await next();
   const pathname = new URL(request.url).pathname;
+  const canUseSpaFallback = request.method === "GET" || request.method === "HEAD";
+
+  if (
+    response.status === 404 &&
+    canUseSpaFallback &&
+    isKnownAppRoute(pathname) &&
+    spaFallback
+  ) {
+    const shell = await spaFallback();
+    if (shell.status === 200) return shell;
+  }
 
   if (response.status !== 200 || isKnownRoute(pathname)) return response;
 
