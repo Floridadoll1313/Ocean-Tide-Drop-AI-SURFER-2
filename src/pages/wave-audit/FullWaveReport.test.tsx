@@ -1,15 +1,23 @@
-import { describe, expect, it } from "vitest";
+import { act } from "react";
+import { createRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import FullWaveReport from "./FullWaveReport";
 
-function renderReport() {
-  return renderToString(
+(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+
+function reportElement(
+  saveStatus: "saving" | "saved" | "uncertain" = "saved",
+  onRetrySave?: () => void,
+) {
+  return (
     <MemoryRouter>
       <FullWaveReport
         email="surfer@example.com"
         submissionId="5ed95f2f-1321-4aa8-bc88-f8f952cc6975"
-        saveStatus="saved"
+        saveStatus={saveStatus}
+        onRetrySave={onRetrySave ?? (() => undefined)}
         answers={{
           businessType: "ecommerce",
           teamSize: "solo",
@@ -25,9 +33,17 @@ function renderReport() {
           confidenceLabel: "High opportunity",
         }}
       />
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 }
+
+function renderReport() {
+  return renderToString(reportElement());
+}
+
+afterEach(() => {
+  document.body.innerHTML = "";
+});
 
 describe("FullWaveReport", () => {
   it("renders the unlocked report and portable report controls", () => {
@@ -52,5 +68,26 @@ describe("FullWaveReport", () => {
     const html = renderReport();
 
     expect(html).toContain('href="/audit/checkout"');
+  });
+
+  it("offers a safe retry when save confirmation is uncertain", async () => {
+    const onRetrySave = vi.fn();
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+
+    await act(async () => root.render(reportElement("uncertain", onRetrySave)));
+
+    const retryButton = [...container.querySelectorAll("button")].find(
+      (button) => button.textContent?.includes("Retry Save"),
+    );
+    expect(retryButton).toBeTruthy();
+
+    await act(async () => {
+      retryButton?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    });
+    expect(onRetrySave).toHaveBeenCalledOnce();
+
+    await act(async () => root.unmount());
   });
 });

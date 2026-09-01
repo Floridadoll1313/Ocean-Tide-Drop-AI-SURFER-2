@@ -70,21 +70,31 @@ export default function WaveAudit() {
     if (step < QUESTIONS.length - 1) window.setTimeout(() => setStep((current) => current + 1), 180);
   };
 
-  const submitLead = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const persistLead = (receipt: string) => {
     if (!result || !email.trim()) return;
-    setSubmitting(true);
-    const receipt = submissionId || globalThis.crypto.randomUUID();
-    setSubmissionId(receipt);
     setSaveStatus("saving");
-    setSubmitted(true);
-    setSubmitting(false);
     void saveWaveAuditLead({ email, answers, result, source: "wave-audit", submissionId: receipt })
       .then((saved) => setSaveStatus(saved.status))
       .catch((error) => {
         console.error("Wave Audit background save failed:", error);
         setSaveStatus("uncertain");
       });
+  };
+
+  const submitLead = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!result || !email.trim()) return;
+    setSubmitting(true);
+    const receipt = submissionId || globalThis.crypto.randomUUID();
+    setSubmissionId(receipt);
+    setSubmitted(true);
+    setSubmitting(false);
+    persistLead(receipt);
+  };
+
+  const retryLeadSave = () => {
+    if (!submissionId) return;
+    persistLead(submissionId);
   };
 
   return (
@@ -118,7 +128,7 @@ export default function WaveAudit() {
             {step > 0 && <button type="button" onClick={() => setStep((current) => current - 1)} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white"><ArrowLeft size={16} /> Back</button>}
           </section>
         ) : submitted ? (
-          <FullWaveReport email={email.trim().toLowerCase()} submissionId={submissionId} saveStatus={saveStatus} answers={answers} result={result} />
+          <FullWaveReport email={email.trim().toLowerCase()} submissionId={submissionId} saveStatus={saveStatus} onRetrySave={retryLeadSave} answers={answers} result={result} />
         ) : (
           <section className="mx-auto max-w-4xl">
             <div className="grid gap-6 md:grid-cols-[.8fr_1.2fr]">
