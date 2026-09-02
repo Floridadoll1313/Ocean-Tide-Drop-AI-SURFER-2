@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://mkgnyarwiscttobnytin.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Jp0Laxs-KoieNMD5hqLA0w_jCnrxATm";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rZ255YXJ3aXNjdHRvYm55dGluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNDQwNTQsImV4cCI6MjA5NDgyMDA1NH0.eO2hcLQ4Qfq2_VkT74pMNnUG0uvPTmA__BuUOhLWFG0";
 
 type WaveCheckSubmission = {
   submission_id: string;
@@ -68,7 +68,8 @@ export async function handleWaveCheckSubmit(request: Request): Promise<Response>
     const response = await fetch(`${SUPABASE_URL}/rest/v1/wave_audit_leads?on_conflict=submission_id`, {
       method: "POST",
       headers: {
-        apikey: SUPABASE_PUBLISHABLE_KEY,
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
         "Content-Type": "application/json",
         Prefer: "resolution=ignore-duplicates,return=minimal",
       },
