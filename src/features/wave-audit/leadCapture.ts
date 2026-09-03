@@ -1,4 +1,5 @@
 import type { WaveAuditAnswers, WaveAuditResult } from "./types";
+import { supabase } from "../../lib/supabase";
 
 export interface LeadCapturePayload {
   email: string;
@@ -48,6 +49,19 @@ export async function saveWaveAuditLead(
     } catch (error) {
       lastError = error;
     }
+  }
+
+  try {
+    const { error } = await supabase
+      .from("wave_audit_leads")
+      .upsert(record, { onConflict: "submission_id", ignoreDuplicates: true });
+
+    if (!error) {
+      return { status: "saved", submissionId: payload.submissionId };
+    }
+    lastError = error;
+  } catch (error) {
+    lastError = error;
   }
 
   console.error("Wave Audit lead capture confirmation failed:", lastError);
