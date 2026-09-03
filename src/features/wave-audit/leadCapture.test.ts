@@ -1,6 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { saveWaveAuditLead } from "./leadCapture";
 
+const { upsertMock, fromMock } = vi.hoisted(() => {
+  const upsertMock = vi.fn();
+  return {
+    upsertMock,
+    fromMock: vi.fn(() => ({ upsert: upsertMock })),
+  };
+});
+
+vi.mock("../../lib/supabase", () => ({
+  supabase: { from: fromMock },
+}));
+
 const payload = {
   email: "surfer@example.com",
   answers: {
@@ -24,6 +36,8 @@ const payload = {
 describe("saveWaveAuditLead", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    upsertMock.mockReset();
+    fromMock.mockClear();
   });
 
   it("posts a normalized lead to the same-origin Wave Check endpoint", async () => {
@@ -86,5 +100,28 @@ describe("saveWaveAuditLead", () => {
       message: "We couldn't confirm the online save. Please try again so your Wave Check is not lost.",
     });
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("falls back to Supabase when Cloudflare serves the SPA for the API route", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response("<!doctype html><div id=\"root\"></div>", {
+      status: 200,
+      headers: { "Content-Type": "text/html" },
+    }));
+    upsertMock.mockResolvedValue({ error: null });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(saveWaveAuditLead(payload)).resolves.toEqual({
+      status: "saved",
+      submissionId: payload.submissionId,
+    });
+
+    expect(fromMock).toHaveBeenCalledWith("wave_audit_leads");
+    expect(upsertMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        submission_id: payload.submissionId,
+        email: "surfer@example.com",
+      }),
+      { onConflict: "submission_id", ignoreDuplicates: true },
+    );
   });
 });
