@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { saveWaveAuditLead } from "./leadCapture";
 
-const { upsertMock, fromMock } = vi.hoisted(() => {
-  const upsertMock = vi.fn();
+const { insertMock, fromMock } = vi.hoisted(() => {
+  const insertMock = vi.fn();
   return {
-    upsertMock,
-    fromMock: vi.fn(() => ({ upsert: upsertMock })),
+    insertMock,
+    fromMock: vi.fn(() => ({ insert: insertMock })),
   };
 });
 
@@ -36,7 +36,7 @@ const payload = {
 describe("saveWaveAuditLead", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    upsertMock.mockReset();
+    insertMock.mockReset();
     fromMock.mockClear();
   });
 
@@ -88,10 +88,11 @@ describe("saveWaveAuditLead", () => {
     expect(fetchMock.mock.calls[0]).toEqual(fetchMock.mock.calls[1]);
   });
 
-  it("returns an honest uncertain state after two failed attempts", async () => {
+  it("returns an honest uncertain state after two failed attempts and a failed fallback", async () => {
     const fetchMock = vi.fn()
       .mockRejectedValueOnce(new TypeError("Failed to fetch"))
       .mockRejectedValueOnce(new TypeError("Failed to fetch"));
+    insertMock.mockResolvedValue({ error: { code: "42501", message: "permission denied" } });
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(saveWaveAuditLead(payload)).resolves.toEqual({
@@ -102,12 +103,12 @@ describe("saveWaveAuditLead", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it("falls back to Supabase when Cloudflare serves the SPA for the API route", async () => {
+  it("falls back to a direct insert when Cloudflare serves the SPA for the API route", async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response("<!doctype html><div id=\"root\"></div>", {
       status: 200,
       headers: { "Content-Type": "text/html" },
     }));
-    upsertMock.mockResolvedValue({ error: null });
+    insertMock.mockResolvedValue({ error: null });
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(saveWaveAuditLead(payload)).resolves.toEqual({
@@ -116,12 +117,24 @@ describe("saveWaveAuditLead", () => {
     });
 
     expect(fromMock).toHaveBeenCalledWith("wave_audit_leads");
-    expect(upsertMock).toHaveBeenCalledWith(
+    expect(insertMock).toHaveBeenCalledWith(
       expect.objectContaining({
         submission_id: payload.submissionId,
         email: "surfer@example.com",
       }),
-      { onConflict: "submission_id", ignoreDuplicates: true },
     );
+  });
+
+  it("treats a duplicate receipt as already saved", async () => {
+    const fetchMock = vi.fn()
+      .mockRejectedValueOnce(new TypeError("Failed to fetch"))
+      .mockRejectedValueOnce(new TypeError("Failed to fetch"));
+    insertMock.mockResolvedValue({ error: { code: "23505", message: "duplicate key" } });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(saveWaveAuditLead(payload)).resolves.toEqual({
+      status: "saved",
+      submissionId: payload.submissionId,
+    });
   });
 });
