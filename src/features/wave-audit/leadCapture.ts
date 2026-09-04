@@ -39,9 +39,12 @@ export async function saveWaveAuditLead(
       });
 
       if (response.ok) {
-        const body = await response.json() as { status?: string; submissionId?: string };
-        if (body.status === "saved") {
-          return { status: "saved", submissionId: body.submissionId || payload.submissionId };
+        const contentType = response.headers.get("Content-Type") || "";
+        if (contentType.includes("application/json")) {
+          const body = await response.json() as { status?: string; submissionId?: string };
+          if (body.status === "saved") {
+            return { status: "saved", submissionId: body.submissionId || payload.submissionId };
+          }
         }
       }
 
@@ -54,9 +57,9 @@ export async function saveWaveAuditLead(
   try {
     const { error } = await supabase
       .from("wave_audit_leads")
-      .upsert(record, { onConflict: "submission_id", ignoreDuplicates: true });
+      .insert(record);
 
-    if (!error) {
+    if (!error || error.code === "23505") {
       return { status: "saved", submissionId: payload.submissionId };
     }
     lastError = error;
