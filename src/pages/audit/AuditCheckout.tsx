@@ -1,38 +1,14 @@
-import { useEffect, useState } from "react";
-import { supabaseAnonKey, supabaseUrl } from "../../lib/supabase";
+import { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+
+const AEO_WAVE_AUDIT_PAYMENT_LINK = "https://buy.stripe.com/eVq4gzaVZ350cDg5JJ4gg0a";
 
 export default function AuditCheckout() {
   const { session } = useAuth();
-  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!session?.access_token) return;
-    let cancelled = false;
-
-    const start = async () => {
-      try {
-        const saved = window.sessionStorage.getItem("ai-surfer:aeo-checkout-context");
-        const context = saved ? JSON.parse(saved) as { email?: string; submissionId?: string } : {};
-        const response = await fetch(`${supabaseUrl}/functions/v1/stripe-payments/create-aeo-checkout`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: supabaseAnonKey,
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({ submission_id: context.submissionId ?? null }),
-        });
-        const payload = await response.json() as { checkout_url?: string; error?: string };
-        if (!response.ok || !payload.checkout_url) throw new Error(payload.error || "Could not start checkout");
-        if (!cancelled) window.location.assign(payload.checkout_url);
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : "Could not start checkout");
-      }
-    };
-
-    void start();
-    return () => { cancelled = true; };
+    window.location.assign(AEO_WAVE_AUDIT_PAYMENT_LINK);
   }, [session?.access_token]);
 
   return (
@@ -41,7 +17,10 @@ export default function AuditCheckout() {
         <div className="text-5xl" aria-hidden="true">🌊</div>
         <h1 className="mt-4 text-3xl font-black">Opening Secure Checkout</h1>
         <p className="mt-3 text-slate-300">Connecting your $97 AEO Wave Audit to Stripe securely.</p>
-        {error && <div role="alert" className="mt-6 rounded-2xl border border-rose-300/25 bg-rose-300/10 p-4 text-rose-100">{error}</div>}
+        <p className="mt-4 text-sm text-slate-400">If Stripe does not open automatically, use the secure checkout button below.</p>
+        <a href={AEO_WAVE_AUDIT_PAYMENT_LINK} className="mt-6 inline-flex rounded-full bg-gradient-to-r from-cyan-300 to-teal-300 px-7 py-4 font-black text-slate-950">
+          Open Secure $97 Checkout
+        </a>
       </section>
     </main>
   );
