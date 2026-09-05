@@ -17,7 +17,7 @@ export default function Pricing() {
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           <Offer title="Free AI Wave Check" price="$0" text="See where AI visibility, lead follow-up, and automation opportunities are hiding." cta="Start Free" href="/wave-check" internal />
           <Offer title="AEO Wave Audit" price="$97 once" text="A deeper paid audit with business context, 100-point scoring, and your 30-Day Wave Plan." cta="Get My $97 Audit" href={AEO_AUDIT_URL} />
-          <Offer title="AI Surfer Members Portal" price="$17/month" text="Recurring access to the Ocean Tide Drop AI SURFER members experience and released tools." cta="Join the Members Portal" href={MEMBERSHIP_URL} featured />
+          <Offer title="Builder Wave Members Portal" price="$17/month" text="Unlock Content Creator, Customer Care Cove, AEO Blueprint, Automation Blueprint, plus all Starter Tide tools." cta="Join Builder Wave" href={MEMBERSHIP_URL} featured />
         </div>
 
         <section className="mt-20">
