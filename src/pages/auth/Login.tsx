@@ -6,6 +6,7 @@ import { buildAuthRedirectUrl, safeAuthReturnPath } from "./authReturn";
 
 const AUTH_RETURN_PATH_KEY = "ai-surfer:auth-return-path";
 const AEO_CHECKOUT_CONTEXT_KEY = "ai-surfer:aeo-checkout-context";
+const LIVE_SITE_ORIGIN = "https://otdaisurfer.surf";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -89,7 +90,7 @@ export default function Login() {
       }
 
       if (mode === "forgot") {
-        const { error: resetError } = await supabase.auth.resetPasswordForEmail(cleanEmail, { redirectTo: `${window.location.origin}/reset-password` });
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(cleanEmail, { redirectTo: `${LIVE_SITE_ORIGIN}/reset-password` });
         if (resetError) { setError(resetError.message); return; }
         setMessage("Password reset link sent! Check your email. 📬");
         return;
@@ -109,7 +110,7 @@ export default function Login() {
     setLoading(true);
     clearMessages();
     window.sessionStorage.setItem(AUTH_RETURN_PATH_KEY, destination);
-    const { error: googleError } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/login` } });
+    const { error: googleError } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${LIVE_SITE_ORIGIN}/login` } });
     if (googleError) {
       window.sessionStorage.removeItem(AUTH_RETURN_PATH_KEY);
       setError(googleError.message);
@@ -119,7 +120,7 @@ export default function Login() {
 
   const title = mode === "signin" ? "Welcome back, Surfer." : mode === "signup" ? "Create your Surfer account." : "Reset your password.";
   const copy = mode === "signin"
-    ? "Sign in to verify your membership and enter the AI-Surfer Members Dashboard."
+    ? "Choose Google or email below. After sign-in, we will return you to the page you were trying to open."
     : mode === "signup"
       ? "Create your account, then complete your membership plan to unlock the Members Dashboard."
       : "Enter your email and we’ll send you a secure password reset link.";
@@ -157,3 +158,4 @@ const styles: Record<string, React.CSSProperties> = {
   logo: { fontSize: 48, textAlign: "center" }, kicker: { textAlign: "center", color: "#00f2fe", fontSize: 12, fontWeight: 800, letterSpacing: 2 }, title: { textAlign: "center", fontSize: 30, margin: "12px 0" }, copy: { textAlign: "center", color: "#cbd5e1", lineHeight: 1.6 },
   googleButton: { width: "100%", padding: 13, borderRadius: 999, border: "1px solid #64748b", background: "#fff", color: "#111827", fontWeight: 800, cursor: "pointer", marginTop: 18 }, authNotice: { marginTop: 18, padding: 12, borderRadius: 10, background: "rgba(125,211,252,.1)", border: "1px solid rgba(125,211,252,.3)", color: "#bae6fd", fontSize: 14, lineHeight: 1.5, textAlign: "center" }, divider: { display: "flex", alignItems: "center", gap: 12, margin: "22px 0 4px", color: "#64748b", fontSize: 12 }, form: { display: "grid", gap: 18, marginTop: 22 }, label: { display: "grid", gap: 7, fontWeight: 700 }, input: { width: "100%", boxSizing: "border-box", padding: 13, borderRadius: 10, border: "1px solid #31506a", background: "#0b1524", color: "white" }, error: { padding: 12, borderRadius: 10, background: "rgba(248,113,113,.12)", color: "#fca5a5", fontSize: 14 }, success: { padding: 12, borderRadius: 10, background: "rgba(74,222,128,.12)", color: "#86efac", fontSize: 14 }, button: { padding: 14, border: 0, borderRadius: 999, fontWeight: 800, cursor: "pointer", background: "linear-gradient(90deg,#00f2fe,#4facfe)", color: "#001018" }, actions: { display: "flex", justifyContent: "center", gap: 18, flexWrap: "wrap", marginTop: 20 }, link: { border: 0, background: "transparent", color: "#7dd3fc", cursor: "pointer", fontWeight: 700 }, back: { display: "block", margin: "22px auto 0", border: 0, background: "transparent", color: "#94a3b8", cursor: "pointer" }
 };
+
