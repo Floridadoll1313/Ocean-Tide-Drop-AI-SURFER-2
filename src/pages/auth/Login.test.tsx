@@ -76,7 +76,7 @@ describe("Login return navigation", () => {
       container.querySelector("form")?.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-    expect(authMocks.resetPasswordForEmail).toHaveBeenCalledWith("surfer@example.com", { redirectTo: `${window.location.origin}/reset-password` });
+    expect(authMocks.resetPasswordForEmail).toHaveBeenCalledWith("surfer@example.com", { redirectTo: "https://otdaisurfer.surf/reset-password" });
     await act(async () => root.unmount());
   });
 
@@ -156,3 +156,4 @@ describe("Login return navigation", () => {
     await act(async () => root.unmount());
   });
 });
+
