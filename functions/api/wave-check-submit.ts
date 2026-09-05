@@ -65,19 +65,22 @@ export async function handleWaveCheckSubmit(request: Request): Promise<Response>
   };
 
   try {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/wave_audit_leads?on_conflict=submission_id`, {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/wave_audit_leads`, {
       method: "POST",
       headers: {
         apikey: SUPABASE_ANON_KEY,
         Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
         "Content-Type": "application/json",
-        Prefer: "resolution=ignore-duplicates,return=minimal",
+        Prefer: "return=minimal",
       },
       body: JSON.stringify(normalized),
     });
 
     if (!response.ok) {
       const detail = await response.text().catch(() => "");
+      if (response.status === 409 && detail.includes("23505")) {
+        return json({ status: "saved", submissionId: normalized.submission_id });
+      }
       console.error("Wave Check Supabase save failed", response.status, detail.slice(0, 500));
       return json({ error: "Unable to confirm Wave Check save." }, 502);
     }
