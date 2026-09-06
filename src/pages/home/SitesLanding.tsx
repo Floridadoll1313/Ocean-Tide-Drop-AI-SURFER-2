@@ -1,7 +1,5 @@
 import "./SitesLanding.css";
 
-const LIVE_SITE = "https://otdaisurfer.surf";
-
 const revenueFunnel = ["LAND", "CAPTURE", "AUDIT", "RESULTS", "SELL", "IMPLEMENT", "RETAIN"];
 
 const products = [
@@ -90,13 +88,36 @@ const products = [
   },
 ];
 
+const brandHeroImage = "/images/otd-ai-surfers-hero.png";
+const productLadderImage = "/images/ai-surfer-product-ladder.png";
+const leadCatcherImage = "/images/ai-surfer-lead-catcher.png";
+const bigKahunaImage = "/images/big-kahuna-ai-visibility.png";
+const fallbackImage = "/ai-surfer-logo.jpg";
+
+function VisualFrame({ src, alt, label }: { src: string; alt: string; label: string }) {
+  return (
+    <figure className="visual-frame">
+      <div className="visual-label">{label}</div>
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        onError={(event) => {
+          event.currentTarget.onerror = null;
+          event.currentTarget.src = fallbackImage;
+        }}
+      />
+    </figure>
+  );
+}
+
 export default function SitesLanding() {
   return (
     <main className="sites-landing">
       <div className="announcement">
         <span>🌺 Launch wave</span>
         <strong>20% off recurring app access and major software console plans</strong>
-        <a href={`${LIVE_SITE}/pricing`}>See plans →</a>
+        <a href="/pricing">See plans →</a>
       </div>
 
       <nav className="nav-shell" aria-label="Main navigation">
@@ -108,8 +129,9 @@ export default function SitesLanding() {
           </span>
         </a>
         <div className="nav-links">
+          <a href="#how-it-works">How it works</a>
           <a href="#product-wave">Products</a>
-          <a href={`${LIVE_SITE}/wave-check`}>Free Wave Check</a>
+          <a href="/wave-check">Free Wave Check</a>
           <a className="nav-button" href="/members">Members</a>
         </div>
       </nav>
@@ -117,45 +139,39 @@ export default function SitesLanding() {
       <section className="hero" id="top">
         <div className="hero-glow hero-glow-one" />
         <div className="hero-glow hero-glow-two" />
-        <div className="hero-glow hero-glow-pink" />
         <div className="hero-copy">
-          <p className="eyebrow">AI THAT MOVES YOUR BUSINESS FORWARD</p>
+          <p className="eyebrow">AI VISIBILITY • AUTOMATION • GROWTH</p>
           <h1>
-            Ride the Wave.
-            <span> Grow with AI.</span>
+            Ride the AI Wave.
+            <span>Build. Automate. Grow.</span>
           </h1>
           <p className="hero-lead">
-            High-powered AI tools, custom automation, and specialized software
-            consoles built to help small businesses save time, get found, and grow.
+            Ocean Tide Drop AI SURFER helps small businesses get found by AI, capture more leads,
+            automate repetitive work, and turn AI into a practical growth system.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href={`${LIVE_SITE}/wave-check`}>
-              Get My Free AI Wave Check™
-            </a>
-            <a className="button button-secondary" href="#product-wave">
-              Explore the Product Wave
-            </a>
+            <a className="button button-primary" href="/wave-check">Find My Biggest AI Wave</a>
+            <a className="button button-secondary" href="#how-it-works">See How It Works</a>
           </div>
-          <div className="trust-line">
-            <span>✓ Built for real businesses</span>
-            <span>✓ Clear next steps</span>
-            <span>✓ Human-first AI</span>
+          <div className="trust-line" aria-label="Key benefits">
+            <span>✓ Start with a free visibility check</span>
+            <span>✓ Clear business outcomes</span>
+            <span>✓ Human-first implementation</span>
           </div>
         </div>
 
-        <div className="logo-stage" aria-label="Ocean Tide Drop AI SURFER brand artwork">
-          <div className="logo-frame">
-            <img
-              src="/ai-surfer-logo.jpg"
-              alt="Ocean Tide Drop AI SURFER logo with waves, dolphins, sunrise, and surfboard"
-            />
-          </div>
-          <div className="logo-caption">
-            <span className="pulse" />
-            <div>
-              <strong>The next wave is already here.</strong>
-              <small>Let&apos;s make it work for your business.</small>
-            </div>
+        <div className="hero-art" aria-label="OTD AI Surfers brand artwork">
+          <img
+            src={brandHeroImage}
+            alt="OTD AI Surfers riding an AI-powered ocean wave"
+            onError={(event) => {
+              event.currentTarget.onerror = null;
+              event.currentTarget.src = fallbackImage;
+            }}
+          />
+          <div className="hero-art-caption">
+            <strong>Built by the ocean. Powered by AI. Driven by purpose.</strong>
+            <span>Ride the Wave 🌊 Grow with AI.</span>
           </div>
         </div>
       </section>
@@ -170,52 +186,74 @@ export default function SitesLanding() {
             </div>
           ))}
         </div>
-        <p className="revenue-funnel-caption">
-          Attract the right visitor, turn interest into action, and keep the relationship growing.
-        </p>
+      </section>
+
+      <section className="problem-section" id="how-it-works">
+        <div className="section-heading">
+          <p className="eyebrow">THE BUSINESS PROBLEM</p>
+          <h2>Too many businesses are invisible, overloaded, or leaking leads.</h2>
+          <p>
+            AI should not become another tab to babysit. We find the bottleneck, choose the right
+            solution, then build the system around the outcome you actually need.
+          </p>
+        </div>
+        <div className="problem-grid">
+          <article><span>01</span><h3>Invisible to AI</h3><p>Your business may rank in search yet still be hard for AI answer engines to understand or recommend.</p></article>
+          <article><span>02</span><h3>Leaky lead flow</h3><p>Slow response times and forgotten follow-up turn good prospects into somebody else&apos;s customers.</p></article>
+          <article><span>03</span><h3>Manual overload</h3><p>Repetitive admin work steals the hours that should be going into customers, strategy, and growth.</p></article>
+        </div>
       </section>
 
       <section className="wave-check" aria-labelledby="wave-check-title">
         <div>
-          <p className="eyebrow">FREE AI VISIBILITY CHECK</p>
-          <h2 id="wave-check-title">Can AI find and recommend your business?</h2>
+          <p className="eyebrow">THE ENTRY POINT</p>
+          <h2 id="wave-check-title">Start with the AI Surfer Wave Check.</h2>
           <p>
-            Get a fast read on the visibility gaps that may keep AI systems from
-            understanding, trusting, citing, and recommending you.
+            We look for your biggest visibility, lead, and automation opportunity so you know what
+            deserves attention first. No AI soup. Just the next wave worth riding.
           </p>
         </div>
-        <a className="button button-primary" href={`${LIVE_SITE}/wave-check`}>
-          Start My Free Wave Check →
-        </a>
+        <a className="button button-primary" href="/wave-check">Start My Free Wave Check →</a>
+      </section>
+
+      <section className="visual-story visual-story-ladder" aria-labelledby="ladder-title">
+        <div className="visual-copy">
+          <p className="eyebrow">THE PRODUCT LADDER</p>
+          <h2 id="ladder-title">Start small. Build momentum. Scale when the wave is right.</h2>
+          <p>
+            The OTD AI Surfer ladder takes a business from its first audit to strategy, AI agents,
+            automation, and eventually a connected growth system.
+          </p>
+          <a className="text-link" href="#product-wave">Explore every product →</a>
+        </div>
+        <VisualFrame
+          src={productLadderImage}
+          alt="AI Surfer product ladder from Starter through Big Kahuna and Tsunami Takeover"
+          label="AI SURFER PRODUCT LADDER"
+        />
       </section>
 
       <section className="product-section" id="product-wave" aria-labelledby="products-title">
         <div className="section-heading">
           <p className="eyebrow">THE AI SURFER PRODUCT WAVE</p>
-          <h2 id="products-title">From first signal to full AI transformation.</h2>
+          <h2 id="products-title">One ecosystem. Different waves for different problems.</h2>
           <p>
-            Start where your business is. Then ride the next wave when you&apos;re ready.
-            Every product solves a specific problem while connecting into one larger
-            AI growth system.
+            Discover the opportunity, diagnose the gap, build the plan, implement the right agent or
+            automation, then transform the system when your business is ready.
           </p>
         </div>
 
         <div className="product-grid">
           {products.map((product, index) => (
-            <article
-              className={`product-card ${product.featured ? "product-card-featured" : ""}`}
-              key={product.name}
-            >
+            <article className={`product-card ${product.featured ? "product-card-featured" : ""}`} key={product.name}>
               <div className="product-topline">
-                <span className={`stage stage-${product.stage.toLowerCase()}`}>
-                  {product.stage}
-                </span>
+                <span className={`stage stage-${product.stage.toLowerCase()}`}>{product.stage}</span>
                 <span className="product-number">{String(index + 1).padStart(2, "0")}</span>
               </div>
               <p className="product-category">{product.category}</p>
               <h3>{product.name}</h3>
               <p className="product-description">{product.description}</p>
-              <a className="product-card-cta button button-primary" href={`${LIVE_SITE}${product.href}`}>
+              <a className="product-card-cta button button-primary" href={product.href}>
                 {product.cta} <span aria-hidden="true">→</span>
               </a>
             </article>
@@ -223,38 +261,86 @@ export default function SitesLanding() {
         </div>
       </section>
 
+      <section className="visual-story visual-story-sales" aria-labelledby="sales-title">
+        <VisualFrame
+          src={leadCatcherImage}
+          alt="AI Lead Catcher flow showing automated lead arrival, engagement, qualification, CRM integration, notifications, and follow-up"
+          label="SALES RIDER • THE PERFECT WAVE"
+        />
+        <div className="visual-copy">
+          <p className="eyebrow">FROM LEAD TO CONVERSATION</p>
+          <h2 id="sales-title">Stop drowning in follow-up.</h2>
+          <p>
+            Sales Rider turns the messy manual lead process into a repeatable flow: capture the lead,
+            respond quickly, qualify the opportunity, update the CRM, alert the owner, and keep the
+            conversation moving.
+          </p>
+          <div className="outcome-list">
+            <span>⚡ Faster response</span>
+            <span>🎯 Better qualification</span>
+            <span>🔁 Consistent follow-up</span>
+          </div>
+          <a className="button button-secondary" href="/members/products/sales-rider">Meet Sales Rider</a>
+        </div>
+      </section>
+
+      <section className="visual-story visual-story-visibility" aria-labelledby="visibility-title">
+        <div className="visual-copy">
+          <p className="eyebrow">AEO + GEO + AI DISCOVERY</p>
+          <h2 id="visibility-title">Move from search rankings to AI answers.</h2>
+          <p>
+            Traditional SEO still matters, but AI discovery adds another layer. Big Kahuna brings
+            together answer-engine optimization, generative-engine optimization, authority signals,
+            content structure, and business automation into one growth strategy.
+          </p>
+          <div className="outcome-list">
+            <span>🔎 Google visibility</span>
+            <span>🤖 AI answer readiness</span>
+            <span>🌊 Connected growth systems</span>
+          </div>
+          <a className="button button-secondary" href="/members/products/big-kahuna">Explore Big Kahuna</a>
+        </div>
+        <VisualFrame
+          src={bigKahunaImage}
+          alt="Big Kahuna AI visibility strategy showing the shift from traditional search to AI answer engines"
+          label="THE BIG KAHUNA STRATEGY"
+        />
+      </section>
+
       <section className="membership">
         <div className="membership-copy">
           <p className="eyebrow">YOUR AI COMMAND CENTER</p>
           <h2>Build smarter. Move faster. Keep riding.</h2>
           <p>
-            Explore your AI Surfer products, launch your Wave Audit, and turn business
-            challenges into clear, revenue-ready next steps.
+            Members get one place to access AI Surfer products, launch workflows, review opportunities,
+            and keep the next business move visible instead of buried under twenty browser tabs.
           </p>
         </div>
         <div className="membership-actions">
-          <a className="button button-primary" href="/members">
-            Enter the Members Area
-          </a>
-          <a className="text-link" href={`${LIVE_SITE}/pricing`}>
-            View membership options →
-          </a>
+          <a className="button button-primary" href="/members">Enter the Members Area</a>
+          <a className="text-link" href="/pricing">View membership options →</a>
         </div>
+      </section>
+
+      <section className="final-cta">
+        <p className="eyebrow">READY FOR YOUR NEXT WAVE?</p>
+        <h2>Find the AI opportunity hiding in your business.</h2>
+        <p>Start with the free Wave Check. We&apos;ll help you see what to fix, automate, or build next.</p>
+        <a className="button button-primary" href="/wave-check">Find My Biggest AI Wave 🌊</a>
       </section>
 
       <footer>
         <div className="footer-brand">
-          <img src="/ai-surfer-logo.jpg" alt="" />
+          <img src={fallbackImage} alt="" />
           <div>
             <strong>Ocean Tide Drop AI SURFER</strong>
             <span>Ride the Wave 🌊 Grow with AI.</span>
           </div>
         </div>
         <div className="footer-links">
-          <a href={`${LIVE_SITE}/wave-check`}>Free Wave Check</a>
-          <a href={`${LIVE_SITE}/pricing`}>Pricing</a>
+          <a href="/wave-check">Free Wave Check</a>
+          <a href="/pricing">Pricing</a>
           <a href="/members">Members</a>
-          <a href={LIVE_SITE}>Full Website</a>
         </div>
         <p>© 2026 Ocean Tide Drop AI SURFER. Built for the next wave.</p>
       </footer>
