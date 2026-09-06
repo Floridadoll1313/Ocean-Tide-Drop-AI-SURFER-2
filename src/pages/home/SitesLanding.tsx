@@ -341,6 +341,7 @@ export default function SitesLanding() {
           <a href="/wave-check">Free Wave Check</a>
           <a href="/pricing">Pricing</a>
           <a href="/members">Members</a>
+          <a href="tel:8438704590">Call/Text (843) 870-4590</a>
         </div>
         <p>© 2026 Ocean Tide Drop AI SURFER. Built for the next wave.</p>
       </footer>
