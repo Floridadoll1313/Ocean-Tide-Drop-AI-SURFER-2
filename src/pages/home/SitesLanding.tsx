@@ -69,6 +69,15 @@ const products = [
   },
   {
     stage: "Implement",
+    name: "Customer Care Cove™",
+    category: "AI Customer Support",
+    description:
+      "Handle common questions, support after-hours conversations, triage appointments, and route the moments that need a human touch.",
+    cta: "Enter Customer Care Cove",
+    href: "/members/products/customer-care-cove",
+  },
+  {
+    stage: "Implement",
     name: "Automation Architect™",
     category: "AI Business Automation",
     description:
@@ -89,9 +98,13 @@ const products = [
 ];
 
 const brandHeroImage = "/images/otd-ai-surfers-hero.png";
-const productLadderImage = "/images/ai-surfer-product-ladder.png";
-const leadCatcherImage = "/images/ai-surfer-lead-catcher.png";
-const bigKahunaImage = "/images/big-kahuna-ai-visibility.png";
+const productLadderImage = "/images/ai-surfer-product-ladder.jpg";
+const leadCatcherImage = "/images/ai-surfer-lead-catcher.jpg";
+const contentCreatorImage = "/images/content-creator-current.jpg";
+const customerCareImage = "/images/customer-care-cove.jpg";
+const automationArchitectImage = "/images/automation-architect-flow.jpg";
+const bigKahunaImage = "/images/big-kahuna-ai-visibility.jpg";
+const starterKitImage = "/images/ai-business-starter-kit.jpg";
 const fallbackImage = "/ai-surfer-logo.jpg";
 
 function VisualFrame({ src, alt, label }: { src: string; alt: string; label: string }) {
@@ -228,7 +241,7 @@ export default function SitesLanding() {
         </div>
         <VisualFrame
           src={productLadderImage}
-          alt="AI Surfer product ladder from Starter through Big Kahuna and Tsunami Takeover"
+          alt="AI Surfer product ladder from the AEO Wave Audit through Starter Wave, Wavemaker, Big Kahuna, and Tsunami Takeover"
           label="AI SURFER PRODUCT LADDER"
         />
       </section>
@@ -264,7 +277,7 @@ export default function SitesLanding() {
       <section className="visual-story visual-story-sales" aria-labelledby="sales-title">
         <VisualFrame
           src={leadCatcherImage}
-          alt="AI Lead Catcher flow showing automated lead arrival, engagement, qualification, CRM integration, notifications, and follow-up"
+          alt="Sales Rider AI Lead Catcher flow showing lead arrival, AI response, qualification, CRM integration, owner notification, and automated follow-up"
           label="SALES RIDER • THE PERFECT WAVE"
         />
         <div className="visual-copy">
@@ -282,6 +295,72 @@ export default function SitesLanding() {
           </div>
           <a className="button button-secondary" href="/members/products/sales-rider">Meet Sales Rider</a>
         </div>
+      </section>
+
+      <section className="visual-story" aria-labelledby="content-title">
+        <div className="visual-copy">
+          <p className="eyebrow">ONE IDEA • MANY WAVES</p>
+          <h2 id="content-title">Turn content creation into a repeatable current.</h2>
+          <p>
+            Content Creator takes one offer, topic, or customer question and turns it into aligned,
+            reusable marketing across the channels your business actually uses.
+          </p>
+          <div className="outcome-list">
+            <span>🗓️ More consistency</span>
+            <span>👁️ More visibility</span>
+            <span>⏱️ Less creation time</span>
+          </div>
+          <a className="button button-secondary" href="/members/products/content-creator">Create with Content Creator</a>
+        </div>
+        <VisualFrame
+          src={contentCreatorImage}
+          alt="Content Creator workflow showing idea input, brand voice, multi-channel content, scheduling, and reuse"
+          label="CONTENT CREATOR • CATCH THE CONTENT CURRENT"
+        />
+      </section>
+
+      <section className="visual-story" aria-labelledby="care-title">
+        <VisualFrame
+          src={customerCareImage}
+          alt="Customer Care Cove showing AI-supported customer service moving from missed messages to responsive support"
+          label="CUSTOMER CARE COVE"
+        />
+        <div className="visual-copy">
+          <p className="eyebrow">CALM THE INBOX</p>
+          <h2 id="care-title">Keep the customer current flowing.</h2>
+          <p>
+            Customer Care Cove helps answer common questions, cover after-hours gaps, guide appointments,
+            follow up, and escalate important conversations when a real person should step in.
+          </p>
+          <div className="outcome-list">
+            <span>😊 Happier customers</span>
+            <span>📨 Fewer missed messages</span>
+            <span>📞 More booked calls</span>
+          </div>
+          <a className="button button-secondary" href="/members/products/customer-care-cove">Enter Customer Care Cove</a>
+        </div>
+      </section>
+
+      <section className="visual-story" aria-labelledby="automation-title">
+        <div className="visual-copy">
+          <p className="eyebrow">FROM CHAOS TO FLOW</p>
+          <h2 id="automation-title">Build the system behind the business.</h2>
+          <p>
+            Automation Architect spots repetitive work, maps the workflow, connects the tools, automates
+            the handoffs, and keeps improving the system around measurable ROI.
+          </p>
+          <div className="outcome-list">
+            <span>⚙️ Less manual work</span>
+            <span>🧭 Cleaner systems</span>
+            <span>📈 Scalable operations</span>
+          </div>
+          <a className="button button-secondary" href="/members/products/automation-architect">Meet Automation Architect</a>
+        </div>
+        <VisualFrame
+          src={automationArchitectImage}
+          alt="Automation Architect workflow moving from scattered repetitive work to an optimized connected business system"
+          label="AUTOMATION ARCHITECT"
+        />
       </section>
 
       <section className="visual-story visual-story-visibility" aria-labelledby="visibility-title">
@@ -305,6 +384,28 @@ export default function SitesLanding() {
           alt="Big Kahuna AI visibility strategy showing the shift from traditional search to AI answer engines"
           label="THE BIG KAHUNA STRATEGY"
         />
+      </section>
+
+      <section className="visual-story" aria-labelledby="starter-kit-title">
+        <VisualFrame
+          src={starterKitImage}
+          alt="AI Business Starter Kit with four simple steps to kickstart an AI-enabled business"
+          label="FREE AI BUSINESS STARTER KIT"
+        />
+        <div className="visual-copy">
+          <p className="eyebrow">FREE STARTER RESOURCE</p>
+          <h2 id="starter-kit-title">Start simple. Get your first AI win.</h2>
+          <p>
+            The AI Business Starter Kit gives AI-curious business owners a practical first step with
+            starter roles, prompts, automation ideas, and a first-win action plan.
+          </p>
+          <div className="outcome-list">
+            <span>🧠 No tech overwhelm</span>
+            <span>💬 Copy-and-use prompts</span>
+            <span>🏆 First-win momentum</span>
+          </div>
+          <a className="button button-secondary" href="/wave-check">Start with the Free Wave Check</a>
+        </div>
       </section>
 
       <section className="membership">
