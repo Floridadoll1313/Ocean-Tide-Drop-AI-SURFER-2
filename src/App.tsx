@@ -16,11 +16,23 @@ const tiers: Tier[] = [
 ];
 
 const showcase = [
+  { image: '/packages/ai-business-starter-kit.jpg', label: 'AI Business Starter Kit', copy: 'A friendly first step into practical AI, prompts, simple automation, and momentum.' },
+  { image: '/packages/customer-care-cove.jpg', label: 'Customer Care Cove', copy: 'Keep customer conversations flowing with faster answers, better support, and smart escalation.' },
+  { image: '/packages/automation-architect.jpg', label: 'Automation Architect', copy: 'Connect the tools. Remove repetitive work. Build the flow behind the business.' },
+  { image: '/packages/content-creator.jpg', label: 'Content Creator', copy: 'Turn one idea into a repeatable content current across channels.' },
   { image: '/packages/sales-rider.jpg', label: 'Sales Rider', copy: 'Catch leads. Follow up faster. Convert more opportunities.' },
-  { image: '/packages/content-creator.jpg', label: 'Content Creator', copy: 'Turn one idea into a repeatable content current.' },
-  { image: '/packages/automation-architect.jpg', label: 'Automation Architect', copy: 'Connect the tools. Remove the repetitive work.' },
   { image: '/packages/big-kahuna.jpg', label: 'Big Kahuna', copy: 'Build visibility, authority, automation, and growth together.' },
+  { image: '/packages/product-ladder.jpg', label: 'AI Surfer Product Ladder', copy: 'See the path from first insight to a fully connected AI growth engine.' },
+  { image: '/packages/otd-ai-surfers.jpg', label: 'Built by the Ocean', copy: 'Powered by AI. Driven by purpose. Sailor, Stormy, and Sky bring the brand story home.' },
 ];
+
+function ShowcaseImage({ src, alt }: { src: string; alt: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return <div style={styles.imageFallback}><span>🌊</span><strong>{alt}</strong><small>Artwork ready to sync</small></div>;
+  }
+  return <img src={src} alt={alt} style={styles.showcaseImage} loading="lazy" onError={() => setFailed(true)} />;
+}
 
 export default function App() {
   const [selectedTier, setSelectedTier] = useState<Tier | null>(null);
@@ -112,13 +124,13 @@ export default function App() {
         </section>
 
         <section style={styles.showcaseSection}>
-          <p style={styles.eyebrow}>SEE THE SYSTEM</p>
-          <h2 style={styles.sectionTitle}>One business. Multiple waves of opportunity. 🌊</h2>
-          <p style={styles.sectionLead}>These are not generic AI tools. Each AI Surfer is built around a business outcome, from catching leads to building a complete AI visibility and automation ecosystem.</p>
+          <p style={styles.eyebrow}>THE AI SURFER WORLD</p>
+          <h2 style={styles.sectionTitle}>A visual journey from overwhelmed to unstoppable. 🌊</h2>
+          <p style={styles.sectionLead}>We are using the artwork as part of the sales story, not decoration. Each panel shows a business problem, the AI Surfer solution, and the outcome waiting on the other side of the wave.</p>
           <div style={styles.showcaseGrid}>
             {showcase.map((item, index) => (
-              <article key={item.label} style={{ ...styles.showcaseCard, ...(index === 0 ? styles.showcaseCardWide : {}) }}>
-                <img src={item.image} alt={`${item.label} AI Surfer solution`} style={styles.showcaseImage} loading="lazy" />
+              <article key={item.label} style={{ ...styles.showcaseCard, ...((index === 0 || index === 6 || index === 7) ? styles.showcaseCardWide : {}) }}>
+                <ShowcaseImage src={item.image} alt={`${item.label} AI Surfer artwork`} />
                 <div style={styles.showcaseOverlay}>
                   <span style={styles.showcaseLabel}>{item.label}</span>
                   <p style={styles.showcaseCopy}>{item.copy}</p>
@@ -207,6 +219,7 @@ const styles: Record<string, React.CSSProperties> = {
   showcaseCard: { position: 'relative', minHeight: 430, overflow: 'hidden', borderRadius: 28, border: '1px solid rgba(103,232,249,.16)', background: '#07111f', boxShadow: '0 24px 70px rgba(0,0,0,.30)' },
   showcaseCardWide: { gridColumn: 'span 2' },
   showcaseImage: { width: '100%', height: '100%', minHeight: 430, objectFit: 'cover', display: 'block' },
+  imageFallback: { minHeight: 430, height: '100%', display: 'grid', placeItems: 'center', alignContent: 'center', gap: 8, padding: 28, background: 'radial-gradient(circle at 50% 18%,rgba(14,116,144,.55),rgba(3,13,25,.98) 70%)', color: '#dff9ff', textAlign: 'center' },
   showcaseOverlay: { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', textAlign: 'left', padding: 24, background: 'linear-gradient(180deg,transparent 48%,rgba(1,8,18,.18) 58%,rgba(1,8,18,.94) 100%)' },
   showcaseLabel: { display: 'inline-block', alignSelf: 'flex-start', padding: '8px 11px', borderRadius: 999, background: 'rgba(103,232,249,.95)', color: '#00131c', fontWeight: 950, fontSize: '.76rem', letterSpacing: '.08em', textTransform: 'uppercase' },
   showcaseCopy: { maxWidth: 430, margin: '10px 0 0', color: '#e9f7ff', fontWeight: 750, lineHeight: 1.45 },
